@@ -1,5 +1,5 @@
 import { ThemeProvider } from "styled-components";
-import Chatbox from "../../components/Chatbox/Chatbox";
+import Chatbox from "../../components/Chatbox1/Chatbox";
 import { HomePageContainer } from "./HomePageStyles";
 import { theme } from "../../theme";
 

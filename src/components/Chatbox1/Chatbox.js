@@ -29,9 +29,9 @@ import {
 } from "firebase/firestore";
 
 import { theme } from "../../theme";
-import { db } from "../../backend/firebase/firebase";
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
-import { handleFirebaseDate } from "../../backend/firebase/handleFirebaseDate";
+import { db } from "../../database/firebase";
+import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 
 const Chatbox = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
