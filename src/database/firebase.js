@@ -13,6 +13,8 @@ import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyDbHz1eyG7zx3xWkq8u7WTjN9UEQXegQIk",
   authDomain: "eh-messager.firebaseapp.com",
+  databaseURL:
+    "https://eh-messager-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "eh-messager",
   storageBucket: "eh-messager.appspot.com",
   messagingSenderId: "920976784355",
