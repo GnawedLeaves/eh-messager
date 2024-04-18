@@ -46,6 +46,7 @@ import { RxCross2 } from "react-icons/rx";
 import { RecievedMessageMedia } from "../Chatbox/ChatboxStyles";
 import { getAllMessageFromUser } from "../../database/functions/getAllMessageIdsFromUser";
 import { getAll } from "firebase/remote-config";
+import { deleteMessageFromUser } from "../../database/functions/deleteMessageFromUser";
 
 const Chatbox2 = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
@@ -133,6 +134,7 @@ const Chatbox2 = (props) => {
     setMessageContent("");
     setMessageFile(null);
     setMessageIdToReply(null);
+    initGetAllMessages();
   };
 
   const initGetAllMessages = async () => {
@@ -169,7 +171,7 @@ const Chatbox2 = (props) => {
       messagesFetched,
       "date_created"
     );
-    console.log("sortedArray", sortedArray);
+    console.log("All Messages", sortedArray);
     setAllMessagesData(sortedArray);
   };
 
@@ -182,11 +184,14 @@ const Chatbox2 = (props) => {
     const parentMessageObj = allMessagesData.filter(
       (message) => message.id === messageId
     );
-    console.log("parentMessageObj", parentMessageObj);
     return parentMessageObj;
   };
 
   //Delete message function
+  const deleteMessage = async (messageId, attachmentName) => {
+    deleteMessageFromUser(messageId, attachmentName);
+    initGetAllMessages();
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -240,7 +245,13 @@ const Chatbox2 = (props) => {
                         >
                           Reply
                         </button>
-                        <button>Delete</button>
+                        <button
+                          onClick={() => {
+                            deleteMessage(message.id, message.attachment_name);
+                          }}
+                        >
+                          Delete
+                        </button>
                       </RecievedMessageOptionsModal>
                       {message.parent_message_id !== null ? (
                         <>
@@ -304,7 +315,13 @@ const Chatbox2 = (props) => {
                         >
                           Reply
                         </button>
-                        <button>Delete</button>
+                        <button
+                          onClick={() => {
+                            deleteMessage(message.id, message.attachment_name);
+                          }}
+                        >
+                          Delete
+                        </button>
                       </SentMessageOptionsModal>
                       {message.parent_message_id !== null ? (
                         <>
