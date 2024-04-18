@@ -311,7 +311,7 @@ const ChatboxBig = (props) => {
                           }}
                           src={message.attachmentUrl}
                           poster={message.attachmentUrl}
-                        />{" "}
+                        />
                       </>
                     ) : (
                       ""

@@ -7,6 +7,7 @@ import { UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import Chatbox2 from "../../components/Chatbox2/Chatbox2";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -58,6 +59,8 @@ const HomePage = () => {
             ) : (
               <Chatbox userId={user?.id} otherPersonId="2" />
             )}
+            <Chatbox2 userId={user?.id} otherPersonId="BuIJyhQrFgmwmH9QvRNJ" />
+            <Chatbox2 userId="BuIJyhQrFgmwmH9QvRNJ" otherPersonId={user?.id} />
           </HomePageContainer>
         </>
       ) : (
