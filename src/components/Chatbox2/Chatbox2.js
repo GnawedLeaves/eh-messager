@@ -23,9 +23,12 @@ import { useEffect } from "react";
 import { IoMdAttach, IoMdSend } from "react-icons/io";
 import { useRef } from "react";
 import {
+  Firestore,
   Timestamp,
   addDoc,
   collection,
+  doc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -39,7 +42,8 @@ import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { sendMessageToUser } from "../../database/functions/sendMessageToUser";
 import { RxCross2 } from "react-icons/rx";
 import { AdminRecievedMessageMedia } from "../Chatbox/ChatboxStyles";
-import { getAllMessageFromUser } from "../../database/functions/getAllMessageFromUser";
+import { getAllMessageFromUser } from "../../database/functions/getAllMessageIdsFromUser";
+import { getAll } from "firebase/remote-config";
 
 const Chatbox2 = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
@@ -48,10 +52,12 @@ const Chatbox2 = (props) => {
   const [messageFile, setMessageFile] = useState(null);
   const [messageContent, setMessageContent] = useState("");
   const [allMessagesData, setAllMessagesData] = useState([]);
+  const [allMessagesIdsObjs, setAllMessagesIdsObjs] = useState([]);
   const userId = props.userId ? props.userId : "1";
   const otherPersonId = props.otherPersonId ? props.otherPersonId : "2";
 
   const messagesRef = collection(db, "messages");
+  const messageRef = collection(db, "message");
 
   const handleInputFocus = () => {
     setInputFocused(true);
@@ -74,8 +80,6 @@ const Chatbox2 = (props) => {
 
   const getSentMessages = async (recipientId, senderId) => {};
 
-  const getAllMessages = async (recipientId, senderId) => {};
-
   // When the component mounts, set the scrollTop property to the maximum scroll height
 
   useEffect(() => {
@@ -95,15 +99,15 @@ const Chatbox2 = (props) => {
 
   //updates the data array whenever the database changes
   useEffect(() => {
-    const unsubscribe = onSnapshot(messagesRef, () => {
-      getAllMessages(userId, otherPersonId);
+    const unsubscribe = onSnapshot(messageRef, () => {
+      initGetAllMessages();
     });
 
     // Clean up the listener when the component unmounts
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [props.otherPersonId]);
 
   const handleIconClick = () => {
     setMessageFile(null);
@@ -121,9 +125,43 @@ const Chatbox2 = (props) => {
     setMessageContent("");
   };
 
-  useEffect(() => {
-    getAllMessageFromUser(userId, otherPersonId);
-  }, []);
+  const initGetAllMessages = async () => {
+    const tempMessagesIds = await getAllMessageFromUser(userId, otherPersonId);
+    setAllMessagesIdsObjs(tempMessagesIds);
+    getMessagesData(tempMessagesIds);
+  };
+
+  const getMessagesData = async (messageObjs) => {
+    const messageRef = collection(db, "message");
+    let messagesFetched = [];
+
+    const messageIds = messageObjs.map((message) => {
+      return message.message_id;
+    });
+    console.log("messageIds", messageIds);
+
+    // Firestore supports up to 10 IDs in an `in` query
+    for (let i = 0; i < messageIds.length; i += 10) {
+      const batch = messageIds.slice(i, i + 10);
+      // Create references to each document ID
+      const docsRef = batch.map((id) => doc(messageRef, id));
+      // Query each document reference
+      const queries = docsRef.map((docRef) => getDoc(docRef));
+      const snapshots = await Promise.all(queries);
+      snapshots.forEach((snapshot) => {
+        if (snapshot.exists()) {
+          messagesFetched.push(snapshot.data());
+        }
+      });
+    }
+
+    const sortedArray = sortByFirebaseTimestamp(
+      messagesFetched,
+      "date_created"
+    );
+    console.log("sortedArray", sortedArray);
+    setAllMessagesData(sortedArray);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -132,35 +170,64 @@ const Chatbox2 = (props) => {
         <AdminMessagingDisplayContainer ref={messageDisplayRef}>
           {allMessagesData && allMessagesData.length > 0 ? (
             allMessagesData.map((message, index) => {
-              if (message.recipientId === userId) {
+              if (message.creator_id !== userId) {
                 return (
                   <AdminRecievedMessageContainer key={index}>
+                    {message.attachment_url ? (
+                      <>
+                        <AdminAdminRecievedMessageDate>
+                          {getDateFromFirebaseDate(message.date_created)}
+                        </AdminAdminRecievedMessageDate>
+                        <AdminRecievedMessageMedia
+                          onClick={() => {
+                            window.open(
+                              message.attachment_url,
+                              "_blank",
+                              "noopener"
+                            );
+                          }}
+                          src={message.attachment_url}
+                          poster={message.attachment_url}
+                        />
+                      </>
+                    ) : (
+                      <></>
+                    )}
                     <AdminAdminRecievedMessageDate>
-                      {getDateFromFirebaseDate(message.dateAdded)}
+                      {getDateFromFirebaseDate(message.date_created)}
                     </AdminAdminRecievedMessageDate>
-                    <AdminRecievedMessageMedia
-                      onClick={() => {
-                        window.open(
-                          message.attachmentUrl,
-                          "_blank",
-                          "noopener"
-                        );
-                      }}
-                      src={message.attachmentUrl}
-                      poster={message.attachmentUrl}
-                    />
                     <AdminRecievedMessage>
-                      {message.messageBody}
+                      {message.message_body}
                     </AdminRecievedMessage>
                   </AdminRecievedMessageContainer>
                 );
               } else {
                 return (
                   <AdminSentMessageContainer key={index}>
+                    {message.attachment_url ? (
+                      <>
+                        <AdminAdminRecievedMessageDate>
+                          {getDateFromFirebaseDate(message.date_created)}
+                        </AdminAdminRecievedMessageDate>
+                        <AdminRecievedMessageMedia
+                          onClick={() => {
+                            window.open(
+                              message.attachment_url,
+                              "_blank",
+                              "noopener"
+                            );
+                          }}
+                          src={message.attachment_url}
+                          poster={message.attachment_url}
+                        />
+                      </>
+                    ) : (
+                      <></>
+                    )}
                     <AdminAdminSentMessageDate>
-                      {getDateFromFirebaseDate(message.dateAdded)}
+                      {getDateFromFirebaseDate(message.date_created)}
                     </AdminAdminSentMessageDate>
-                    <AdminSentMessage>{message.messageBody}</AdminSentMessage>
+                    <AdminSentMessage>{message.message_body}</AdminSentMessage>
                   </AdminSentMessageContainer>
                 );
               }

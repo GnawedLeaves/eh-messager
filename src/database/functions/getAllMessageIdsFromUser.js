@@ -21,7 +21,7 @@ export const getAllMessageFromUser = async (userId, otherId) => {
       );
       const sentMessagesSnapshot = await getDocs(idsOfSentMessagesQuery);
 
-      const allReceivedAndSentMessages = [
+      const allReceivedAndSentMessagesIds = [
         ...receivedMessagesSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -31,14 +31,12 @@ export const getAllMessageFromUser = async (userId, otherId) => {
           ...doc.data(),
         })),
       ];
-      console.log("allReceivedAndSentMessagesIds", allReceivedAndSentMessages);
+      return allReceivedAndSentMessagesIds;
 
       //get messages based on the ids
     } catch (e) {
       console.log("Error getting messages: ", e);
     }
-
-    return allMessages;
   } else {
     console.log("Missing userid or otherid");
   }

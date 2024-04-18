@@ -59,8 +59,8 @@ const HomePage = () => {
             ) : (
               <Chatbox userId={user?.id} otherPersonId="2" />
             )}
-            <Chatbox2 userId={user?.id} otherPersonId="BuIJyhQrFgmwmH9QvRNJ" />
-            <Chatbox2 userId="BuIJyhQrFgmwmH9QvRNJ" otherPersonId={user?.id} />
+            <Chatbox2 userId={user?.id} otherPersonId="HS0C0UK0yLbSQB2CGonB" />
+            <Chatbox2 userId="HS0C0UK0yLbSQB2CGonB" otherPersonId={user?.id} />
           </HomePageContainer>
         </>
       ) : (
