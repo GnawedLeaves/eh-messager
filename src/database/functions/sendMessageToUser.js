@@ -11,7 +11,7 @@ export const sendMessageToUser = async (
 ) => {
   const messageRef = collection(db, "message");
   const messageRecipientRef = collection(db, "message_recipient");
-  let attachmentUrl = "";
+  let attachmentUrl = null;
 
   if (messageBody !== "") {
     if (attachment !== null) {

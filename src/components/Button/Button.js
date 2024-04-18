@@ -12,8 +12,6 @@ import { useState } from "react";
 //4. onClick - You need to create a function in the parent element (the level above this)
 //5. (Optional) buttonType: "toggle" for a button when you click it stays filled when you click again it unfills. Do not add this if you want a normal button.
 
-//See AdminExamDetailsPage line 97 onwards for example
-
 const Button = (props) => {
   //handle if no inputs
   const filled = props.filled;

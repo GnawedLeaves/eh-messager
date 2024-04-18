@@ -1,20 +1,20 @@
 import { ThemeProvider } from "styled-components";
 import {
-  AdminAdminRecievedMessageDate,
-  AdminAdminSentMessageDate,
-  AdminMessageArrowContainer,
-  AdminMessageArrowContainerBig,
-  AdminMessageArrowContainerSmall,
-  AdminMessageAttachmentPreview,
-  AdminMessageAttachmentPreviewIcon,
-  AdminMessageInput,
-  AdminMessageInputBar,
-  AdminMessagingContainer,
-  AdminMessagingDisplayContainer,
-  AdminRecievedMessage,
-  AdminRecievedMessageContainer,
-  AdminSentMessage,
-  AdminSentMessageContainer,
+  RecievedMessageDate,
+  SentMessageDate,
+  MessageArrowContainer,
+  MessageArrowContainerBig,
+  MessageArrowContainerSmall,
+  MessageAttachmentPreview,
+  MessageAttachmentPreviewIcon,
+  MessageInput,
+  MessageInputBar,
+  MessagingContainer,
+  MessagingDisplayContainer,
+  RecievedMessage,
+  RecievedMessageContainer,
+  SentMessage,
+  SentMessageContainer,
   ChatboxHeader,
   ChatboxLoading,
 } from "./ChatboxStyles2";
@@ -41,7 +41,7 @@ import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { sendMessageToUser } from "../../database/functions/sendMessageToUser";
 import { RxCross2 } from "react-icons/rx";
-import { AdminRecievedMessageMedia } from "../Chatbox/ChatboxStyles";
+import { RecievedMessageMedia } from "../Chatbox/ChatboxStyles";
 import { getAllMessageFromUser } from "../../database/functions/getAllMessageIdsFromUser";
 import { getAll } from "firebase/remote-config";
 
@@ -163,22 +163,25 @@ const Chatbox2 = (props) => {
     setAllMessagesData(sortedArray);
   };
 
+  // Reply functions
+  const [showMessageOptionsModal, setShowMessageOptionsModal] = useState(true);
+
   return (
     <ThemeProvider theme={theme}>
-      <AdminMessagingContainer>
+      <MessagingContainer>
         <ChatboxHeader>{otherPersonId}</ChatboxHeader>
-        <AdminMessagingDisplayContainer ref={messageDisplayRef}>
+        <MessagingDisplayContainer ref={messageDisplayRef}>
           {allMessagesData && allMessagesData.length > 0 ? (
             allMessagesData.map((message, index) => {
               if (message.creator_id !== userId) {
                 return (
-                  <AdminRecievedMessageContainer key={index}>
+                  <RecievedMessageContainer key={index}>
                     {message.attachment_url ? (
                       <>
-                        <AdminAdminRecievedMessageDate>
+                        <RecievedMessageDate>
                           {getDateFromFirebaseDate(message.date_created)}
-                        </AdminAdminRecievedMessageDate>
-                        <AdminRecievedMessageMedia
+                        </RecievedMessageDate>
+                        <RecievedMessageMedia
                           onClick={() => {
                             window.open(
                               message.attachment_url,
@@ -193,23 +196,21 @@ const Chatbox2 = (props) => {
                     ) : (
                       <></>
                     )}
-                    <AdminAdminRecievedMessageDate>
+                    <RecievedMessageDate>
                       {getDateFromFirebaseDate(message.date_created)}
-                    </AdminAdminRecievedMessageDate>
-                    <AdminRecievedMessage>
-                      {message.message_body}
-                    </AdminRecievedMessage>
-                  </AdminRecievedMessageContainer>
+                    </RecievedMessageDate>
+                    <RecievedMessage>{message.message_body}</RecievedMessage>
+                  </RecievedMessageContainer>
                 );
               } else {
                 return (
-                  <AdminSentMessageContainer key={index}>
+                  <SentMessageContainer key={index}>
                     {message.attachment_url ? (
                       <>
-                        <AdminAdminRecievedMessageDate>
+                        <RecievedMessageDate>
                           {getDateFromFirebaseDate(message.date_created)}
-                        </AdminAdminRecievedMessageDate>
-                        <AdminRecievedMessageMedia
+                        </RecievedMessageDate>
+                        <RecievedMessageMedia
                           onClick={() => {
                             window.open(
                               message.attachment_url,
@@ -224,44 +225,33 @@ const Chatbox2 = (props) => {
                     ) : (
                       <></>
                     )}
-                    <AdminAdminSentMessageDate>
+                    <SentMessageDate>
                       {getDateFromFirebaseDate(message.date_created)}
-                    </AdminAdminSentMessageDate>
-                    <AdminSentMessage>{message.message_body}</AdminSentMessage>
-                  </AdminSentMessageContainer>
+                    </SentMessageDate>
+                    <SentMessage>{message.message_body}</SentMessage>
+                  </SentMessageContainer>
                 );
               }
             })
           ) : (
             <ChatboxLoading>No Messages Yet</ChatboxLoading>
           )}
-        </AdminMessagingDisplayContainer>
-        <AdminMessageAttachmentPreview
-          transformValue={messageFile ? "-2.5rem" : "1rem"}
-        >
-          Attached File: {messageFile ? messageFile.name : ""}
-          <AdminMessageAttachmentPreviewIcon
-            onClick={() => {
-              setMessageFile(null);
-            }}
-          >
-            <RxCross2 size={"1.4rem"} />
-          </AdminMessageAttachmentPreviewIcon>
-        </AdminMessageAttachmentPreview>
-        <AdminMessageInputBar>
-          <AdminMessageAttachmentPreview
+        </MessagingDisplayContainer>
+
+        <MessageInputBar>
+          <MessageAttachmentPreview
             transformValue={messageFile ? "-4.5rem" : "3rem"}
           >
             Attached File: {messageFile ? messageFile.name : ""}
-            <AdminMessageAttachmentPreviewIcon
+            <MessageAttachmentPreviewIcon
               onClick={() => {
                 setMessageFile(null);
               }}
             >
               <RxCross2 size={"1.4rem"} />
-            </AdminMessageAttachmentPreviewIcon>
-          </AdminMessageAttachmentPreview>
-          <AdminMessageInput
+            </MessageAttachmentPreviewIcon>
+          </MessageAttachmentPreview>
+          <MessageInput
             value={messageContent}
             rows="1"
             onKeyDown={handleKeyDown}
@@ -272,7 +262,7 @@ const Chatbox2 = (props) => {
               setMessageContent(e.target.value);
             }}
           />
-          <AdminMessageArrowContainerBig>
+          <MessageArrowContainerBig>
             <input
               ref={fileInputRef}
               type="file"
@@ -282,19 +272,19 @@ const Chatbox2 = (props) => {
                 display: "none",
               }}
             />
-            <AdminMessageArrowContainerSmall onClick={handleIconClick}>
+            <MessageArrowContainerSmall onClick={handleIconClick}>
               <IoMdAttach size="2rem" style={{ transform: "rotate(45deg)" }} />
-            </AdminMessageArrowContainerSmall>
-            <AdminMessageArrowContainerSmall
+            </MessageArrowContainerSmall>
+            <MessageArrowContainerSmall
               onClick={async () => {
                 sendMessage();
               }}
             >
               <IoMdSend size="2rem" />
-            </AdminMessageArrowContainerSmall>
-          </AdminMessageArrowContainerBig>
-        </AdminMessageInputBar>
-      </AdminMessagingContainer>
+            </MessageArrowContainerSmall>
+          </MessageArrowContainerBig>
+        </MessageInputBar>
+      </MessagingContainer>
     </ThemeProvider>
   );
 };

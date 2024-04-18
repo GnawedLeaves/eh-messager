@@ -1,16 +1,16 @@
 import { ThemeProvider } from "styled-components";
 import {
-  AdminAdminRecievedMessageDate,
-  AdminAdminSentMessageDate,
-  AdminMessageArrowContainer,
-  AdminMessageInput,
-  AdminMessageInputBar,
-  AdminMessagingContainer,
-  AdminMessagingDisplayContainer,
-  AdminRecievedMessage,
-  AdminRecievedMessageContainer,
-  AdminSentMessage,
-  AdminSentMessageContainer,
+  RecievedMessageDate,
+  SentMessageDate,
+  MessageArrowContainer,
+  MessageInput,
+  MessageInputBar,
+  MessagingContainer,
+  MessagingDisplayContainer,
+  RecievedMessage,
+  RecievedMessageContainer,
+  SentMessage,
+  SentMessageContainer,
   ChatboxHeader,
   ChatboxLoading,
 } from "./ChatboxStyles";
@@ -191,39 +191,37 @@ const Chatbox = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AdminMessagingContainer>
+      <MessagingContainer>
         <ChatboxHeader>{otherPersonId}</ChatboxHeader>
-        <AdminMessagingDisplayContainer ref={messageDisplayRef}>
+        <MessagingDisplayContainer ref={messageDisplayRef}>
           {allMessagesData && allMessagesData.length > 0 ? (
             allMessagesData.map((message, index) => {
               if (message.recipientId === userId) {
                 return (
-                  <AdminRecievedMessageContainer key={index}>
-                    <AdminAdminRecievedMessageDate>
+                  <RecievedMessageContainer key={index}>
+                    <RecievedMessageDate>
                       {getDateFromFirebaseDate(message.dateAdded)}
-                    </AdminAdminRecievedMessageDate>
-                    <AdminRecievedMessage>
-                      {message.messageBody}
-                    </AdminRecievedMessage>
-                  </AdminRecievedMessageContainer>
+                    </RecievedMessageDate>
+                    <RecievedMessage>{message.messageBody}</RecievedMessage>
+                  </RecievedMessageContainer>
                 );
               } else {
                 return (
-                  <AdminSentMessageContainer key={index}>
-                    <AdminAdminSentMessageDate>
+                  <SentMessageContainer key={index}>
+                    <SentMessageDate>
                       {getDateFromFirebaseDate(message.dateAdded)}
-                    </AdminAdminSentMessageDate>
-                    <AdminSentMessage>{message.messageBody}</AdminSentMessage>
-                  </AdminSentMessageContainer>
+                    </SentMessageDate>
+                    <SentMessage>{message.messageBody}</SentMessage>
+                  </SentMessageContainer>
                 );
               }
             })
           ) : (
             <ChatboxLoading>No Messages Yet</ChatboxLoading>
           )}
-        </AdminMessagingDisplayContainer>
-        <AdminMessageInputBar>
-          <AdminMessageInput
+        </MessagingDisplayContainer>
+        <MessageInputBar>
+          <MessageInput
             value={messageContent}
             rows="1"
             onKeyDown={handleKeyDown}
@@ -234,15 +232,15 @@ const Chatbox = (props) => {
               setMessageContent(e.target.value);
             }}
           />
-          <AdminMessageArrowContainer
+          <MessageArrowContainer
             onClick={() => {
               sendMessage(userId, otherPersonId);
             }}
           >
             <IoMdSend size="1.5rem" />
-          </AdminMessageArrowContainer>
-        </AdminMessageInputBar>
-      </AdminMessagingContainer>
+          </MessageArrowContainer>
+        </MessageInputBar>
+      </MessagingContainer>
     </ThemeProvider>
   );
 };
