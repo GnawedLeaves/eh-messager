@@ -52,7 +52,7 @@ const HomePage = () => {
             >
               Sign Out
             </button>
-            {user?.id === "HS0C0UK0yLbSQB2CGonB" ? (
+            {/* {user?.id === "HS0C0UK0yLbSQB2CGonB" ? (
               <Chatbox2
                 userId={user?.id}
                 otherPersonId="CPURpFaoZqyKZahmc9uI"
@@ -64,9 +64,9 @@ const HomePage = () => {
               />
             ) : (
               <Chatbox2 userId={user?.id} otherPersonId="2" />
-            )}
-            {/* <Chatbox2 userId={user?.id} otherPersonId="HS0C0UK0yLbSQB2CGonB" />
-            <Chatbox2 userId="HS0C0UK0yLbSQB2CGonB" otherPersonId={user?.id} /> */}
+            )} */}
+            <Chatbox2 userId={user?.id} otherPersonId="HS0C0UK0yLbSQB2CGonB" />
+            <Chatbox2 userId="HS0C0UK0yLbSQB2CGonB" otherPersonId={user?.id} />
           </HomePageContainer>
         </>
       ) : (
