@@ -17,6 +17,8 @@ import {
   SentMessageContainer,
   ChatboxHeader,
   ChatboxLoading,
+  RecievedMessageOptionsModal,
+  SentMessageOptionsModal,
 } from "./ChatboxStyles2";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -121,8 +123,16 @@ const Chatbox2 = (props) => {
   };
 
   const sendMessage = async () => {
-    await sendMessageToUser(userId, otherPersonId, messageContent, messageFile);
+    await sendMessageToUser(
+      userId,
+      otherPersonId,
+      messageContent,
+      messageFile,
+      messageIdToReply
+    );
     setMessageContent("");
+    setMessageFile(null);
+    setMessageIdToReply(null);
   };
 
   const initGetAllMessages = async () => {
@@ -150,7 +160,7 @@ const Chatbox2 = (props) => {
       const snapshots = await Promise.all(queries);
       snapshots.forEach((snapshot) => {
         if (snapshot.exists()) {
-          messagesFetched.push(snapshot.data());
+          messagesFetched.push({ id: snapshot.id, ...snapshot.data() });
         }
       });
     }
@@ -165,6 +175,18 @@ const Chatbox2 = (props) => {
 
   // Reply functions
   const [showMessageOptionsModal, setShowMessageOptionsModal] = useState(true);
+  const [messageClickedIndex, setMessageClickedIndex] = useState(-1);
+  const [messageIdToReply, setMessageIdToReply] = useState(null);
+
+  const getParentMessagePreview = (messageId) => {
+    const parentMessageObj = allMessagesData.filter(
+      (message) => message.id === messageId
+    );
+    console.log("parentMessageObj", parentMessageObj);
+    return parentMessageObj;
+  };
+
+  //Delete message function
 
   return (
     <ThemeProvider theme={theme}>
@@ -199,7 +221,42 @@ const Chatbox2 = (props) => {
                     <RecievedMessageDate>
                       {getDateFromFirebaseDate(message.date_created)}
                     </RecievedMessageDate>
-                    <RecievedMessage>{message.message_body}</RecievedMessage>
+                    <RecievedMessage
+                      onClick={() => {
+                        if (messageClickedIndex === index) {
+                          setMessageClickedIndex(-1);
+                        } else {
+                          setMessageClickedIndex(index);
+                        }
+                      }}
+                    >
+                      <RecievedMessageOptionsModal
+                        display={messageClickedIndex === index}
+                      >
+                        <button
+                          onClick={() => {
+                            setMessageIdToReply(message.id);
+                          }}
+                        >
+                          Reply
+                        </button>
+                        <button>Delete</button>
+                      </RecievedMessageOptionsModal>
+                      {message.parent_message_id !== null ? (
+                        <>
+                          {getParentMessagePreview(
+                            message.parent_message_id
+                          ).map(
+                            (message) => "Replying to: " + message.message_body
+                          )}
+                          <br />
+                          <br />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {message.message_body}
+                    </RecievedMessage>
                   </RecievedMessageContainer>
                 );
               } else {
@@ -228,7 +285,42 @@ const Chatbox2 = (props) => {
                     <SentMessageDate>
                       {getDateFromFirebaseDate(message.date_created)}
                     </SentMessageDate>
-                    <SentMessage>{message.message_body}</SentMessage>
+                    <SentMessage
+                      onClick={() => {
+                        if (messageClickedIndex === index) {
+                          setMessageClickedIndex(-1);
+                        } else {
+                          setMessageClickedIndex(index);
+                        }
+                      }}
+                    >
+                      <SentMessageOptionsModal
+                        display={messageClickedIndex === index}
+                      >
+                        <button
+                          onClick={() => {
+                            setMessageIdToReply(message.id);
+                          }}
+                        >
+                          Reply
+                        </button>
+                        <button>Delete</button>
+                      </SentMessageOptionsModal>
+                      {message.parent_message_id !== null ? (
+                        <>
+                          {getParentMessagePreview(
+                            message.parent_message_id
+                          ).map(
+                            (message) => "Replying to: " + message.message_body
+                          )}
+                          <br />
+                          <br />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {message.message_body}
+                    </SentMessage>
                   </SentMessageContainer>
                 );
               }

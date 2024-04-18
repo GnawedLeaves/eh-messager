@@ -17,7 +17,7 @@ import {
   MessagingDisplayContainerBig,
   RecievedMessage,
   RecievedMessageContainer,
-  RecievedMessageMedia,
+  AdminRecievedMessageMedia,
   SentMessage,
   SentMessageContainer,
   ChatboxHeader,
@@ -257,7 +257,7 @@ const ChatboxBig = (props) => {
                           {getDateFromFirebaseDate(message.dateAdded)}
                         </RecievedMessageDate>
 
-                        <RecievedMessageMedia
+                        <AdminRecievedMessageMedia
                           onClick={() => {
                             window.open(
                               message.attachmentUrl,
@@ -301,7 +301,7 @@ const ChatboxBig = (props) => {
                         <SentMessageDate>
                           {getDateFromFirebaseDate(message.dateAdded)}
                         </SentMessageDate>
-                        <RecievedMessageMedia
+                        <AdminRecievedMessageMedia
                           onClick={() => {
                             window.open(
                               message.attachmentUrl,

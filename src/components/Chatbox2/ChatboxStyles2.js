@@ -21,6 +21,7 @@ export const RecievedMessageContainer = styled.div`
   width: 100%;
   padding: 0.3rem 1rem;
   box-sizing: border-box;
+  position: relative;
 `;
 
 export const RecievedMessageDate = styled.div`
@@ -203,4 +204,28 @@ export const MessageAttachmentPreviewIcon = styled.div`
   cursor: pointer;
 `;
 
-export const messageOptionsModa = styled.div``;
+export const RecievedMessageOptionsModal = styled.div`
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  opacity: ${(props) => (props.display ? 1 : 0)};
+  transition: 0.3s;
+  background: salmon;
+  z-index: 99;
+  padding: 1rem;
+`;
+
+export const SentMessageOptionsModal = styled.div`
+  position: absolute;
+  top: -2rem;
+  right: 50%;
+  display: flex;
+  flex-direction: column;
+  opacity: ${(props) => (props.display ? 1 : 0)};
+  transition: 0.3s;
+  background: salmon;
+  z-index: 99;
+  padding: 1rem;
+`;

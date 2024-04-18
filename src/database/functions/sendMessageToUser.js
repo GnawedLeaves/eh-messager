@@ -7,7 +7,8 @@ export const sendMessageToUser = async (
   creatorId,
   recipientId,
   messageBody,
-  attachment
+  attachment,
+  parentMessageId
 ) => {
   const messageRef = collection(db, "message");
   const messageRecipientRef = collection(db, "message_recipient");
@@ -39,7 +40,7 @@ export const sendMessageToUser = async (
         date_created: timestamp,
         message_body: messageBody,
         attachment_url: attachmentUrl,
-        parent_message_id: null,
+        parent_message_id: parentMessageId,
         expiry_date: null,
         subject: null,
       });
