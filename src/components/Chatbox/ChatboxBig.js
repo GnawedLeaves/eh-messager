@@ -1,25 +1,25 @@
 import { ThemeProvider } from "styled-components";
 import {
-  AdminAdminRecievedMessageDate,
-  AdminAdminSentMessageDate,
-  AdminMessageArrowContainer,
-  AdminMessageArrowContainerBig,
-  AdminMessageArrowContainerSmall,
-  AdminMessageAttachmentPreview,
-  AdminMessageAttachmentPreviewIcon,
-  AdminMessageInput,
-  AdminMessageInputBar,
-  AdminMessageInputBarBig,
-  AdminMessageInputBig,
-  AdminMessagingContainer,
-  AdminMessagingContainerBig,
-  AdminMessagingDisplayContainer,
-  AdminMessagingDisplayContainerBig,
-  AdminRecievedMessage,
-  AdminRecievedMessageContainer,
+  RecievedMessageDate,
+  SentMessageDate,
+  MessageArrowContainer,
+  MessageArrowContainerBig,
+  MessageArrowContainerSmall,
+  MessageAttachmentPreview,
+  MessageAttachmentPreviewIcon,
+  MessageInput,
+  MessageInputBar,
+  MessageInputBarBig,
+  MessageInputBig,
+  MessagingContainer,
+  MessagingContainerBig,
+  MessagingDisplayContainer,
+  MessagingDisplayContainerBig,
+  RecievedMessage,
+  RecievedMessageContainer,
   AdminRecievedMessageMedia,
-  AdminSentMessage,
-  AdminSentMessageContainer,
+  SentMessage,
+  SentMessageContainer,
   ChatboxHeader,
   ChatboxHeaderBig,
   ChatboxLoading,
@@ -243,19 +243,19 @@ const ChatboxBig = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AdminMessagingContainerBig>
+      <MessagingContainerBig>
         <ChatboxHeaderBig>{otherPersonName}</ChatboxHeaderBig>
-        <AdminMessagingDisplayContainerBig ref={messageDisplayRef}>
+        <MessagingDisplayContainerBig ref={messageDisplayRef}>
           {allMessagesData && allMessagesData.length > 0 ? (
             allMessagesData.map((message, index) => {
               if (message.recipientId === userId) {
                 return (
-                  <AdminRecievedMessageContainer key={index}>
+                  <RecievedMessageContainer key={index}>
                     {message.attachmentUrl ? (
                       <>
-                        <AdminAdminRecievedMessageDate>
+                        <RecievedMessageDate>
                           {getDateFromFirebaseDate(message.dateAdded)}
-                        </AdminAdminRecievedMessageDate>
+                        </RecievedMessageDate>
 
                         <AdminRecievedMessageMedia
                           onClick={() => {
@@ -274,10 +274,10 @@ const ChatboxBig = (props) => {
                     )}
                     {message.messageBody ? (
                       <>
-                        <AdminAdminRecievedMessageDate>
+                        <RecievedMessageDate>
                           {getDateFromFirebaseDate(message.dateAdded)}
-                        </AdminAdminRecievedMessageDate>
-                        <AdminRecievedMessage>
+                        </RecievedMessageDate>
+                        <RecievedMessage>
                           {message.questionCategory ? (
                             <b>
                               {message.questionCategory} <br />
@@ -286,21 +286,21 @@ const ChatboxBig = (props) => {
                             ""
                           )}
                           {message.messageBody}
-                        </AdminRecievedMessage>
+                        </RecievedMessage>
                       </>
                     ) : (
                       <></>
                     )}
-                  </AdminRecievedMessageContainer>
+                  </RecievedMessageContainer>
                 );
               } else {
                 return (
-                  <AdminSentMessageContainer key={index}>
+                  <SentMessageContainer key={index}>
                     {message.attachmentUrl ? (
                       <>
-                        <AdminAdminSentMessageDate>
+                        <SentMessageDate>
                           {getDateFromFirebaseDate(message.dateAdded)}
-                        </AdminAdminSentMessageDate>
+                        </SentMessageDate>
                         <AdminRecievedMessageMedia
                           onClick={() => {
                             window.open(
@@ -319,10 +319,10 @@ const ChatboxBig = (props) => {
 
                     {message.messageBody ? (
                       <>
-                        <AdminAdminSentMessageDate>
+                        <SentMessageDate>
                           {getDateFromFirebaseDate(message.dateAdded)}
-                        </AdminAdminSentMessageDate>
-                        <AdminSentMessage>
+                        </SentMessageDate>
+                        <SentMessage>
                           {message.questionCategory ? (
                             <b>
                               {message.questionCategory} <br />
@@ -331,34 +331,34 @@ const ChatboxBig = (props) => {
                             ""
                           )}
                           {message.messageBody}
-                        </AdminSentMessage>{" "}
+                        </SentMessage>{" "}
                       </>
                     ) : (
                       <></>
                     )}
-                    {/* <AdminSentMessage>{message.messageBody}</AdminSentMessage> */}
-                  </AdminSentMessageContainer>
+                    {/* <SentMessage>{message.messageBody}</SentMessage> */}
+                  </SentMessageContainer>
                 );
               }
             })
           ) : (
             <ChatboxLoading>No Messages Yet</ChatboxLoading>
           )}
-        </AdminMessagingDisplayContainerBig>
-        <AdminMessageInputBarBig>
-          <AdminMessageAttachmentPreview
+        </MessagingDisplayContainerBig>
+        <MessageInputBarBig>
+          <MessageAttachmentPreview
             transformValue={messageFile ? "-2.5rem" : "1rem"}
           >
             Attached File: {messageFile ? messageFile.name : ""}
-            <AdminMessageAttachmentPreviewIcon
+            <MessageAttachmentPreviewIcon
               onClick={() => {
                 setMessageFile(null);
               }}
             >
               <RxCross2 size={"1.4rem"} />
-            </AdminMessageAttachmentPreviewIcon>
-          </AdminMessageAttachmentPreview>
-          <AdminMessageInputBig
+            </MessageAttachmentPreviewIcon>
+          </MessageAttachmentPreview>
+          <MessageInputBig
             value={messageContent}
             rows="1"
             onKeyDown={handleKeyDown}
@@ -370,15 +370,15 @@ const ChatboxBig = (props) => {
               setMessageContent(e.target.value);
             }}
           />
-          {/* <AdminMessageArrowContainerBig
+          {/* <MessageArrowContainerBig
             onClick={() => {
               sendMessage(userId, otherPersonId);
             }}
           >
             <IoMdAttach size="1.5rem" />
-          </AdminMessageArrowContainerBig> */}
+          </MessageArrowContainerBig> */}
 
-          <AdminMessageArrowContainerBig>
+          <MessageArrowContainerBig>
             <input
               ref={fileInputRef}
               type="file"
@@ -388,19 +388,19 @@ const ChatboxBig = (props) => {
                 display: "none",
               }}
             />
-            <AdminMessageArrowContainerSmall onClick={handleIconClick}>
+            <MessageArrowContainerSmall onClick={handleIconClick}>
               <IoMdAttach size="2rem" style={{ transform: "rotate(45deg)" }} />
-            </AdminMessageArrowContainerSmall>
-            <AdminMessageArrowContainerSmall
+            </MessageArrowContainerSmall>
+            <MessageArrowContainerSmall
               onClick={() => {
                 sendMessage(userId, otherPersonId);
               }}
             >
               <IoMdSend size="2rem" />
-            </AdminMessageArrowContainerSmall>
-          </AdminMessageArrowContainerBig>
-        </AdminMessageInputBarBig>
-      </AdminMessagingContainerBig>
+            </MessageArrowContainerSmall>
+          </MessageArrowContainerBig>
+        </MessageInputBarBig>
+      </MessagingContainerBig>
     </ThemeProvider>
   );
 };

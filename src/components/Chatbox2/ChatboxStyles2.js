@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-export const AdminMessagingContainer = styled.div`
+export const MessagingContainer = styled.div`
   border: 2px solid ${(props) => props.theme.text};
   box-sizing: border-box;
   overflow: hidden;
   width: fit-content;
 `;
-export const AdminMessagingDisplayContainer = styled.div`
+export const MessagingDisplayContainer = styled.div`
   width: 20rem;
   height: 25rem;
   overflow-y: auto;
@@ -16,19 +16,20 @@ export const AdminMessagingDisplayContainer = styled.div`
   }
 `;
 
-export const AdminMessageRecieveDisplay = styled.div``;
-export const AdminRecievedMessageContainer = styled.div`
+export const MessageRecieveDisplay = styled.div``;
+export const RecievedMessageContainer = styled.div`
   width: 100%;
   padding: 0.3rem 1rem;
   box-sizing: border-box;
+  position: relative;
 `;
 
-export const AdminAdminRecievedMessageDate = styled.div`
+export const RecievedMessageDate = styled.div`
   font-size: 0.65rem;
   color: ${(props) => props.theme.text};
   padding: 0.1rem 0.5rem;
 `;
-export const AdminRecievedMessage = styled.div`
+export const RecievedMessage = styled.div`
   max-width: 70%;
   width: fit-content;
   padding: 0.5rem 0.8rem;
@@ -37,22 +38,20 @@ export const AdminRecievedMessage = styled.div`
   border-radius: 1rem;
 `;
 
-export const AdminSentMessageContainer = styled(AdminRecievedMessageContainer)`
+export const SentMessageContainer = styled(RecievedMessageContainer)`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 `;
 
-export const AdminSentMessage = styled(AdminRecievedMessage)`
+export const SentMessage = styled(RecievedMessage)`
   background: ${(props) => props.theme.primary};
   color: ${(props) => props.theme.background};
 `;
 
-export const AdminAdminSentMessageDate = styled(
-  AdminAdminRecievedMessageDate
-)``;
+export const SentMessageDate = styled(RecievedMessageDate)``;
 
-export const AdminMessageInput = styled.textarea`
+export const MessageInput = styled.textarea`
   outline: none;
   width: 80%;
   border: none;
@@ -84,7 +83,7 @@ export const AdminMessageInput = styled.textarea`
   // }
 `;
 
-export const AdminMessageInputBar = styled.div`
+export const MessageInputBar = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -92,7 +91,7 @@ export const AdminMessageInputBar = styled.div`
   position: relative;
 `;
 
-export const AdminMessageArrowContainer = styled.div`
+export const MessageArrowContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -121,7 +120,7 @@ export const ChatboxHeader = styled.div`
   padding: 0.5rem 0.5rem;
 `;
 
-export const AdminMessagingContainerBig = styled.div`
+export const MessagingContainerBig = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -131,7 +130,7 @@ export const AdminMessagingContainerBig = styled.div`
   grid-template-rows: 0.1fr 1fr 0.08fr;
 `;
 
-export const AdminMessagingDisplayContainerBig = styled.div`
+export const MessagingDisplayContainerBig = styled.div`
   overflow-y: auto;
   padding: 1rem 0;
   width: 100%;
@@ -141,7 +140,7 @@ export const AdminMessagingDisplayContainerBig = styled.div`
   }
 `;
 
-export const AdminMessageInputBarBig = styled(AdminMessageInputBar)`
+export const MessageInputBarBig = styled(MessageInputBar)`
   height: 100%;
   grid-row: 3;
   background: ${(props) => props.theme.background};
@@ -156,7 +155,7 @@ export const ChatboxHeaderBig = styled(ChatboxHeader)`
   background: ${(props) => props.theme.background};
 `;
 
-export const AdminMessageInputBig = styled(AdminMessageInput)`
+export const MessageInputBig = styled(MessageInput)`
   width: 100%;
   padding: 0.8rem 1rem;
   background: ${(props) => props.theme.background};
@@ -165,7 +164,7 @@ export const AdminMessageInputBig = styled(AdminMessageInput)`
   z-index: 11;
 `;
 
-export const AdminMessageArrowContainerBig = styled.div`
+export const MessageArrowContainerBig = styled.div`
   grid-column: 2;
   display: flex;
   align-items: center;
@@ -179,14 +178,14 @@ export const AdminMessageArrowContainerBig = styled.div`
   height: 100%;
 `;
 
-export const AdminMessageArrowContainerSmall = styled.div`
+export const MessageArrowContainerSmall = styled.div`
   transition: 0.3s;
   &:hover {
     transform: scale(1.2);
   }
 `;
 
-export const AdminMessageAttachmentPreview = styled.div`
+export const MessageAttachmentPreview = styled.div`
   position: absolute;
   width: 100%;
   top: ${(props) => props.transformValue};
@@ -201,6 +200,32 @@ export const AdminMessageAttachmentPreview = styled.div`
   box-sizing: border-box;
 `;
 
-export const AdminMessageAttachmentPreviewIcon = styled.div`
+export const MessageAttachmentPreviewIcon = styled.div`
   cursor: pointer;
+`;
+
+export const RecievedMessageOptionsModal = styled.div`
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  opacity: ${(props) => (props.display ? 1 : 0)};
+  transition: 0.3s;
+  background: salmon;
+  z-index: 99;
+  padding: 1rem;
+`;
+
+export const SentMessageOptionsModal = styled.div`
+  position: absolute;
+  top: -2rem;
+  right: 50%;
+  display: flex;
+  flex-direction: column;
+  opacity: ${(props) => (props.display ? 1 : 0)};
+  transition: 0.3s;
+  background: salmon;
+  z-index: 99;
+  padding: 1rem;
 `;
