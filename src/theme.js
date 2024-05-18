@@ -1,9 +1,11 @@
-export const theme2 = {
-  primary: "red",
+export const lightTheme = {
+  primary: "#F86624",
   text: "#333333",
-  primary: "#009ADF",
-  background: "#FFFFFF",
-  grey: "#D3D3D3",
+  background: "#F7F3E6",
+  grey: "#747886",
+  lightGrey: "",
+  white: "#FEFBF1",
+  borderGrey: "#D1D1D1",
 };
 
 export const theme = {

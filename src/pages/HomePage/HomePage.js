@@ -1,87 +1,74 @@
-import { ThemeProvider } from "styled-components";
-import Chatbox from "../../components/Chatbox1/Chatbox";
-import { HomePageContainer } from "./HomePageStyles";
-import { theme } from "../../theme";
-import { useContext } from "react";
-import { UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
+import ChatPreview from "../../components/ChatPreview/ChatPreview";
+import { ChatPreviewsContainer, HomePageContainer } from "./HomePageStyles";
+import { ThemeProvider } from "styled-components";
+import { lightTheme } from "../../theme";
+import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
+import { useState } from "react";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import { useEffect } from "react";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import Chatbox2 from "../../components/Chatbox2/Chatbox2";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
-  const auth = getAuth();
-  const handleSignOut = async () => {
-    signOut(auth)
-      .then(() => {
-        navigate("/login");
-        console.log("Sign out successful");
-      })
-      .catch((error) => {
-        console.log("Error when signing out: ", error);
-      });
+  const dummyChatsData = [
+    {
+      otherPersonId: "12312133213123",
+      name: "Tasha",
+      message: "woiqhowih iwqdooiqdw hodqhwoihqw ow qoqw",
+      time: "16:39",
+      profilePicture:
+        "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/messages%2Ffile_1713474831324_Screenshot%202024-03-13%20002537.png?alt=media&token=b5c9fcf7-e25b-4f72-bf87-ebfa425abaad",
+      messageCount: 5,
+      sentMessageStatus: "Read",
+    },
+    {
+      name: "Tasha",
+      message: "woiqhowih iwqdooiqdw hodqhwoihqw ow qoqw",
+      time: "16:39",
+      profilePicture:
+        "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/messages%2Ffile_1713474831324_Screenshot%202024-03-13%20002537.png?alt=media&token=b5c9fcf7-e25b-4f72-bf87-ebfa425abaad",
+      messageCount: 5,
+      sentMessageStatus: "Loading",
+    },
+    {
+      name: "Tasha",
+      message:
+        "orem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliqu.orem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliqu",
+      time: "16:39",
+      profilePicture:
+        "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/messages%2Ffile_1713474831324_Screenshot%202024-03-13%20002537.png?alt=media&token=b5c9fcf7-e25b-4f72-bf87-ebfa425abaad",
+      messageCount: 199,
+      sentMessageStatus: "Sent",
+    },
+  ];
+  const [openSideBar, setOpenSideBar] = useState(false);
+
+  const handleOpenSidebar = (openSideBar) => {
+    setOpenSideBar(openSideBar);
   };
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const authId = user.uid;
-      } else {
-        console.log("No user ");
-        navigate("/login");
-      }
-    });
-  }, []);
-
   return (
-    <ThemeProvider theme={theme}>
-      {user !== null ? (
-        <>
-          <HomePageContainer>
-            {user?.id}
-            <br />
-            {user?.username}
-            <br />
-
-            <button
-              onClick={() => {
-                handleSignOut();
-              }}
-            >
-              Sign Out
-            </button>
-            {/* {user?.id === "HS0C0UK0yLbSQB2CGonB" ? (
-              <Chatbox2
-                userId={user?.id}
-                otherPersonId="CPURpFaoZqyKZahmc9uI"
+    <ThemeProvider theme={lightTheme}>
+      <HomePageContainer>
+        <Sidebar showSidebar={openSideBar} />
+        <HomepageTopBar handleOpenSidebar={handleOpenSidebar} />
+        <ChatPreviewsContainer>
+          {dummyChatsData.map((chat, index) => {
+            return (
+              <ChatPreview
+                key={index}
+                name={chat.name}
+                message={chat.message}
+                time={chat.time}
+                profilePicture={chat.profilePicture}
+                messageCount={chat.messageCount}
+                sentMessageStatus={chat.sentMessageStatus}
+                otherPersonId={chat.otherPersonId}
               />
-            ) : user?.id === "CPURpFaoZqyKZahmc9uI" ? (
-              <Chatbox2
-                userId={user?.id}
-                otherPersonId="HS0C0UK0yLbSQB2CGonB"
-              />
-            ) : (
-              <Chatbox2 userId={user?.id} otherPersonId="2" />
-            )} */}
-            <Chatbox2 userId={user?.id} otherPersonId="HS0C0UK0yLbSQB2CGonB" />
-            <Chatbox2 userId="HS0C0UK0yLbSQB2CGonB" otherPersonId={user?.id} />
-          </HomePageContainer>
-        </>
-      ) : (
-        <>
-          You are not logged in. Pleae log in to view messages
-          <br />
-          <button
-            onClick={() => {
-              navigate("/login");
-            }}
-          >
-            Back
-          </button>
-        </>
-      )}
+            );
+          })}
+        </ChatPreviewsContainer>
+      </HomePageContainer>
     </ThemeProvider>
   );
 };
