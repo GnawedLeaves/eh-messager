@@ -11,17 +11,15 @@ export const ChatPreviewContainer = styled.div`
   margin: 8px 0;
   border-radius: 16px;
   align-items: center;
-  background: ${(props) => props.theme.white};
+  background: ${(props) => props.theme.innerBackground};
   border: 1px solid ${(props) => props.theme.borderGrey};
 `;
 
 export const ChatPreviewProfilePicContainer = styled.div`
-  background: green;
   height: 100%;
 `;
 
 export const ChatPreviewProfilePicture = styled.img`
-  background: red;
   width: 56px;
   height: 56px;
   flex-shrink: 0;

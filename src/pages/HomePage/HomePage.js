@@ -2,13 +2,17 @@ import { useNavigate } from "react-router-dom";
 import ChatPreview from "../../components/ChatPreview/ChatPreview";
 import { ChatPreviewsContainer, HomePageContainer } from "./HomePageStyles";
 import { ThemeProvider } from "styled-components";
-import { lightTheme } from "../../theme";
+import { darktheme, lightTheme } from "../../theme";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { useEffect } from "react";
+import { UserContext } from "../../App";
+import { db } from "../../database/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 
-const HomePage = () => {
+const HomePage = (props) => {
+  const user = useContext(UserContext);
   const navigate = useNavigate();
   const dummyChatsData = [
     {
@@ -43,15 +47,40 @@ const HomePage = () => {
   ];
   const [openSideBar, setOpenSideBar] = useState(false);
 
-  const handleOpenSidebar = (openSideBar) => {
-    setOpenSideBar(openSideBar);
-  };
+  //Backend
 
+  const handleThemeModeChange = async (newThemeMode) => {
+    if (user?.userId) {
+      const userRef = doc(db, "users", user?.userId);
+      try {
+        await updateDoc(userRef, {
+          themeMode: newThemeMode,
+        });
+        props.getUserData(user?.authId);
+      } catch (e) {
+        console.log("Error updating user theme mode: ", e);
+      }
+    }
+  };
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <HomePageContainer>
-        <Sidebar showSidebar={openSideBar} />
-        <HomepageTopBar handleOpenSidebar={handleOpenSidebar} />
+        <Sidebar
+          showSidebar={openSideBar}
+          username={user?.username}
+          themeMode={user?.themeMode}
+          profilePicture={user?.profilePicture}
+          handleCloseSidebar={() => {
+            setOpenSideBar(false);
+          }}
+          handleThemeModeChange={handleThemeModeChange}
+        />
+        <HomepageTopBar
+          handleOpenSidebar={() => {
+            setOpenSideBar(true);
+          }}
+          themeMode={user?.themeMode}
+        />
         <ChatPreviewsContainer>
           {dummyChatsData.map((chat, index) => {
             return (
@@ -64,6 +93,7 @@ const HomePage = () => {
                 messageCount={chat.messageCount}
                 sentMessageStatus={chat.sentMessageStatus}
                 otherPersonId={chat.otherPersonId}
+                themeMode={user?.themeMode}
               />
             );
           })}

@@ -1,20 +1,17 @@
 import { ThemeProvider } from "styled-components";
 import { HomePageTopBarContainer } from "./HomepageTopBarStyles";
-import { lightTheme } from "../../theme";
+import { darktheme, lightTheme } from "../../theme";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { useEffect } from "react";
 
 const HomepageTopBar = (props) => {
-  const [openSideBar, setOpenSideBar] = useState(false);
-
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
       <HomePageTopBarContainer>
         <RxHamburgerMenu
           onClick={() => {
-            props.handleOpenSidebar(!openSideBar);
-            setOpenSideBar(!openSideBar);
+            props.handleOpenSidebar();
           }}
         />
         Chats

@@ -41,8 +41,8 @@ function App() {
     );
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
-    console.log("user id:", userData);
-    setUserData({ id: doc.id, ...userData });
+    setUserData({ userId: doc.id, ...userData });
+    console.log("user data:", userData);
   };
 
   return (
@@ -53,7 +53,10 @@ function App() {
             <Route path="/*" element={<LoginPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/chat/:chatid" element={<ChatPage />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/home"
+              element={<HomePage getUserData={getUserData} />}
+            />
           </Routes>
         </Suspense>
       </BrowserRouter>

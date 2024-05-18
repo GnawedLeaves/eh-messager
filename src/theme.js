@@ -2,10 +2,22 @@ export const lightTheme = {
   primary: "#F86624",
   text: "#333333",
   background: "#F7F3E6",
+  innerBackground: "#FEFBF1",
   grey: "#747886",
   lightGrey: "",
   white: "#FEFBF1",
   borderGrey: "#D1D1D1",
+};
+
+export const darktheme = {
+  primary: "#F86624",
+  text: "#FEFBF1",
+  background: "#1B1B1B",
+  innerBackground: "#1B1B1B",
+  grey: "#747886",
+  lightGrey: "",
+  white: "#FEFBF1",
+  borderGrey: "#464646",
 };
 
 export const theme = {
@@ -23,7 +35,7 @@ export const theme = {
   boxShadow: "box-shadow: 2px 2px 5px #e8e8e8, -5px -5px 10px #ffffff;",
 };
 
-export const darktheme = {
+export const darktheme2 = {
   primary: "#009ADF",
   background: "#333333",
   text: "#FBFBFB",
