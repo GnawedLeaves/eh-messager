@@ -9,7 +9,7 @@ export const RecievedMessageContainer = styled.div`
 
 export const RecievedMessageDate = styled.div`
   font-size: 0.65rem;
-  color: ${(props) => props.theme.text};
+  color: ${(props) => props.theme.grey};
   padding: 0.1rem 0.5rem;
 `;
 export const RecievedMessageBubble = styled.div`

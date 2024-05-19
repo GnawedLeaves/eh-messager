@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ChatPreviewContainer = styled.div`
   display: flex;
-  width: 385px;
+  width: 355px;
   height: 96px;
   padding: 20px 17px;
   align-items: flex-start;
@@ -31,12 +31,12 @@ export const ChatPreviewProfilePicture = styled.img`
 export const ChatPreviewNameAndMessageGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 200px;
+  gap: 4px;
+  width: 170px;
 `;
 export const ChatPreviewName = styled.div`
   color: ${(props) => props.theme.text};
-  font-size: 24px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;

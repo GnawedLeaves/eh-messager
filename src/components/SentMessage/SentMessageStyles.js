@@ -33,7 +33,7 @@ export const SentMessageTickContainer = styled.div`
 
 export const SentMessageDate = styled.div`
   font-size: 0.65rem;
-  color: ${(props) => props.theme.text};
+  color: ${(props) => props.theme.grey};
   padding: 0.1rem 0.5rem;
 `;
 
