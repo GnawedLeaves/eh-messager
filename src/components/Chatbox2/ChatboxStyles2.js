@@ -1,16 +1,22 @@
 import styled from "styled-components";
 
 export const MessagingContainer = styled.div`
-  border: 2px solid ${(props) => props.theme.text};
   box-sizing: border-box;
   overflow: hidden;
-  width: fit-content;
+  width: 100%;
+  min-height: 100vh;
+  background: ${(props) => props.theme.background};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
 `;
 export const MessagingDisplayContainer = styled.div`
-  width: 20rem;
-  height: 25rem;
+  width: 100%;
+  height: 70%;
   overflow-y: auto;
   padding: 1rem 0;
+  padding: 64px 0 52px 0;
   &::-webkit-scrollbar {
     width: 0px;
   }
@@ -53,14 +59,15 @@ export const SentMessageDate = styled(RecievedMessageDate)``;
 
 export const MessageInput = styled.textarea`
   outline: none;
-  width: 80%;
+  width: 100%;
   border: none;
-  padding: 1rem;
+  padding: 16px 16px;
   font-size: 1rem;
   font-family: "Inter", sans-serif;
   word-wrap: break-word;
   resize: none;
 
+  background: ${(props) => props.theme.innerBackground};
   &::-webkit-scrollbar {
     width: 0px;
   }
@@ -87,8 +94,14 @@ export const MessageInputBar = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  border-top: 2px solid ${(props) => props.theme.grey};
+  background: ${(props) => props.theme.innerBackground};
+  border-bottom: 1px solid ${(props) => props.theme.borderGrey};
   position: relative;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+  bottom: 0;
 `;
 
 export const MessageArrowContainer = styled.div`
@@ -99,6 +112,7 @@ export const MessageArrowContainer = styled.div`
   &:hover {
     transform: scale(1.3);
   }
+  background: ${(props) => props.theme.innerBackground};
 `;
 
 export const MessageDisplayContainer = styled.div`
@@ -118,6 +132,22 @@ export const ChatboxHeader = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   padding: 0.5rem 0.5rem;
+  background: ${(props) => props.theme.innerBackground};
+  border-bottom: 1px solid ${(props) => props.theme.borderGrey};
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 64px;
+`;
+
+export const ChatboxHeaderProfilePicture = styled.img`
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: red;
 `;
 
 export const MessagingContainerBig = styled.div`
@@ -143,7 +173,7 @@ export const MessagingDisplayContainerBig = styled.div`
 export const MessageInputBarBig = styled(MessageInputBar)`
   height: 100%;
   grid-row: 3;
-  background: ${(props) => props.theme.background};
+
   z-index: 11;
   position: relative;
 `;
@@ -158,10 +188,11 @@ export const ChatboxHeaderBig = styled(ChatboxHeader)`
 export const MessageInputBig = styled(MessageInput)`
   width: 100%;
   padding: 0.8rem 1rem;
-  background: ${(props) => props.theme.background};
+  background: ${(props) => props.theme.innerBackground};
   font-size: 1.1rem;
   grid-column: 1;
   z-index: 11;
+  border-top: 1px solid ${(props) => props.theme.borderGrey};
 `;
 
 export const MessageArrowContainerBig = styled.div`
@@ -174,7 +205,7 @@ export const MessageArrowContainerBig = styled.div`
   width: fit-content;
   padding-right: 0.5rem;
   z-index: 11;
-  background: ${(props) => props.theme.background};
+
   height: 100%;
 `;
 
@@ -191,7 +222,7 @@ export const MessageAttachmentPreview = styled.div`
   top: ${(props) => props.transformValue};
   z-index: 10;
   transition: 0.3s;
-  border-top: 1px solid ${(props) => props.theme.grey};
+  // border-top: 1px solid ${(props) => props.theme.borderGrey};
   background: ${(props) => props.theme.background};
   padding: 0.6rem 1rem;
   display: flex;

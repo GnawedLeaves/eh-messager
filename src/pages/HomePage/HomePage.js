@@ -83,7 +83,6 @@ const HomePage = (props) => {
       const docData = doc.data();
       allUsers = [...allUsers, { userId: doc.id, ...docData }];
     });
-
     setAllUsers(allUsers);
   };
 
@@ -103,14 +102,33 @@ const HomePage = (props) => {
     });
 
     setAllCombinedMessages(mergedArray);
+    console.log("mergedArray", mergedArray);
     getUniqueConversations(user?.userId);
   };
 
   const getUniqueConversations = (userId) => {
-    const filteredSenderIDs = allCombinedMessages
+    //Ids of people who send messages to me
+    const filteredRecievedIds = allCombinedMessages
       .filter((message) => message.recipient_id === userId)
       .map((message) => message.creator_id);
-    const uniqueConversationsArray = [...new Set(filteredSenderIDs)];
+    const filteredCleanedRecievedIds = [...new Set(filteredRecievedIds)];
+
+    //Ids of people i sent messages to
+    let sendIds = [];
+    allCombinedMessages
+      .filter((message) => message.creator_id === userId)
+      .map((message) => {
+        sendIds = [...sendIds, message.recipient_id];
+      });
+
+    const filteredSentIds = [...new Set(sendIds)];
+
+    const tempUniqueArray = [...filteredSentIds, ...filteredCleanedRecievedIds];
+    const uniqueConversationsArray = [...new Set(tempUniqueArray)];
+
+    console.log("filteredSentIds", filteredSentIds);
+
+    console.log("uniqueConversationsArray", uniqueConversationsArray);
 
     setUniqueConversationsIds(uniqueConversationsArray);
     constructMessagesPreviews(uniqueConversationsArray);

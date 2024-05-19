@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage/HomePage";
 export const UserContext = createContext();
 function App() {
   const [userData, setUserData] = useState(null);
+  const [allUserData, setAllUserData] = useState([]);
   // {
   //   id: "test id",
   //   username: "testusername",
@@ -26,6 +27,8 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const authId = user.uid;
+        // getAllUserData();
+        // getUserFromAllUserData(authId)
         getUserData(authId);
       } else {
         console.log("No user ");
@@ -33,6 +36,18 @@ function App() {
       }
     });
   }, []);
+
+  const getAllUserData = async () => {
+    let allUsers = [];
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach((doc) => {
+      const docData = doc.data();
+      allUsers = [...allUsers, { userId: doc.id, ...docData }];
+    });
+    setAllUserData(allUsers);
+  };
+
+  const getUserFromAllUserData = (authId) => {};
 
   const getUserData = async (authId) => {
     const userRef = collection(db, "users");

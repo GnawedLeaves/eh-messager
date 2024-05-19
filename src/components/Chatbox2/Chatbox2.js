@@ -19,6 +19,7 @@ import {
   ChatboxLoading,
   RecievedMessageOptionsModal,
   SentMessageOptionsModal,
+  ChatboxHeaderProfilePicture,
 } from "./ChatboxStyles2";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -49,6 +50,8 @@ import { getAll } from "firebase/remote-config";
 import { deleteMessageFromUser } from "../../database/functions/deleteMessageFromUser";
 import RecievedMessage from "../RecievedMessage/RecievedMessage";
 import SentMessage from "../SentMessage/SentMessage";
+import { IoArrowBackOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const Chatbox2 = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
@@ -60,6 +63,7 @@ const Chatbox2 = (props) => {
   const [allMessagesIdsObjs, setAllMessagesIdsObjs] = useState([]);
   const userId = props.userId ? props.userId : "1";
   const otherPersonId = props.otherPersonId ? props.otherPersonId : null;
+  const navigate = useNavigate();
 
   const messageRef = collection(db, "message");
 
@@ -82,6 +86,7 @@ const Chatbox2 = (props) => {
   const scrollToBottom = () => {
     if (messageDisplayRef.current) {
       const scrollContainer = messageDisplayRef.current;
+      console.log("scrollContainer.scrollHeight", scrollContainer.scrollHeight);
       scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
   };
@@ -257,7 +262,16 @@ const Chatbox2 = (props) => {
   return (
     <ThemeProvider theme={lightTheme}>
       <MessagingContainer>
-        <ChatboxHeader>{otherUserData.username}</ChatboxHeader>
+        <ChatboxHeader>
+          <IoArrowBackOutline
+            size={"24px"}
+            onClick={() => {
+              navigate("/home");
+            }}
+          />
+          <ChatboxHeaderProfilePicture src={otherUserData.profilePicture} />
+          {otherUserData.username}
+        </ChatboxHeader>
         <MessagingDisplayContainer ref={messageDisplayRef}>
           {conversationData.length > 0 ? (
             conversationData.map((message, index) => {
@@ -281,7 +295,7 @@ const Chatbox2 = (props) => {
         </MessagingDisplayContainer>
 
         <MessageInputBar>
-          <MessageAttachmentPreview
+          {/* <MessageAttachmentPreview
             transformValue={messageFile ? "-4.5rem" : "3rem"}
           >
             Attached File: {messageFile ? messageFile.name : ""}
@@ -292,7 +306,7 @@ const Chatbox2 = (props) => {
             >
               <RxCross2 size={"1.4rem"} />
             </MessageAttachmentPreviewIcon>
-          </MessageAttachmentPreview>
+          </MessageAttachmentPreview> */}
           <MessageInput
             value={messageContent}
             rows="1"

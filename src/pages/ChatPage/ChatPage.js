@@ -42,40 +42,8 @@ const ChatPage = () => {
       {user !== null ? (
         <>
           <HomePageContainer>
-            <IoArrowBackOutline
-              size={"2rem"}
-              onClick={() => {
-                navigate("/home");
-              }}
-            />
-            <br />
-            {user?.userId}
-            <br />
-            {user?.username}
-            <br />
-
-            <button
-              onClick={() => {
-                handleSignOut();
-              }}
-            >
-              Sign Out
-            </button>
-            {/* {user?.userId === "HS0C0UK0yLbSQB2CGonB" ? (
-              <Chatbox2
-                userId={user?.userId}
-                otherPersonId="CPURpFaoZqyKZahmc9uI"
-              />
-            ) : user?.userId === "CPURpFaoZqyKZahmc9uI" ? (
-              <Chatbox2
-                userId={user?.userId}
-                otherPersonId="HS0C0UK0yLbSQB2CGonB"
-              />
-            ) : (
-              <Chatbox2 userId={user?.userId} otherPersonId="2" />
-            )} */}
-            {/* <Chatbox2 userId={user?.userId} otherPersonId={params.chatId} /> */}
-            <Chatbox2 userId={params.chatId} otherPersonId={user?.userId} />
+            <Chatbox2 userId={user?.userId} otherPersonId={params.chatId} />
+            {/* <Chatbox2 userId={params.chatId} otherPersonId={user?.userId} /> */}
           </HomePageContainer>
         </>
       ) : (
