@@ -133,7 +133,7 @@ export const ChatboxHeader = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   padding: 0.5rem 0.5rem;
-  color: ${(props) => props.theme.white};
+  color: ${(props) => props.theme.text};
   background: ${(props) => props.theme.innerBackground};
   border-bottom: 1px solid ${(props) => props.theme.borderGrey};
   position: fixed;
