@@ -56,6 +56,7 @@ const Sidebar = (props) => {
               <SidebarThemeModeContainer>
                 {props.themeMode === "light" ? (
                   <IoMoon
+                    style={{ cursor: "pointer" }}
                     size={"24px"}
                     color={lightTheme.white}
                     onClick={() => {
@@ -64,6 +65,7 @@ const Sidebar = (props) => {
                   />
                 ) : (
                   <IoSunnyOutline
+                    style={{ cursor: "pointer" }}
                     size={"24px"}
                     color={darktheme.white}
                     onClick={() => {

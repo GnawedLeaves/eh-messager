@@ -5,13 +5,16 @@ import {
   RecievedMessageDate,
   RecievedMessageMedia,
 } from "./RecievedMessageStyles";
-import { lightTheme } from "../../theme";
+import { darktheme, lightTheme } from "../../theme";
 import { useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
+import { useContext } from "react";
+import { UserContext } from "../../App";
 
 const RecievedMessage = ({ message, index }) => {
+  const user = useContext(UserContext);
   const {
     id,
     date_created,
@@ -43,7 +46,7 @@ const RecievedMessage = ({ message, index }) => {
   };
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <RecievedMessageContainer>
         {message.attachment_url ? (
           <>

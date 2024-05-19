@@ -4,20 +4,24 @@ import {
   SentMessageContainer,
   SentMessageDate,
   SentMessageMedia,
+  SentMessageTickContainer,
 } from "./SentMessageStyles";
-import { lightTheme } from "../../theme";
+import { darktheme, lightTheme } from "../../theme";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { IoCheckmark } from "react-icons/io5";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { UserContext } from "../../App";
+import { useContext } from "react";
 
 const SentMessage = ({ message, index }) => {
   const { id, date_created, message_body, attachment_url, is_read } = message;
+  const user = useContext(UserContext);
 
   const getDateFromFirebaseDate = (date) => {
     return handleFirebaseDate(date).substring(5);
   };
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <SentMessageContainer>
         {message.attachment_url ? (
           <>
@@ -40,12 +44,13 @@ const SentMessage = ({ message, index }) => {
         </SentMessageDate>
         <SentMessageBubble>
           {message_body}
-          <br />
-          {is_read ? (
-            <IoCheckmarkDoneOutline size={"20px"} color={lightTheme.white} />
-          ) : (
-            <IoCheckmark size={"20px"} color={lightTheme.white} />
-          )}
+          <SentMessageTickContainer>
+            {is_read ? (
+              <IoCheckmarkDoneOutline size={"16px"} color={lightTheme.white} />
+            ) : (
+              <IoCheckmark size={"16px"} color={lightTheme.white} />
+            )}
+          </SentMessageTickContainer>
         </SentMessageBubble>
       </SentMessageContainer>
     </ThemeProvider>

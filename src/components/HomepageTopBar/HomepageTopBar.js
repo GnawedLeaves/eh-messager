@@ -10,6 +10,7 @@ const HomepageTopBar = (props) => {
     <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
       <HomePageTopBarContainer>
         <RxHamburgerMenu
+          style={{ cursor: "pointer" }}
           onClick={() => {
             props.handleOpenSidebar();
           }}

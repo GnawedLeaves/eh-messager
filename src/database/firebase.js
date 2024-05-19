@@ -22,31 +22,21 @@ import { getAuth } from "firebase/auth";
 //   measurementId: "G-0YDBQ33Z5Q",
 // };
 
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// // other way too, export..
-// //const analytics = getAnalytics(app);
-
-// export const auth = getAuth();
-// // export const db = getFirestore(app);
-// export const db = getFirestore(app); // firebase.firestore(); if do the other way
-// export const storage = getStorage(app); // firebase.storage();
-
-//Backup database
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBrb9u96UyqPLvUdIHXn38qorXBEg9hNqY",
-  authDomain: "eh-messager-2.firebaseapp.com",
-  projectId: "eh-messager-2",
-  storageBucket: "eh-messager-2.appspot.com",
-  messagingSenderId: "125543708885",
-  appId: "1:125543708885:web:996540262f7a8208b08a5c",
+  apiKey: "AIzaSyBtsrteMgWe5jgsBWySQdBkj8VXic6ai1A",
+  authDomain: "eh-messager-2-d4818.firebaseapp.com",
+  projectId: "eh-messager-2-d4818",
+  storageBucket: "eh-messager-2-d4818.appspot.com",
+  messagingSenderId: "909722025320",
+  appId: "1:909722025320:web:47be10002890fe68176add",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// other way too, export..
+//const analytics = getAnalytics(app);
+
 export const auth = getAuth();
 // export const db = getFirestore(app);
 export const db = getFirestore(app); // firebase.firestore(); if do the other way
-export const storage = getStorage(app);
+export const storage = getStorage(app); // firebase.storage();

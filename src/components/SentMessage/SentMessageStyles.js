@@ -13,10 +13,22 @@ export const SentMessageContainer = styled.div`
 export const SentMessageBubble = styled.div`
   max-width: 70%;
   width: fit-content;
-  padding: 0.5rem 0.8rem;
+  padding: 0.5rem 12px;
   border-radius: 1rem;
   background: ${(props) => props.theme.primary};
-  color: ${(props) => props.theme.background};
+  color: ${(props) => props.theme.white};
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  word-wrap: wrap;
+  overflow-wrap: break-word;
+`;
+
+export const SentMessageTickContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 `;
 
 export const SentMessageDate = styled.div`

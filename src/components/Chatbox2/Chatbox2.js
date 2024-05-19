@@ -38,7 +38,7 @@ import {
   where,
 } from "firebase/firestore";
 
-import { lightTheme, theme } from "../../theme";
+import { darktheme, lightTheme, theme } from "../../theme";
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
@@ -52,6 +52,8 @@ import RecievedMessage from "../RecievedMessage/RecievedMessage";
 import SentMessage from "../SentMessage/SentMessage";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../App";
 
 const Chatbox2 = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
@@ -64,6 +66,7 @@ const Chatbox2 = (props) => {
   const userId = props.userId ? props.userId : "1";
   const otherPersonId = props.otherPersonId ? props.otherPersonId : null;
   const navigate = useNavigate();
+  const user = useContext(UserContext);
 
   const messageRef = collection(db, "message");
 
@@ -86,7 +89,7 @@ const Chatbox2 = (props) => {
   const scrollToBottom = () => {
     if (messageDisplayRef.current) {
       const scrollContainer = messageDisplayRef.current;
-      console.log("scrollContainer.scrollHeight", scrollContainer.scrollHeight);
+
       scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
   };
@@ -131,7 +134,7 @@ const Chatbox2 = (props) => {
       setMessageContent("");
       setMessageFile(null);
       setMessageIdToReply(null);
-      // getEverything();
+      getEverything();
       scrollToBottom();
     }
   };
@@ -220,21 +223,19 @@ const Chatbox2 = (props) => {
 
     setConversationData(sortedArray);
     scrollToBottom();
-    console.log("Conversation Data", sortedArray);
   };
 
   const getEverything = () => {
     getAllMessages();
     getAllRecievedMessages();
     scrollToBottom();
+    console.count("API Called");
   };
 
   useEffect(() => {
     if (otherPersonId !== null && otherPersonId !== undefined) {
       getEverything();
       getOtherUserData();
-      console.log("otherPersonId", otherPersonId);
-      console.count("API called");
     }
   }, []);
 
@@ -259,11 +260,16 @@ const Chatbox2 = (props) => {
     deleteMessageFromUser(messageId, attachmentName);
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversationData]);
+
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <MessagingContainer>
         <ChatboxHeader>
           <IoArrowBackOutline
+            style={{ cursor: "pointer" }}
             size={"24px"}
             onClick={() => {
               navigate("/home");

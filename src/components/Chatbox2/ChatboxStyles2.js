@@ -13,7 +13,7 @@ export const MessagingContainer = styled.div`
 `;
 export const MessagingDisplayContainer = styled.div`
   width: 100%;
-  height: 70%;
+  height: 50rem;
   overflow-y: auto;
   padding: 1rem 0;
   padding: 64px 0 52px 0;
@@ -68,6 +68,7 @@ export const MessageInput = styled.textarea`
   resize: none;
 
   background: ${(props) => props.theme.innerBackground};
+  color: ${(props) => props.theme.text};
   &::-webkit-scrollbar {
     width: 0px;
   }
@@ -132,6 +133,7 @@ export const ChatboxHeader = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   padding: 0.5rem 0.5rem;
+  color: ${(props) => props.theme.white};
   background: ${(props) => props.theme.innerBackground};
   border-bottom: 1px solid ${(props) => props.theme.borderGrey};
   position: fixed;
@@ -147,7 +149,6 @@ export const ChatboxHeaderProfilePicture = styled.img`
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: red;
 `;
 
 export const MessagingContainerBig = styled.div`
@@ -205,7 +206,7 @@ export const MessageArrowContainerBig = styled.div`
   width: fit-content;
   padding-right: 0.5rem;
   z-index: 11;
-
+  color: ${(props) => props.theme.text};
   height: 100%;
 `;
 

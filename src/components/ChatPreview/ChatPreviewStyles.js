@@ -13,6 +13,7 @@ export const ChatPreviewContainer = styled.div`
   align-items: center;
   background: ${(props) => props.theme.innerBackground};
   border: 1px solid ${(props) => props.theme.borderGrey};
+  cursor: pointer;
 `;
 
 export const ChatPreviewProfilePicContainer = styled.div`

@@ -13,7 +13,7 @@ export const darktheme = {
   primary: "#F86624",
   text: "#FEFBF1",
   background: "#1B1B1B",
-  innerBackground: "#1B1B1B",
+  innerBackground: "#292929",
   grey: "#747886",
   lightGrey: "",
   white: "#FEFBF1",

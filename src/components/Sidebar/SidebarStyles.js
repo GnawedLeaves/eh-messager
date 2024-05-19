@@ -40,6 +40,7 @@ export const SidebarProfilePicture = styled.img`
   border-radius: 50%;
   border: none;
   object-fit: cover;
+  cursor: pointer;
 `;
 
 export const SidebarUsername = styled.div`
@@ -59,6 +60,7 @@ export const SidebarOption = styled.div`
   gap: 16px;
   align-items: center;
   padding: 16px 32px;
+  cursor: pointer;
 `;
 
 export const SidebarThemeModeContainer = styled.div`
