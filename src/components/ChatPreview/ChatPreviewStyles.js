@@ -27,7 +27,11 @@ export const ChatPreviewProfilePicture = styled.img`
   object-fit: cover;
 `;
 
-export const ChatPreviewNameAndMessageGroup = styled.div``;
+export const ChatPreviewNameAndMessageGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
 export const ChatPreviewName = styled.div`
   color: ${(props) => props.theme.text};
   font-size: 24px;

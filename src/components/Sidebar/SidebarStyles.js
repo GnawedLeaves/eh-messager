@@ -28,6 +28,9 @@ export const SidebarProfileBox = styled.div`
   background: ${(props) => props.theme.primary};
   padding: 16px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 export const SidebarProfilePicture = styled.img`

@@ -29,12 +29,12 @@ export const RecievedMessageDate = styled.div`
   color: ${(props) => props.theme.text};
   padding: 0.1rem 0.5rem;
 `;
-export const RecievedMessage = styled.div`
+export const RecievedMessageBubble = styled.div`
   max-width: 70%;
   width: fit-content;
   padding: 0.5rem 0.8rem;
   background: ${(props) => props.theme.grey};
-  color: ${(props) => props.theme.text};
+  color: ${(props) => props.theme.white};
   border-radius: 1rem;
 `;
 
@@ -44,7 +44,7 @@ export const SentMessageContainer = styled(RecievedMessageContainer)`
   align-items: flex-end;
 `;
 
-export const SentMessage = styled(RecievedMessage)`
+export const SentMessage = styled(RecievedMessageBubble)`
   background: ${(props) => props.theme.primary};
   color: ${(props) => props.theme.background};
 `;

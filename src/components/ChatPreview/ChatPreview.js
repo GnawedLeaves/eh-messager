@@ -36,12 +36,10 @@ const ChatPreview = (props) => {
         </ChatPreviewNameAndMessageGroup>
 
         <ChatPreviewReadContainer>
-          {props.sentMessageStatus === "Read" ? (
+          {props.sentMessageStatus ? (
             <IoCheckmarkDoneOutline size={"20px"} color={lightTheme.grey} />
-          ) : props.sentMessageStatus === "Sent" ? (
-            <IoCheckmark size={"20px"} color={lightTheme.grey} />
           ) : (
-            <LuClock4 size={"16px"} color={lightTheme.grey} />
+            <IoCheckmark size={"20px"} color={lightTheme.grey} />
           )}
         </ChatPreviewReadContainer>
 

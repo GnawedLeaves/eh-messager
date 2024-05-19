@@ -4,7 +4,7 @@ import { HomePageContainer } from "./ChatPageStyles";
 import { theme } from "../../theme";
 import { useContext } from "react";
 import { UserContext } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Chatbox2 from "../../components/Chatbox2/Chatbox2";
@@ -13,6 +13,9 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
   const auth = getAuth();
+  const params = useParams();
+
+  console.log("params", params);
   const handleSignOut = async () => {
     signOut(auth)
       .then(() => {
@@ -40,7 +43,7 @@ const ChatPage = () => {
       {user !== null ? (
         <>
           <HomePageContainer>
-            {user?.id}
+            {user?.userId}
             <br />
             {user?.username}
             <br />
@@ -52,21 +55,21 @@ const ChatPage = () => {
             >
               Sign Out
             </button>
-            {/* {user?.id === "HS0C0UK0yLbSQB2CGonB" ? (
+            {/* {user?.userId === "HS0C0UK0yLbSQB2CGonB" ? (
               <Chatbox2
-                userId={user?.id}
+                userId={user?.userId}
                 otherPersonId="CPURpFaoZqyKZahmc9uI"
               />
-            ) : user?.id === "CPURpFaoZqyKZahmc9uI" ? (
+            ) : user?.userId === "CPURpFaoZqyKZahmc9uI" ? (
               <Chatbox2
-                userId={user?.id}
+                userId={user?.userId}
                 otherPersonId="HS0C0UK0yLbSQB2CGonB"
               />
             ) : (
-              <Chatbox2 userId={user?.id} otherPersonId="2" />
+              <Chatbox2 userId={user?.userId} otherPersonId="2" />
             )} */}
-            <Chatbox2 userId={user?.id} otherPersonId="HS0C0UK0yLbSQB2CGonB" />
-            <Chatbox2 userId="HS0C0UK0yLbSQB2CGonB" otherPersonId={user?.id} />
+            <Chatbox2 userId={user?.userId} otherPersonId={params.chatId} />
+            <Chatbox2 userId={params.chatId} otherPersonId={user?.userId} />
           </HomePageContainer>
         </>
       ) : (
