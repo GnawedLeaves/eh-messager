@@ -10,24 +10,43 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDbHz1eyG7zx3xWkq8u7WTjN9UEQXegQIk",
+//   authDomain: "eh-messager.firebaseapp.com",
+//   databaseURL:
+//     "https://eh-messager-default-rtdb.asia-southeast1.firebasedatabase.app",
+//   projectId: "eh-messager",
+//   storageBucket: "eh-messager.appspot.com",
+//   messagingSenderId: "920976784355",
+//   appId: "1:920976784355:web:85af615bcb6e249b5f7ed6",
+//   measurementId: "G-0YDBQ33Z5Q",
+// };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// // other way too, export..
+// //const analytics = getAnalytics(app);
+
+// export const auth = getAuth();
+// // export const db = getFirestore(app);
+// export const db = getFirestore(app); // firebase.firestore(); if do the other way
+// export const storage = getStorage(app); // firebase.storage();
+
+//Backup database
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDbHz1eyG7zx3xWkq8u7WTjN9UEQXegQIk",
-  authDomain: "eh-messager.firebaseapp.com",
-  databaseURL:
-    "https://eh-messager-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "eh-messager",
-  storageBucket: "eh-messager.appspot.com",
-  messagingSenderId: "920976784355",
-  appId: "1:920976784355:web:85af615bcb6e249b5f7ed6",
-  measurementId: "G-0YDBQ33Z5Q",
+  apiKey: "AIzaSyBrb9u96UyqPLvUdIHXn38qorXBEg9hNqY",
+  authDomain: "eh-messager-2.firebaseapp.com",
+  projectId: "eh-messager-2",
+  storageBucket: "eh-messager-2.appspot.com",
+  messagingSenderId: "125543708885",
+  appId: "1:125543708885:web:996540262f7a8208b08a5c",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// other way too, export..
-//const analytics = getAnalytics(app);
-
 export const auth = getAuth();
 // export const db = getFirestore(app);
 export const db = getFirestore(app); // firebase.firestore(); if do the other way
-export const storage = getStorage(app); // firebase.storage();
+export const storage = getStorage(app);

@@ -21,3 +21,11 @@ export const RecievedMessageBubble = styled.div`
   color: ${(props) => props.theme.white};
   border-radius: 1rem;
 `;
+
+export const RecievedMessageMedia = styled.video`
+  max-height: 50%;
+  max-width: 90%;
+  border: 1px solid ${(props) => props.theme.grey};
+  border-radius: 5px;
+  cursor: pointer;
+`;

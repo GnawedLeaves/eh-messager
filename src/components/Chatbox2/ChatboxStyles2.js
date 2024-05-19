@@ -44,7 +44,7 @@ export const SentMessageContainer = styled(RecievedMessageContainer)`
   align-items: flex-end;
 `;
 
-export const SentMessage = styled(RecievedMessageBubble)`
+export const SentMessageBubble = styled(RecievedMessageBubble)`
   background: ${(props) => props.theme.primary};
   color: ${(props) => props.theme.background};
 `;

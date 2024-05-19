@@ -83,7 +83,7 @@ const HomePage = (props) => {
       const docData = doc.data();
       allUsers = [...allUsers, { userId: doc.id, ...docData }];
     });
-    console.log("allUsers", allUsers);
+
     setAllUsers(allUsers);
   };
 
@@ -138,6 +138,16 @@ const HomePage = (props) => {
         "date_created"
       ).reverse();
 
+      //Getting message count
+      const unreadMessages = recievedMessages.filter(
+        (message) => message.is_read === false
+      );
+
+      let unreadMessageCount = unreadMessages.length;
+
+      console.log("unreadMessages", unreadMessages);
+      console.log("unreadMessageCount", unreadMessageCount);
+
       let firstMessage = sortedArray[0];
 
       //If more than 24h, put the date, else put the date
@@ -173,6 +183,7 @@ const HomePage = (props) => {
           otherUserId: otherUserData[0].userId,
           otherUserProfilePicture: otherUserData[0].profilePicture,
           otherUserUsername: otherUserData[0].username,
+          unreadMessageCount: unreadMessageCount,
         };
       } else if (firstMessage.recipient_id === user?.userId) {
         messagePreview = {
@@ -181,12 +192,21 @@ const HomePage = (props) => {
           otherUserId: otherUserData[0].userId,
           otherUserProfilePicture: otherUserData[0].profilePicture,
           otherUserUsername: otherUserData[0].username,
+          unreadMessageCount: unreadMessageCount,
         };
       }
       messagePreviewsArray = [...messagePreviewsArray, messagePreview];
     });
-    console.log("messagePreviewsArray", messagePreviewsArray);
-    setMessagePreviews(messagePreviewsArray);
+
+    const sortedMessagePreviewsArray = messagePreviewsArray.sort((a, b) => {
+      return (
+        b.date_created.seconds - a.date_created.seconds ||
+        b.date_created.nanoseconds - a.date_created.nanoseconds
+      );
+    });
+    console.log("sortedMessagePreviewsArray", sortedMessagePreviewsArray);
+
+    setMessagePreviews(sortedMessagePreviewsArray);
   };
 
   const checkDateMoreThan24Hours = (date) => {
@@ -274,10 +294,11 @@ const HomePage = (props) => {
                     ? chat.otherUserProfilePicture
                     : "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/profilePictures%2Fphoto_2024-05-19%2015.40.14.jpeg?alt=media&token=13e40b41-8311-4f84-a881-8a70436b2318"
                 }
-                messageCount={chat.messageCount}
-                sentMessageStatus={chat.is_read}
+                unreadMessageCount={chat.unreadMessageCount}
+                isRead={chat.is_read}
                 otherPersonId={chat.otherUserId}
                 themeMode={user?.themeMode}
+                tempMessageType={chat.tempMessageType}
               />
             );
           })}

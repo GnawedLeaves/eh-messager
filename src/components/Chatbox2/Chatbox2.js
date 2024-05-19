@@ -13,7 +13,7 @@ import {
   MessagingDisplayContainer,
   RecievedMessageBubble,
   RecievedMessageContainer,
-  SentMessage,
+  SentMessageBubble,
   SentMessageContainer,
   ChatboxHeader,
   ChatboxLoading,
@@ -48,6 +48,7 @@ import { getAllMessageFromUser } from "../../database/functions/getAllMessageIds
 import { getAll } from "firebase/remote-config";
 import { deleteMessageFromUser } from "../../database/functions/deleteMessageFromUser";
 import RecievedMessage from "../RecievedMessage/RecievedMessage";
+import SentMessage from "../SentMessage/SentMessage";
 
 const Chatbox2 = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
@@ -58,9 +59,8 @@ const Chatbox2 = (props) => {
   const [allMessagesData, setAllMessagesData] = useState([]);
   const [allMessagesIdsObjs, setAllMessagesIdsObjs] = useState([]);
   const userId = props.userId ? props.userId : "1";
-  const otherPersonId = props.otherPersonId ? props.otherPersonId : "2";
+  const otherPersonId = props.otherPersonId ? props.otherPersonId : null;
 
-  const messagesRef = collection(db, "messages");
   const messageRef = collection(db, "message");
 
   const handleInputFocus = () => {
@@ -79,17 +79,6 @@ const Chatbox2 = (props) => {
     }
   };
 
-  //Get messages from database and display them
-  const getRecievedMessages = async (recipientId, senderId) => {};
-
-  const getSentMessages = async (recipientId, senderId) => {};
-
-  // When the component mounts, set the scrollTop property to the maximum scroll height
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [allMessagesData]);
-
   const scrollToBottom = () => {
     if (messageDisplayRef.current) {
       const scrollContainer = messageDisplayRef.current;
@@ -104,7 +93,8 @@ const Chatbox2 = (props) => {
   //updates the data array whenever the database changes
   useEffect(() => {
     const unsubscribe = onSnapshot(messageRef, () => {
-      initGetAllMessages();
+      // initGetAllMessages()
+      getEverything();
     });
 
     // Clean up the listener when the component unmounts
@@ -136,46 +126,116 @@ const Chatbox2 = (props) => {
       setMessageContent("");
       setMessageFile(null);
       setMessageIdToReply(null);
-      initGetAllMessages();
+      // getEverything();
+      scrollToBottom();
     }
   };
 
-  const initGetAllMessages = async () => {
-    const tempMessagesIds = await getAllMessageFromUser(userId, otherPersonId);
-    setAllMessagesIdsObjs(tempMessagesIds);
-    getMessagesData(tempMessagesIds);
-  };
+  const [allMessages, setAllMessages] = useState([]);
+  const [allRecievedMessages, setAllRecievedMessages] = useState([]);
 
-  const getMessagesData = async (messageObjs) => {
-    const messageRef = collection(db, "message");
-    let messagesFetched = [];
+  const [allCombinedMessages, setAllCombinedMessages] = useState([]);
 
-    const messageIds = messageObjs.map((message) => {
-      return message.message_id;
+  const [conversationData, setConversationData] = useState([]);
+
+  const [otherUserData, setOtherUserData] = useState({});
+
+  const getAllMessages = async () => {
+    let allMessages = [];
+    const querySnapshot = await getDocs(collection(db, "message"));
+    querySnapshot.forEach((doc) => {
+      const docData = doc.data();
+      allMessages = [...allMessages, { id: doc.id, ...docData }];
     });
 
-    // Firestore supports up to 10 IDs in an `in` query
-    for (let i = 0; i < messageIds.length; i += 10) {
-      const batch = messageIds.slice(i, i + 10);
-      // Create references to each document ID
-      const docsRef = batch.map((id) => doc(messageRef, id));
-      // Query each document reference
-      const queries = docsRef.map((docRef) => getDoc(docRef));
-      const snapshots = await Promise.all(queries);
-      snapshots.forEach((snapshot) => {
-        if (snapshot.exists()) {
-          messagesFetched.push({ id: snapshot.id, ...snapshot.data() });
-        }
-      });
+    setAllMessages(allMessages);
+  };
+
+  const getAllRecievedMessages = async () => {
+    let allRecievedMessages = [];
+    const querySnapshot = await getDocs(collection(db, "message_recipient"));
+    querySnapshot.forEach((doc) => {
+      const docData = doc.data();
+      allRecievedMessages = [
+        ...allRecievedMessages,
+        { message_recipient_id: doc.id, ...docData },
+      ];
+    });
+    setAllRecievedMessages(allRecievedMessages);
+  };
+
+  const getOtherUserData = async () => {
+    let otherPersonData = {};
+    const docRef = doc(db, "users", otherPersonId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      otherPersonData = { ...docSnap.data(), userId: docSnap.id };
+
+      setOtherUserData(otherPersonData);
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
     }
+  };
+
+  const combineMessages = () => {
+    const mapA = new Map(
+      allRecievedMessages.map((item) => [item.message_id, item])
+    );
+    const mergedArray = allMessages.map((itemB) => {
+      const matchingItemA = mapA.get(itemB.id);
+
+      if (matchingItemA) {
+        return { ...itemB, ...matchingItemA }; // Combine the objects
+      }
+      return itemB; // If no match is found, keep the original item from arrayB
+    });
+
+    setAllCombinedMessages(mergedArray);
+    getConversation(mergedArray);
+  };
+
+  const getConversation = (allCombinedMessages) => {
+    let recievedMessages = allCombinedMessages.filter(
+      (message) =>
+        message.creator_id === otherPersonId && message.recipient_id === userId
+    );
+
+    let sentMessages = allCombinedMessages.filter(
+      (message) =>
+        message.creator_id === userId && message.recipient_id === otherPersonId
+    );
+
+    let recievedAndSentMessages = [...recievedMessages, ...sentMessages];
 
     const sortedArray = sortByFirebaseTimestamp(
-      messagesFetched,
+      recievedAndSentMessages,
       "date_created"
     );
-    console.log("All Messages", sortedArray);
-    setAllMessagesData(sortedArray);
+
+    setConversationData(sortedArray);
+    scrollToBottom();
+    console.log("Conversation Data", sortedArray);
   };
+
+  const getEverything = () => {
+    getAllMessages();
+    getAllRecievedMessages();
+    scrollToBottom();
+  };
+
+  useEffect(() => {
+    if (otherPersonId !== null && otherPersonId !== undefined) {
+      getEverything();
+      getOtherUserData();
+      console.log("otherPersonId", otherPersonId);
+      console.count("API called");
+    }
+  }, []);
+
+  useEffect(() => {
+    combineMessages();
+  }, [allRecievedMessages, allMessages]);
 
   // Reply functions
   const [showMessageOptionsModal, setShowMessageOptionsModal] = useState(true);
@@ -192,165 +252,26 @@ const Chatbox2 = (props) => {
   //Delete message function
   const deleteMessage = async (messageId, attachmentName) => {
     deleteMessageFromUser(messageId, attachmentName);
-    initGetAllMessages();
   };
 
   return (
     <ThemeProvider theme={lightTheme}>
       <MessagingContainer>
-        <ChatboxHeader>{otherPersonId}</ChatboxHeader>
+        <ChatboxHeader>{otherUserData.username}</ChatboxHeader>
         <MessagingDisplayContainer ref={messageDisplayRef}>
-          {allMessagesData && allMessagesData.length > 0 ? (
-            allMessagesData.map((message, index) => {
+          {conversationData.length > 0 ? (
+            conversationData.map((message, index) => {
               if (message.creator_id !== userId) {
                 return (
-                  <>
-                    <RecievedMessage
-                      key={index + 1 * Math.PI}
-                      message={message}
-                    />
-                    <RecievedMessageContainer key={index}>
-                      {message.attachment_url ? (
-                        <>
-                          <RecievedMessageDate>
-                            {getDateFromFirebaseDate(message.date_created)}
-                          </RecievedMessageDate>
-                          <RecievedMessageMedia
-                            onClick={() => {
-                              window.open(
-                                message.attachment_url,
-                                "_blank",
-                                "noopener"
-                              );
-                            }}
-                            src={message.attachment_url}
-                            poster={message.attachment_url}
-                          />
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                      <RecievedMessageDate>
-                        {getDateFromFirebaseDate(message.date_created)}
-                      </RecievedMessageDate>
-                      <RecievedMessageBubble
-                        onClick={() => {
-                          if (messageClickedIndex === index) {
-                            setMessageClickedIndex(-1);
-                          } else {
-                            setMessageClickedIndex(index);
-                          }
-                        }}
-                      >
-                        <RecievedMessageOptionsModal
-                          display={messageClickedIndex === index}
-                        >
-                          <button
-                            onClick={() => {
-                              setMessageIdToReply(message.id);
-                            }}
-                          >
-                            Reply
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteMessage(
-                                message.id,
-                                message.attachment_name
-                              );
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </RecievedMessageOptionsModal>
-                        {message.parent_message_id !== null ? (
-                          <>
-                            {getParentMessagePreview(
-                              message.parent_message_id
-                            ).map(
-                              (message) =>
-                                "Replying to: " + message.message_body
-                            )}
-                            <br />
-                            <br />
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                        {message.message_body}
-                      </RecievedMessageBubble>
-                    </RecievedMessageContainer>
-                  </>
+                  <RecievedMessage
+                    key={index}
+                    message={message}
+                    index={index}
+                  />
                 );
               } else {
                 return (
-                  <SentMessageContainer key={index}>
-                    {message.attachment_url ? (
-                      <>
-                        <RecievedMessageDate>
-                          {getDateFromFirebaseDate(message.date_created)}
-                        </RecievedMessageDate>
-                        <RecievedMessageMedia
-                          onClick={() => {
-                            window.open(
-                              message.attachment_url,
-                              "_blank",
-                              "noopener"
-                            );
-                          }}
-                          src={message.attachment_url}
-                          poster={message.attachment_url}
-                        />
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    <SentMessageDate>
-                      {getDateFromFirebaseDate(message.date_created)}
-                    </SentMessageDate>
-                    <SentMessage
-                      onClick={() => {
-                        if (messageClickedIndex === index) {
-                          setMessageClickedIndex(-1);
-                        } else {
-                          setMessageClickedIndex(index);
-                        }
-                      }}
-                    >
-                      <SentMessageOptionsModal
-                        display={messageClickedIndex === index}
-                      >
-                        <button
-                          onClick={() => {
-                            setMessageIdToReply(message.id);
-                          }}
-                        >
-                          Reply
-                        </button>
-                        <button
-                          onClick={() => {
-                            deleteMessage(message.id, message.attachment_name);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </SentMessageOptionsModal>
-                      {message.parent_message_id !== null ? (
-                        <>
-                          {getParentMessagePreview(
-                            message.parent_message_id
-                          ).map(
-                            (message) => "Replying to: " + message.message_body
-                          )}
-                          <br />
-                          <br />
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                      {message.message_body}
-                    </SentMessage>
-                  </SentMessageContainer>
+                  <SentMessage key={index} message={message} index={index} />
                 );
               }
             })

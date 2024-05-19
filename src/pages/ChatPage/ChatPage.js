@@ -8,14 +8,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Chatbox2 from "../../components/Chatbox2/Chatbox2";
-
+import { IoArrowBackOutline } from "react-icons/io5";
 const ChatPage = () => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
   const auth = getAuth();
   const params = useParams();
 
-  console.log("params", params);
   const handleSignOut = async () => {
     signOut(auth)
       .then(() => {
@@ -43,6 +42,13 @@ const ChatPage = () => {
       {user !== null ? (
         <>
           <HomePageContainer>
+            <IoArrowBackOutline
+              size={"2rem"}
+              onClick={() => {
+                navigate("/home");
+              }}
+            />
+            <br />
             {user?.userId}
             <br />
             {user?.username}
@@ -68,7 +74,7 @@ const ChatPage = () => {
             ) : (
               <Chatbox2 userId={user?.userId} otherPersonId="2" />
             )} */}
-            <Chatbox2 userId={user?.userId} otherPersonId={params.chatId} />
+            {/* <Chatbox2 userId={user?.userId} otherPersonId={params.chatId} /> */}
             <Chatbox2 userId={params.chatId} otherPersonId={user?.userId} />
           </HomePageContainer>
         </>

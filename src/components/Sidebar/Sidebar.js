@@ -19,8 +19,12 @@ import { IoColorPaletteOutline } from "react-icons/io5";
 
 import { IoSunnyOutline } from "react-icons/io5";
 import { IoMoon } from "react-icons/io5";
+import { signOut } from "firebase/auth";
+import { auth } from "../../database/firebase";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = (props) => {
+  const navigate = useNavigate();
   const lightSidebarOptions = [
     { title: "Profile", icon: <IoPersonCircleSharp size={"24px"} /> },
     { title: "Theme", icon: <IoColorPaletteSharp size={"24px"} /> },
@@ -31,6 +35,16 @@ const Sidebar = (props) => {
     { title: "Theme", icon: <IoColorPaletteOutline size={"24px"} /> },
   ];
 
+  const handleSignOut = async () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/login");
+        console.log("Sign out successful");
+      })
+      .catch((error) => {
+        console.log("Error when signing out: ", error);
+      });
+  };
   return (
     <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
       {props.showSidebar ? (
@@ -78,10 +92,16 @@ const Sidebar = (props) => {
                     );
                   })}
             </SidebarOptionsContainer>
+            <button
+              onClick={() => {
+                handleSignOut();
+              }}
+            >
+              Sign Out
+            </button>
           </SideBarContainer>
           <SidebarBlocker
             onClick={() => {
-              console.log("Clicked");
               props.handleCloseSidebar(false);
             }}
           />

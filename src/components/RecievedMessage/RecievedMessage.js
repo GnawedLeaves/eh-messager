@@ -3,6 +3,7 @@ import {
   RecievedMessageBubble,
   RecievedMessageContainer,
   RecievedMessageDate,
+  RecievedMessageMedia,
 } from "./RecievedMessageStyles";
 import { lightTheme } from "../../theme";
 import { useEffect } from "react";
@@ -10,15 +11,23 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 
-const RecievedMessage = ({ message }) => {
-  const { id, date_created, message_body } = message;
+const RecievedMessage = ({ message, index }) => {
+  const {
+    id,
+    date_created,
+    message_body,
+    attachment_url,
+    is_read,
+    message_recipient_id,
+  } = message;
+
+  // console.log("RecievedMessage", message);
 
   useEffect(() => {
-    // if (!isRead) {
-    //   // markAsRead(id);
-    // }
-    console.log(message);
-  }, [id]);
+    if (!is_read) {
+      markAsRead(message_recipient_id);
+    }
+  }, [is_read]);
 
   const markAsRead = async (messageId) => {
     try {
@@ -36,6 +45,22 @@ const RecievedMessage = ({ message }) => {
   return (
     <ThemeProvider theme={lightTheme}>
       <RecievedMessageContainer>
+        {message.attachment_url ? (
+          <>
+            <RecievedMessageDate>
+              {getDateFromFirebaseDate(date_created)}
+            </RecievedMessageDate>
+            <RecievedMessageMedia
+              onClick={() => {
+                window.open(attachment_url, "_blank", "noopener");
+              }}
+              src={attachment_url}
+              poster={attachment_url}
+            />
+          </>
+        ) : (
+          <></>
+        )}
         <RecievedMessageDate>
           {getDateFromFirebaseDate(date_created)}
         </RecievedMessageDate>
