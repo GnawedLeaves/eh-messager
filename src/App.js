@@ -12,6 +12,8 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import ChatPage from "./pages/ChatPage/ChatPage";
 import HomePage from "./pages/HomePage/HomePage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import ThemePage from "./pages/ThemePage/ThemePage";
 export const UserContext = createContext();
 function App() {
   const [userData, setUserData] = useState(null);
@@ -37,18 +39,6 @@ function App() {
     });
   }, []);
 
-  const getAllUserData = async () => {
-    let allUsers = [];
-    const querySnapshot = await getDocs(collection(db, "users"));
-    querySnapshot.forEach((doc) => {
-      const docData = doc.data();
-      allUsers = [...allUsers, { userId: doc.id, ...docData }];
-    });
-    setAllUserData(allUsers);
-  };
-
-  const getUserFromAllUserData = (authId) => {};
-
   const getUserData = async (authId) => {
     const userRef = collection(db, "users");
     const querySnapshot = await getDocs(
@@ -65,13 +55,21 @@ function App() {
       <BrowserRouter>
         <Suspense>
           <Routes>
-            <Route path="/*" element={<LoginPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/chat/:chatId" element={<ChatPage />} />
-            <Route
-              path="/home"
-              element={<HomePage getUserData={getUserData} />}
-            />
+            {userData ? (
+              <>
+                <Route path="/*" element={<LoginPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/chat/:chatId" element={<ChatPage />} />
+                <Route
+                  path="/home"
+                  element={<HomePage getUserData={getUserData} />}
+                />
+                <Route path="/profile/:userId" element={<ProfilePage />} />
+                <Route path="/theme" element={<ThemePage />} />
+              </>
+            ) : (
+              <Route path="/*" element={<LoginPage />} />
+            )}
           </Routes>
         </Suspense>
       </BrowserRouter>

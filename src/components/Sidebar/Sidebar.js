@@ -22,17 +22,40 @@ import { IoMoon } from "react-icons/io5";
 import { signOut } from "firebase/auth";
 import { auth } from "../../database/firebase";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Sidebar = (props) => {
   const navigate = useNavigate();
+  const [profileNavigationString, setProfileNavigationString] = useState("");
+  useEffect(() => {
+    setProfileNavigationString("/profile/" + props.userId);
+  }, [props.userId]);
+
   const lightSidebarOptions = [
-    { title: "Profile", icon: <IoPersonCircleSharp size={"24px"} /> },
-    { title: "Theme", icon: <IoColorPaletteSharp size={"24px"} /> },
+    {
+      title: "Profile",
+      icon: <IoPersonCircleSharp size={"24px"} />,
+      navigateTo: profileNavigationString,
+    },
+    {
+      title: "Theme",
+      icon: <IoColorPaletteSharp size={"24px"} />,
+      navigateTo: "/theme",
+    },
   ];
 
   const darkSidebarOptions = [
-    { title: "Profile", icon: <IoPersonCircleOutline size={"24px"} /> },
-    { title: "Theme", icon: <IoColorPaletteOutline size={"24px"} /> },
+    {
+      title: "Profile",
+      icon: <IoPersonCircleOutline size={"24px"} />,
+      navigateTo: profileNavigationString,
+    },
+    {
+      title: "Theme",
+      icon: <IoColorPaletteOutline size={"24px"} />,
+      navigateTo: "/theme",
+    },
   ];
 
   const handleSignOut = async () => {
@@ -50,7 +73,12 @@ const Sidebar = (props) => {
       <SidebarBigContainer showSidebar={props.showSidebar ? "0%" : "-150%"}>
         <SideBarContainer>
           <SidebarProfileBox>
-            <SidebarProfilePicture src={props.profilePicture} />
+            <SidebarProfilePicture
+              src={props.profilePicture}
+              onClick={() => {
+                navigate(profileNavigationString);
+              }}
+            />
             <SidebarUsername>{props.username}</SidebarUsername>
             <SidebarThemeModeContainer>
               {props.themeMode === "light" ? (
@@ -78,7 +106,14 @@ const Sidebar = (props) => {
             {props.themeMode === "light"
               ? lightSidebarOptions.map((option, index) => {
                   return (
-                    <SidebarOption key={index}>
+                    <SidebarOption
+                      key={index}
+                      onClick={() => {
+                        if (option.navigateTo) {
+                          navigate(option.navigateTo);
+                        }
+                      }}
+                    >
                       {option.icon}
                       {option.title}
                     </SidebarOption>
@@ -86,7 +121,14 @@ const Sidebar = (props) => {
                 })
               : darkSidebarOptions.map((option, index) => {
                   return (
-                    <SidebarOption key={index}>
+                    <SidebarOption
+                      key={index}
+                      onClick={() => {
+                        if (option.navigateTo) {
+                          navigate(option.navigateTo);
+                        }
+                      }}
+                    >
                       {option.icon}
                       {option.title}
                     </SidebarOption>

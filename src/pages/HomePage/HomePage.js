@@ -102,7 +102,7 @@ const HomePage = (props) => {
     });
 
     setAllCombinedMessages(mergedArray);
-    console.log("mergedArray", mergedArray);
+
     getUniqueConversations(user?.userId);
   };
 
@@ -125,10 +125,6 @@ const HomePage = (props) => {
 
     const tempUniqueArray = [...filteredSentIds, ...filteredCleanedRecievedIds];
     const uniqueConversationsArray = [...new Set(tempUniqueArray)];
-
-    console.log("filteredSentIds", filteredSentIds);
-
-    console.log("uniqueConversationsArray", uniqueConversationsArray);
 
     setUniqueConversationsIds(uniqueConversationsArray);
     constructMessagesPreviews(uniqueConversationsArray);
@@ -163,9 +159,6 @@ const HomePage = (props) => {
 
       let unreadMessageCount = unreadMessages.length;
 
-      console.log("unreadMessages", unreadMessages);
-      console.log("unreadMessageCount", unreadMessageCount);
-
       let firstMessage = sortedArray[0];
 
       //If more than 24h, put the date, else put the date
@@ -199,7 +192,7 @@ const HomePage = (props) => {
           ...firstMessage,
           tempMessageType: "sent",
           otherUserId: otherUserData[0].userId,
-          otherUserProfilePicture: otherUserData[0].profilePicture,
+          otherUserProfilePicture: otherUserData[0].profilePicture[0],
           otherUserUsername: otherUserData[0].username,
           unreadMessageCount: unreadMessageCount,
         };
@@ -208,7 +201,7 @@ const HomePage = (props) => {
           ...firstMessage,
           tempMessageType: "recieved",
           otherUserId: otherUserData[0].userId,
-          otherUserProfilePicture: otherUserData[0].profilePicture,
+          otherUserProfilePicture: otherUserData[0].profilePicture[0],
           otherUserUsername: otherUserData[0].username,
           unreadMessageCount: unreadMessageCount,
         };
@@ -222,7 +215,6 @@ const HomePage = (props) => {
         b.date_created.nanoseconds - a.date_created.nanoseconds
       );
     });
-    console.log("sortedMessagePreviewsArray", sortedMessagePreviewsArray);
 
     setMessagePreviews(sortedMessagePreviewsArray);
   };
@@ -286,8 +278,9 @@ const HomePage = (props) => {
         <Sidebar
           showSidebar={openSideBar}
           username={user?.username}
+          userId={user?.userId}
           themeMode={user?.themeMode}
-          profilePicture={user?.profilePicture}
+          profilePicture={user?.profilePicture[0]}
           handleCloseSidebar={() => {
             setOpenSideBar(false);
           }}

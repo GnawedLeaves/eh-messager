@@ -94,8 +94,10 @@ const LoginPage = (props) => {
         username: newUserUsername,
         dateAdded: timestamp,
         themeMode: "light",
-        profilePicture:
+        profilePicture: [
           "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/profilePictures%2Fphoto_2024-05-19%2015.40.14.jpeg?alt=media&token=13e40b41-8311-4f84-a881-8a70436b2318",
+        ],
+        bio: "Eh hello",
       });
       console.log("user added", userDocRef);
     } catch (e) {

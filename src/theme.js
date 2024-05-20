@@ -7,6 +7,7 @@ export const lightTheme = {
   lightGrey: "",
   white: "#FEFBF1",
   borderGrey: "#D1D1D1",
+  boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
 };
 
 export const darktheme = {
@@ -18,6 +19,7 @@ export const darktheme = {
   lightGrey: "",
   white: "#FEFBF1",
   borderGrey: "#464646",
+  boxShadow: "",
 };
 
 export const theme = {

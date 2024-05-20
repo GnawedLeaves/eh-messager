@@ -275,7 +275,7 @@ const Chatbox2 = (props) => {
               navigate("/home");
             }}
           />
-          <ChatboxHeaderProfilePicture src={otherUserData.profilePicture} />
+          <ChatboxHeaderProfilePicture src={otherUserData?.profilePicture} />
           {otherUserData.username}
         </ChatboxHeader>
         <MessagingDisplayContainer ref={messageDisplayRef}>
