@@ -16,7 +16,7 @@ import {
   ProfilePageProfilePictureContainerSide,
   ProfilePageProfilePictureIcon,
 } from "./ProfilePageStyles";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useContext } from "react";
 import { useState } from "react";
@@ -26,13 +26,14 @@ import { IoAddOutline } from "react-icons/io5";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { handleSignOut } from "../../database/functions/handleSignOut";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../database/firebase";
 
 const ProfilePage = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useContext(UserContext);
-
-  console.log("user", user);
 
   const [pictureCounter, setPictureCounter] = useState(0);
 
@@ -54,6 +55,41 @@ const ProfilePage = () => {
   }, [messageFile]);
   //  TODO: check if user is at his own page, if yes then allow edit if not then normal profile viewing
 
+  const [viewingOwnProfile, setViewingOwnProfile] = useState(false);
+  const [otherUserData, setOtherUserData] = useState(null);
+
+  useEffect(() => {
+    setViewingOwnProfile(user?.userId === params.userId);
+  }, [user, params]);
+
+  useEffect(() => {
+    if (!viewingOwnProfile) {
+      getOtherUserData();
+    }
+  }, [viewingOwnProfile]);
+
+  const getOtherUserData = async () => {
+    let otherPersonData = {};
+    const docRef = doc(db, "users", params.userId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      otherPersonData = { ...docSnap.data(), userId: docSnap.id };
+      setOtherUserData(otherPersonData);
+    } else {
+      console.log("No such document!");
+    }
+  };
+
+  const handleNavigateBack = () => {
+    if (location.key !== "default") {
+      // If location key is not 'default', it means there is a history entry
+      navigate(-1);
+    } else {
+      // Otherwise, navigate to a different page (e.g., home)
+      navigate("/home");
+    }
+  };
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <ProfilePageContainer>
@@ -63,7 +99,11 @@ const ProfilePage = () => {
           <ProfilePageProfilePictureContainerSide
             onClick={() => {
               if (pictureCounter === 0) {
-                setPictureCounter(user?.profilePicture.length - 1);
+                setPictureCounter(
+                  viewingOwnProfile
+                    ? user?.profilePicture.length - 1
+                    : otherUserData?.profilePicture.length - 1
+                );
               } else {
                 setPictureCounter((prevState) => prevState - 1);
               }
@@ -71,7 +111,11 @@ const ProfilePage = () => {
           />
           <ProfilePageProfilePictureContainerSide
             onClick={() => {
-              if (pictureCounter === user?.profilePicture.length - 1) {
+              if (
+                viewingOwnProfile
+                  ? pictureCounter === user?.profilePicture.length - 1
+                  : pictureCounter === otherUserData?.profilePicture.length - 1
+              ) {
                 setPictureCounter(0);
               } else {
                 setPictureCounter((prevState) => prevState + 1);
@@ -79,22 +123,26 @@ const ProfilePage = () => {
             }}
           />
 
-          <ProfilePagePictureCounter>
-            {pictureCounter + 1 + "/" + user?.profilePicture.length}
+          <ProfilePagePictureCounter viewingOwnProfile={viewingOwnProfile}>
+            {pictureCounter + 1 + "/" + otherUserData?.profilePicture.length}
           </ProfilePagePictureCounter>
-          <ProfilePageProfilePictureIcon>
-            <IoTrashOutline
-              color={
-                user?.themeMode === "light" ? lightTheme.white : darktheme.white
-              }
-              size={"25px"}
-            />
-          </ProfilePageProfilePictureIcon>
-          <ProfilePageProfilePictureBackIcon
-            onClick={() => {
-              navigate("/home");
-            }}
-          >
+
+          {viewingOwnProfile ? (
+            <ProfilePageProfilePictureIcon>
+              <IoTrashOutline
+                color={
+                  user?.themeMode === "light"
+                    ? lightTheme.white
+                    : darktheme.white
+                }
+                size={"25px"}
+              />
+            </ProfilePageProfilePictureIcon>
+          ) : (
+            <></>
+          )}
+
+          <ProfilePageProfilePictureBackIcon onClick={handleNavigateBack}>
             <IoArrowBackOutline
               style={{ cursor: "pointer" }}
               color={
@@ -103,46 +151,61 @@ const ProfilePage = () => {
               size={"25px"}
             />
           </ProfilePageProfilePictureBackIcon>
-          <ProfilePageProfilePictureButton onClick={handleAddPicture}>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{
-                display: "none",
-              }}
-            />
-            <IoAddOutline
-              size={"34px"}
-              color={
-                user?.themeMode === "light" ? lightTheme.white : darktheme.white
-              }
-            />
-          </ProfilePageProfilePictureButton>
+
+          {viewingOwnProfile ? (
+            <ProfilePageProfilePictureButton onClick={handleAddPicture}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{
+                  display: "none",
+                }}
+              />
+              <IoAddOutline
+                size={"34px"}
+                color={
+                  user?.themeMode === "light"
+                    ? lightTheme.white
+                    : darktheme.white
+                }
+              />
+            </ProfilePageProfilePictureButton>
+          ) : (
+            <></>
+          )}
         </ProfilePageProfilePictureContainer>
         <ProfilePageDetailsContainer>
           <ProfilePageDetailsSubtitleAndTitleGroup>
             <ProfilePageDetailsSubtitle>Username</ProfilePageDetailsSubtitle>
-            <ProfilePageDetailsTitle>{user?.username}</ProfilePageDetailsTitle>
+            <ProfilePageDetailsTitle>
+              {viewingOwnProfile ? user?.username : otherUserData?.username}
+            </ProfilePageDetailsTitle>
           </ProfilePageDetailsSubtitleAndTitleGroup>
 
           <ProfilePageDetailsSubtitleAndTitleGroup>
             <ProfilePageDetailsSubtitle>Bio</ProfilePageDetailsSubtitle>
-            <ProfilePageDetailsTitle>{user?.bio}</ProfilePageDetailsTitle>
+            <ProfilePageDetailsTitle>
+              {viewingOwnProfile ? user?.bio : otherUserData?.bio}
+            </ProfilePageDetailsTitle>
           </ProfilePageDetailsSubtitleAndTitleGroup>
         </ProfilePageDetailsContainer>
 
-        <ProfilePageButtonContainer>
-          <ProfilePageButton
-            onClick={() => {
-              handleSignOut();
-              navigate("/login");
-            }}
-          >
-            Sign Out
-          </ProfilePageButton>
-        </ProfilePageButtonContainer>
+        {viewingOwnProfile ? (
+          <ProfilePageButtonContainer>
+            <ProfilePageButton
+              onClick={() => {
+                handleSignOut();
+                navigate("/login");
+              }}
+            >
+              Sign Out
+            </ProfilePageButton>
+          </ProfilePageButtonContainer>
+        ) : (
+          <></>
+        )}
       </ProfilePageContainer>
     </ThemeProvider>
   );

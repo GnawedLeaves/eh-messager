@@ -51,7 +51,7 @@ import { deleteMessageFromUser } from "../../database/functions/deleteMessageFro
 import RecievedMessage from "../RecievedMessage/RecievedMessage";
 import SentMessage from "../SentMessage/SentMessage";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../App";
 
@@ -65,10 +65,22 @@ const Chatbox2 = (props) => {
   const [allMessagesIdsObjs, setAllMessagesIdsObjs] = useState([]);
   const userId = props.userId ? props.userId : "1";
   const otherPersonId = props.otherPersonId ? props.otherPersonId : null;
-  const navigate = useNavigate();
+
   const user = useContext(UserContext);
 
   const messageRef = collection(db, "message");
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleNavigateBack = () => {
+    if (location.key !== "default") {
+      // If location key is not 'default', it means there is a history entry
+      navigate(-1);
+    } else {
+      // Otherwise, navigate to a different page (e.g., home)
+      navigate("/home");
+    }
+  };
 
   const handleInputFocus = () => {
     setInputFocused(true);
@@ -271,11 +283,14 @@ const Chatbox2 = (props) => {
           <IoArrowBackOutline
             style={{ cursor: "pointer" }}
             size={"24px"}
+            onClick={handleNavigateBack}
+          />
+          <ChatboxHeaderProfilePicture
+            src={otherUserData?.profilePicture}
             onClick={() => {
-              navigate("/home");
+              navigate(`/profile/${otherPersonId}`);
             }}
           />
-          <ChatboxHeaderProfilePicture src={otherUserData?.profilePicture} />
           {otherUserData.username}
         </ChatboxHeader>
         <MessagingDisplayContainer ref={messageDisplayRef}>

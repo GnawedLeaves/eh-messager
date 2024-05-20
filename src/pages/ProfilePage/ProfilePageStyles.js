@@ -52,7 +52,7 @@ export const ProfilePagePictureCounter = styled.div`
   position: absolute;
   background: lime;
   top: 20px;
-  right: 60px;
+  right: ${(props) => (props.viewingOwnProfile ? "60px" : "20px")};
   display: inline-flex;
   padding: 4px 16px;
   justify-content: center;

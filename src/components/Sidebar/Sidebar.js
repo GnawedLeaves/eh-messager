@@ -135,13 +135,6 @@ const Sidebar = (props) => {
                   );
                 })}
           </SidebarOptionsContainer>
-          <button
-            onClick={() => {
-              handleSignOut();
-            }}
-          >
-            Sign Out
-          </button>
         </SideBarContainer>
         <SidebarBlocker
           showSidebar={props.showSidebar ? "100%" : "0"}

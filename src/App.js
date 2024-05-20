@@ -55,21 +55,17 @@ function App() {
       <BrowserRouter>
         <Suspense>
           <Routes>
-            {userData ? (
-              <>
-                <Route path="/*" element={<LoginPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/chat/:chatId" element={<ChatPage />} />
-                <Route
-                  path="/home"
-                  element={<HomePage getUserData={getUserData} />}
-                />
-                <Route path="/profile/:userId" element={<ProfilePage />} />
-                <Route path="/theme" element={<ThemePage />} />
-              </>
-            ) : (
+            <>
               <Route path="/*" element={<LoginPage />} />
-            )}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/chat/:chatId" element={<ChatPage />} />
+              <Route
+                path="/home"
+                element={<HomePage getUserData={getUserData} />}
+              />
+              <Route path="/profile/:userId" element={<ProfilePage />} />
+              <Route path="/theme" element={<ThemePage />} />
+            </>
           </Routes>
         </Suspense>
       </BrowserRouter>
