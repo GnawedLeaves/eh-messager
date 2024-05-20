@@ -47,70 +47,67 @@ const Sidebar = (props) => {
   };
   return (
     <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
-      {props.showSidebar ? (
-        <SidebarBigContainer>
-          <SideBarContainer>
-            <SidebarProfileBox>
-              <SidebarProfilePicture src={props.profilePicture} />
-              <SidebarUsername>{props.username}</SidebarUsername>
-              <SidebarThemeModeContainer>
-                {props.themeMode === "light" ? (
-                  <IoMoon
-                    style={{ cursor: "pointer" }}
-                    size={"24px"}
-                    color={lightTheme.white}
-                    onClick={() => {
-                      props.handleThemeModeChange("dark");
-                    }}
-                  />
-                ) : (
-                  <IoSunnyOutline
-                    style={{ cursor: "pointer" }}
-                    size={"24px"}
-                    color={darktheme.white}
-                    onClick={() => {
-                      props.handleThemeModeChange("light");
-                    }}
-                  />
-                )}
-              </SidebarThemeModeContainer>
-            </SidebarProfileBox>
-            <SidebarOptionsContainer>
-              {props.themeMode === "light"
-                ? lightSidebarOptions.map((option, index) => {
-                    return (
-                      <SidebarOption key={index}>
-                        {option.icon}
-                        {option.title}
-                      </SidebarOption>
-                    );
-                  })
-                : darkSidebarOptions.map((option, index) => {
-                    return (
-                      <SidebarOption key={index}>
-                        {option.icon}
-                        {option.title}
-                      </SidebarOption>
-                    );
-                  })}
-            </SidebarOptionsContainer>
-            <button
-              onClick={() => {
-                handleSignOut();
-              }}
-            >
-              Sign Out
-            </button>
-          </SideBarContainer>
-          <SidebarBlocker
+      <SidebarBigContainer showSidebar={props.showSidebar ? "0%" : "-150%"}>
+        <SideBarContainer>
+          <SidebarProfileBox>
+            <SidebarProfilePicture src={props.profilePicture} />
+            <SidebarUsername>{props.username}</SidebarUsername>
+            <SidebarThemeModeContainer>
+              {props.themeMode === "light" ? (
+                <IoMoon
+                  style={{ cursor: "pointer" }}
+                  size={"24px"}
+                  color={lightTheme.white}
+                  onClick={() => {
+                    props.handleThemeModeChange("dark");
+                  }}
+                />
+              ) : (
+                <IoSunnyOutline
+                  style={{ cursor: "pointer" }}
+                  size={"24px"}
+                  color={darktheme.white}
+                  onClick={() => {
+                    props.handleThemeModeChange("light");
+                  }}
+                />
+              )}
+            </SidebarThemeModeContainer>
+          </SidebarProfileBox>
+          <SidebarOptionsContainer>
+            {props.themeMode === "light"
+              ? lightSidebarOptions.map((option, index) => {
+                  return (
+                    <SidebarOption key={index}>
+                      {option.icon}
+                      {option.title}
+                    </SidebarOption>
+                  );
+                })
+              : darkSidebarOptions.map((option, index) => {
+                  return (
+                    <SidebarOption key={index}>
+                      {option.icon}
+                      {option.title}
+                    </SidebarOption>
+                  );
+                })}
+          </SidebarOptionsContainer>
+          <button
             onClick={() => {
-              props.handleCloseSidebar(false);
+              handleSignOut();
             }}
-          />
-        </SidebarBigContainer>
-      ) : (
-        <></>
-      )}
+          >
+            Sign Out
+          </button>
+        </SideBarContainer>
+        <SidebarBlocker
+          showSidebar={props.showSidebar ? "100%" : "0"}
+          onClick={() => {
+            props.handleCloseSidebar(false);
+          }}
+        />
+      </SidebarBigContainer>
     </ThemeProvider>
   );
 };

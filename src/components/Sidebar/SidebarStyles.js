@@ -6,12 +6,14 @@ export const SidebarBigContainer = styled.div`
   flex-shrink: 0;
   position: absolute;
   display: flex;
+  transform: translateX(${(props) => props.showSidebar});
+  transition: 0.3s;
 `;
 
 export const SidebarBlocker = styled.div`
   background: rgba(0, 0, 0, 0.4);
-  // background: salmon;
   width: 100%;
+  opacity: ${(props) => props.showSidebar};
 `;
 
 export const SideBarContainer = styled.div`
