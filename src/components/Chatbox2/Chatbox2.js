@@ -261,11 +261,15 @@ const Chatbox2 = (props) => {
   const [messageClickedIndex, setMessageClickedIndex] = useState(-1);
   const [messageIdToReply, setMessageIdToReply] = useState(null);
   const [childMessageToReply, setChildMessageToReply] = useState(null);
+  const inputRef = useRef(null);
 
   const handleReply = (childMessage) => {
     console.log("childMessage", childMessage);
     setChildMessageToReply(childMessage.message_body);
     setMessageIdToReply(childMessage.id);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   const getParentMessagePreview = (messageId) => {
@@ -316,7 +320,13 @@ const Chatbox2 = (props) => {
                 );
               } else {
                 return (
-                  <SentMessage key={index} message={message} index={index} />
+                  <SentMessage
+                    key={index}
+                    message={message}
+                    index={index}
+                    handleReply={handleReply}
+                    conversationData={conversationData}
+                  />
                 );
               }
             })
@@ -338,7 +348,13 @@ const Chatbox2 = (props) => {
               <RxCross2 size={"1.4rem"} />
             </MessageAttachmentPreviewIcon>
           </MessageAttachmentPreview> */}
+          {childMessageToReply !== null ? (
+            <div>{childMessageToReply}</div>
+          ) : (
+            <></>
+          )}
           <MessageInput
+            ref={inputRef}
             value={messageContent}
             rows="1"
             onKeyDown={handleKeyDown}
