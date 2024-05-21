@@ -1,4 +1,19 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const sizes = {
+  desktop: 1024,
+  tablet: 768,
+  phone: 576,
+};
+
+const media = Object.keys(sizes).reduce((acc, label) => {
+  acc[label] = (...args) => css`
+    @media (max-width: ${sizes[label]}px) {
+      ${css(...args)}
+    }
+  `;
+  return acc;
+}, {});
 
 export const ProfilePageContainer = styled.div`
   // height: 100vh;
@@ -28,6 +43,10 @@ export const ProfilePageProfilePictureContainer = styled.div`
       0.15
     ); /* Adjust the opacity to darken the background */
     z-index: 1; /* Ensure the overlay is on top of the background image */
+  }
+
+  @media (min-width: 1024px) {
+    height: 50vh;
   }
 `;
 
