@@ -11,7 +11,7 @@ export const SidebarBigContainer = styled.div`
 `;
 
 export const SidebarBlocker = styled.div`
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.05);
   width: 100%;
   opacity: ${(props) => props.showSidebar};
 `;

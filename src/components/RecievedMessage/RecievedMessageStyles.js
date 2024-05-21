@@ -29,3 +29,8 @@ export const RecievedMessageMedia = styled.video`
   border-radius: 5px;
   cursor: pointer;
 `;
+
+export const RecievedMessageReplyContainer = styled.div`
+  background: red;
+  width: 100%;
+`;

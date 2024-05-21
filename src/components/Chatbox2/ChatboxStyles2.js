@@ -101,7 +101,7 @@ export const MessageInputBar = styled.div`
   justify-content: space-between;
   position: fixed;
   width: 100%;
-  z-index: 1;
+  z-index: 99;
   bottom: 0;
 `;
 
@@ -138,7 +138,7 @@ export const ChatboxHeader = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.borderGrey};
   position: fixed;
   width: 100%;
-  z-index: 1;
+  z-index: 99;
   display: flex;
   align-items: center;
   gap: 16px;

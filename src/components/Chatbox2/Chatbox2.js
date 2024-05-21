@@ -145,6 +145,7 @@ const Chatbox2 = (props) => {
       );
       setMessageContent("");
       setMessageFile(null);
+      setChildMessageToReply(null);
       setMessageIdToReply(null);
       getEverything();
       scrollToBottom();
@@ -259,6 +260,13 @@ const Chatbox2 = (props) => {
   const [showMessageOptionsModal, setShowMessageOptionsModal] = useState(true);
   const [messageClickedIndex, setMessageClickedIndex] = useState(-1);
   const [messageIdToReply, setMessageIdToReply] = useState(null);
+  const [childMessageToReply, setChildMessageToReply] = useState(null);
+
+  const handleReply = (childMessage) => {
+    console.log("childMessage", childMessage);
+    setChildMessageToReply(childMessage.message_body);
+    setMessageIdToReply(childMessage.id);
+  };
 
   const getParentMessagePreview = (messageId) => {
     const parentMessageObj = allMessagesData.filter(
@@ -302,6 +310,8 @@ const Chatbox2 = (props) => {
                     key={index}
                     message={message}
                     index={index}
+                    handleReply={handleReply}
+                    conversationData={conversationData}
                   />
                 );
               } else {

@@ -4,6 +4,7 @@ import {
   RecievedMessageContainer,
   RecievedMessageDate,
   RecievedMessageMedia,
+  RecievedMessageReplyContainer,
 } from "./RecievedMessageStyles";
 import { darktheme, lightTheme } from "../../theme";
 import { useEffect } from "react";
@@ -12,8 +13,10 @@ import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { useContext } from "react";
 import { UserContext } from "../../App";
+import { useState } from "react";
+import MessageModal from "../MessageModal/MessageModal";
 
-const RecievedMessage = ({ message, index }) => {
+const RecievedMessage = ({ message, index, handleReply, conversationData }) => {
   const user = useContext(UserContext);
   const {
     id,
@@ -22,6 +25,7 @@ const RecievedMessage = ({ message, index }) => {
     attachment_url,
     is_read,
     message_recipient_id,
+    parent_message_id,
   } = message;
 
   // console.log("RecievedMessage", message);
@@ -45,8 +49,44 @@ const RecievedMessage = ({ message, index }) => {
     return handleFirebaseDate(date).substring(5);
   };
 
+  //message modal functions
+
+  const [openMessageModal, setOpenMessageModal] = useState(false);
+  const [messageModalX, setMessageModalX] = useState(0);
+  const [messageModalY, setMessageModalY] = useState(0);
+  const [parentMessageContent, setParentMessageContent] = useState(null);
+
+  const handleBlockerClicked = () => {
+    setOpenMessageModal(false);
+  };
+
+  useEffect(() => {
+    if (parent_message_id !== null) {
+      getParentMessage();
+    }
+  }, [parent_message_id]);
+
+  const getParentMessage = () => {
+    const parentMessage = conversationData.filter((message) => {
+      console.log("message", message);
+      return message.id === parent_message_id;
+    });
+    setParentMessageContent(parentMessage[0]);
+    console.log("parentMessage", parentMessage[0]);
+  };
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+      <MessageModal
+        themeMode={user?.themeMode}
+        show={openMessageModal}
+        handleBlockerClicked={handleBlockerClicked}
+        messageModalX={messageModalX}
+        messageModalY={messageModalY}
+        handleReply={() => {
+          handleReply({ id: id, message_body: message_body });
+        }}
+      />
       <RecievedMessageContainer>
         {message.attachment_url ? (
           <>
@@ -67,7 +107,22 @@ const RecievedMessage = ({ message, index }) => {
         <RecievedMessageDate>
           {getDateFromFirebaseDate(date_created)}
         </RecievedMessageDate>
-        <RecievedMessageBubble>{message_body}</RecievedMessageBubble>
+        <RecievedMessageBubble
+          onClick={(e) => {
+            setOpenMessageModal(true);
+            setMessageModalX(e.clientX);
+            setMessageModalY(e.clientY);
+          }}
+        >
+          {parent_message_id !== null ? (
+            <RecievedMessageReplyContainer>
+              {parentMessageContent?.message_body}
+            </RecievedMessageReplyContainer>
+          ) : (
+            <></>
+          )}
+          {message_body}
+        </RecievedMessageBubble>
       </RecievedMessageContainer>
     </ThemeProvider>
   );

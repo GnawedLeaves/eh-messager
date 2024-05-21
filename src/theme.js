@@ -8,6 +8,7 @@ export const lightTheme = {
   white: "#FEFBF1",
   borderGrey: "#D1D1D1",
   boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
+  error: "#FF565D",
 };
 
 export const darktheme = {
@@ -20,6 +21,7 @@ export const darktheme = {
   white: "#FEFBF1",
   borderGrey: "#464646",
   boxShadow: "",
+  error: "#FF565D",
 };
 
 export const theme = {
