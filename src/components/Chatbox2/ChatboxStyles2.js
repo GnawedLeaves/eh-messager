@@ -13,7 +13,7 @@ export const MessagingContainer = styled.div`
 `;
 export const MessagingDisplayContainer = styled.div`
   width: 100%;
-  height: 50rem;
+  height: 60rem;
   overflow-y: auto;
   padding: 1rem 0;
   padding: 64px 0 52px 0;

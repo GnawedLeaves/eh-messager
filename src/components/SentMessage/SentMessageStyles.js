@@ -18,11 +18,11 @@ export const SentMessageBubble = styled.div`
   background: ${(props) => props.theme.primary};
   color: ${(props) => props.theme.white};
   box-sizing: border-box;
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  word-wrap: wrap;
-  overflow-wrap: break-word;
+  // display: flex;
+  // align-items: flex-end;
+  // gap: 8px;
+  // word-wrap: wrap;
+  // overflow-wrap: break-word;
 `;
 
 export const SentMessageTickContainer = styled.div`
@@ -43,4 +43,25 @@ export const SentMessageMedia = styled.video`
   border: 1px solid ${(props) => props.theme.primary};
   border-radius: 5px;
   cursor: pointer;
+`;
+
+export const SentMessageReplyContainer = styled.div`
+  background: ${(props) => props.theme.primaryLight};
+  padding: 8px 8px;
+  border-radius: 8px;
+  margin: 4px 0;
+  width: 100%;
+  border-left: 2px solid ${(props) => props.theme.white};
+`;
+export const SentMessageReplyUsername = styled.div`
+  font-weight: bold;
+`;
+
+export const SentMessageBodyAndTick = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  word-wrap: wrap;
+  overflow-wrap: break-word;
+  justify-content: space-between;
 `;

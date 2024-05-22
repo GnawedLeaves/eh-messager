@@ -17,7 +17,9 @@ export const RecievedMessageBubble = styled.div`
   width: fit-content;
   padding: 0.5rem 0.8rem;
   background: ${(props) => props.theme.grey};
-  background: salmon;
+  background: #ff787f;
+  //background: salmon;
+
   color: ${(props) => props.theme.white};
   border-radius: 1rem;
 `;
@@ -31,6 +33,13 @@ export const RecievedMessageMedia = styled.video`
 `;
 
 export const RecievedMessageReplyContainer = styled.div`
-  background: red;
+  background: #ff8b91;
+  padding: 8px 8px;
+  border-radius: 8px;
+  margin: 4px 0;
   width: 100%;
+  border-left: 2px solid ${(props) => props.theme.white};
+`;
+export const RecievedMessageReplyUsername = styled.div`
+  font-weight: bold;
 `;

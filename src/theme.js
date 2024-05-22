@@ -1,5 +1,7 @@
 export const lightTheme = {
-  primary: "#F86624",
+  primary: "#F8865C",
+  primaryDark: "#CF6C47",
+  primaryLight: "#FF966E",
   text: "#333333",
   background: "#F7F3E6",
   innerBackground: "#FEFBF1",
@@ -12,7 +14,9 @@ export const lightTheme = {
 };
 
 export const darktheme = {
-  primary: "#F86624",
+  primary: "#F8865C",
+  primaryDark: "#CF6C47",
+  primaryLight: "#FF966E",
   text: "#FEFBF1",
   background: "#1B1B1B",
   innerBackground: "#292929",

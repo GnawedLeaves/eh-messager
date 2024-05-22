@@ -5,6 +5,7 @@ import {
   RecievedMessageDate,
   RecievedMessageMedia,
   RecievedMessageReplyContainer,
+  RecievedMessageReplyUsername,
 } from "./RecievedMessageStyles";
 import { darktheme, lightTheme } from "../../theme";
 import { useEffect } from "react";
@@ -15,8 +16,15 @@ import { useContext } from "react";
 import { UserContext } from "../../App";
 import { useState } from "react";
 import MessageModal from "../MessageModal/MessageModal";
+import { useRef } from "react";
 
-const RecievedMessage = ({ message, index, handleReply, conversationData }) => {
+const RecievedMessage = ({
+  message,
+  index,
+  handleReply,
+  conversationData,
+  allUserData,
+}) => {
   const user = useContext(UserContext);
   const {
     id,
@@ -26,6 +34,7 @@ const RecievedMessage = ({ message, index, handleReply, conversationData }) => {
     is_read,
     message_recipient_id,
     parent_message_id,
+    creator_id,
   } = message;
 
   // console.log("RecievedMessage", message);
@@ -67,12 +76,18 @@ const RecievedMessage = ({ message, index, handleReply, conversationData }) => {
   }, [parent_message_id]);
 
   const getParentMessage = () => {
+    //get the name of parent message
+    const parentMessageCreatorUsername = allUserData.filter((user) => {
+      return user.userId === creator_id;
+    });
     const parentMessage = conversationData.filter((message) => {
-      console.log("message", message);
       return message.id === parent_message_id;
     });
-    setParentMessageContent(parentMessage[0]);
-    console.log("parentMessage", parentMessage[0]);
+
+    setParentMessageContent({
+      message: parentMessage[0],
+      creatorData: parentMessageCreatorUsername[0],
+    });
   };
 
   return (
@@ -116,7 +131,10 @@ const RecievedMessage = ({ message, index, handleReply, conversationData }) => {
         >
           {parent_message_id !== null ? (
             <RecievedMessageReplyContainer>
-              {parentMessageContent?.message_body}
+              <RecievedMessageReplyUsername>
+                {parentMessageContent?.creatorData.username}
+              </RecievedMessageReplyUsername>
+              {parentMessageContent?.message.message_body}
             </RecievedMessageReplyContainer>
           ) : (
             <></>

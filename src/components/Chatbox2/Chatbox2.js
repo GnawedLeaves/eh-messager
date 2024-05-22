@@ -160,6 +160,7 @@ const Chatbox2 = (props) => {
   const [conversationData, setConversationData] = useState([]);
 
   const [otherUserData, setOtherUserData] = useState({});
+  const [allUserData, setAllUserData] = useState([]);
 
   const getAllMessages = async () => {
     let allMessages = [];
@@ -183,6 +184,18 @@ const Chatbox2 = (props) => {
       ];
     });
     setAllRecievedMessages(allRecievedMessages);
+  };
+  //TODO: Get all user data
+  const getAllUsersData = async () => {
+    let allUsers = [];
+
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach((doc) => {
+      const docData = doc.data();
+      allUsers = [...allUsers, { userId: doc.id, ...docData }];
+    });
+    console.log("allUsers", allUsers);
+    setAllUserData(allUsers);
   };
 
   const getOtherUserData = async () => {
@@ -238,9 +251,10 @@ const Chatbox2 = (props) => {
     scrollToBottom();
   };
 
-  const getEverything = () => {
+  const getEverything = async () => {
     getAllMessages();
     getAllRecievedMessages();
+    getAllUsersData();
     scrollToBottom();
     console.count("API Called");
   };
@@ -316,6 +330,7 @@ const Chatbox2 = (props) => {
                     index={index}
                     handleReply={handleReply}
                     conversationData={conversationData}
+                    allUserData={allUserData}
                   />
                 );
               } else {
@@ -326,6 +341,7 @@ const Chatbox2 = (props) => {
                     index={index}
                     handleReply={handleReply}
                     conversationData={conversationData}
+                    allUserData={allUserData}
                   />
                 );
               }
@@ -349,7 +365,17 @@ const Chatbox2 = (props) => {
             </MessageAttachmentPreviewIcon>
           </MessageAttachmentPreview> */}
           {childMessageToReply !== null ? (
-            <div>{childMessageToReply}</div>
+            <div
+              style={{
+                maxWidth: "30%",
+                color:
+                  user?.themeMode === "light"
+                    ? lightTheme.text
+                    : darktheme.text,
+              }}
+            >
+              {childMessageToReply}
+            </div>
           ) : (
             <></>
           )}

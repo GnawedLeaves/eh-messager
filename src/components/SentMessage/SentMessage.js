@@ -1,9 +1,12 @@
 import { ThemeProvider } from "styled-components";
 import {
+  SentMessageBodyAndTick,
   SentMessageBubble,
   SentMessageContainer,
   SentMessageDate,
   SentMessageMedia,
+  SentMessageReplyContainer,
+  SentMessageReplyUsername,
   SentMessageTickContainer,
 } from "./SentMessageStyles";
 import { darktheme, lightTheme } from "../../theme";
@@ -15,9 +18,18 @@ import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import MessageModal from "../MessageModal/MessageModal";
-import { RecievedMessageReplyContainer } from "../RecievedMessage/RecievedMessageStyles";
+import {
+  RecievedMessageReplyContainer,
+  RecievedMessageReplyUsername,
+} from "../RecievedMessage/RecievedMessageStyles";
 
-const SentMessage = ({ message, index, handleReply, conversationData }) => {
+const SentMessage = ({
+  message,
+  index,
+  handleReply,
+  conversationData,
+  allUserData,
+}) => {
   const {
     id,
     date_created,
@@ -25,6 +37,7 @@ const SentMessage = ({ message, index, handleReply, conversationData }) => {
     attachment_url,
     parent_message_id,
     is_read,
+    creator_id,
   } = message;
   const user = useContext(UserContext);
 
@@ -49,11 +62,15 @@ const SentMessage = ({ message, index, handleReply, conversationData }) => {
 
   const getParentMessage = () => {
     const parentMessage = conversationData.filter((message) => {
-      console.log("message", message);
       return message.id === parent_message_id;
     });
-    setParentMessageContent(parentMessage[0]);
-    console.log("parentMessage", parentMessage[0]);
+    const parentMessageCreatorUsername = allUserData.filter((user) => {
+      return user.userId === creator_id;
+    });
+    setParentMessageContent({
+      message: parentMessage[0],
+      creatorData: parentMessageCreatorUsername[0],
+    });
   };
 
   return (
@@ -96,21 +113,28 @@ const SentMessage = ({ message, index, handleReply, conversationData }) => {
           }}
         >
           {parent_message_id !== null ? (
-            <RecievedMessageReplyContainer>
-              Replying to: {parentMessageContent?.message_body}
-            </RecievedMessageReplyContainer>
+            <SentMessageReplyContainer>
+              <SentMessageReplyUsername>
+                {parentMessageContent?.creatorData.username}
+              </SentMessageReplyUsername>
+              {parentMessageContent?.message.message_body}
+            </SentMessageReplyContainer>
           ) : (
             <></>
           )}
-
-          {message_body}
-          <SentMessageTickContainer>
-            {is_read ? (
-              <IoCheckmarkDoneOutline size={"16px"} color={lightTheme.white} />
-            ) : (
-              <IoCheckmark size={"16px"} color={lightTheme.white} />
-            )}
-          </SentMessageTickContainer>
+          <SentMessageBodyAndTick>
+            {message_body}
+            <SentMessageTickContainer>
+              {is_read ? (
+                <IoCheckmarkDoneOutline
+                  size={"16px"}
+                  color={lightTheme.white}
+                />
+              ) : (
+                <IoCheckmark size={"16px"} color={lightTheme.white} />
+              )}
+            </SentMessageTickContainer>
+          </SentMessageBodyAndTick>
         </SentMessageBubble>
       </SentMessageContainer>
     </ThemeProvider>
