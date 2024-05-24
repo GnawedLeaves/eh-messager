@@ -20,6 +20,11 @@ import {
   RecievedMessageOptionsModal,
   SentMessageOptionsModal,
   ChatboxHeaderProfilePicture,
+  ReplyMessageContainer,
+  MessageInputGroup,
+  ReplyMessageText,
+  ReplyMessageContentGroup,
+  ReplyMessageTitle,
 } from "./ChatboxStyles2";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -145,8 +150,7 @@ const Chatbox2 = (props) => {
       );
       setMessageContent("");
       setMessageFile(null);
-      setChildMessageToReply(null);
-      setMessageIdToReply(null);
+      clearReplyContent();
       getEverything();
       scrollToBottom();
     }
@@ -275,12 +279,14 @@ const Chatbox2 = (props) => {
   const [messageClickedIndex, setMessageClickedIndex] = useState(-1);
   const [messageIdToReply, setMessageIdToReply] = useState(null);
   const [childMessageToReply, setChildMessageToReply] = useState(null);
+  const [messageUsernameToReply, setMessageUsernameToReply] = useState("");
   const inputRef = useRef(null);
 
   const handleReply = (childMessage) => {
     console.log("childMessage", childMessage);
     setChildMessageToReply(childMessage.message_body);
     setMessageIdToReply(childMessage.id);
+    setMessageUsernameToReply(childMessage.username);
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -293,6 +299,11 @@ const Chatbox2 = (props) => {
     return parentMessageObj;
   };
 
+  const clearReplyContent = () => {
+    setChildMessageToReply(null);
+    setMessageIdToReply(null);
+    setMessageUsernameToReply(null);
+  };
   //Delete message function
   const deleteMessage = async (messageId, attachmentName) => {
     deleteMessageFromUser(messageId, attachmentName);
@@ -365,53 +376,63 @@ const Chatbox2 = (props) => {
             </MessageAttachmentPreviewIcon>
           </MessageAttachmentPreview> */}
           {childMessageToReply !== null ? (
-            <div
-              style={{
-                maxWidth: "30%",
-                color:
-                  user?.themeMode === "light"
-                    ? lightTheme.text
-                    : darktheme.text,
-              }}
-            >
-              {childMessageToReply}
-            </div>
+            <ReplyMessageContainer>
+              <ReplyMessageContentGroup>
+                <ReplyMessageTitle>
+                  Replying to: {messageUsernameToReply}
+                </ReplyMessageTitle>
+                <ReplyMessageText>{childMessageToReply}</ReplyMessageText>
+              </ReplyMessageContentGroup>
+
+              <RxCross2
+                size={"24px"}
+                onClick={() => {
+                  clearReplyContent();
+                }}
+              />
+            </ReplyMessageContainer>
           ) : (
             <></>
           )}
-          <MessageInput
-            ref={inputRef}
-            value={messageContent}
-            rows="1"
-            onKeyDown={handleKeyDown}
-            type="text"
-            onFocus={handleInputFocus}
-            onBlur={handleBlur}
-            onChange={(e) => {
-              setMessageContent(e.target.value);
-            }}
-          />
-          <MessageArrowContainerBig>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*,video/*"
-              onChange={handleFileChange}
-              style={{
-                display: "none",
+          <MessageInputGroup>
+            <MessageInput
+              ref={inputRef}
+              value={messageContent}
+              rows="1"
+              onKeyDown={handleKeyDown}
+              type="text"
+              onFocus={handleInputFocus}
+              onBlur={handleBlur}
+              onChange={(e) => {
+                setMessageContent(e.target.value);
               }}
             />
-            <MessageArrowContainerSmall onClick={handleIconClick}>
-              <IoMdAttach size="2rem" style={{ transform: "rotate(45deg)" }} />
-            </MessageArrowContainerSmall>
-            <MessageArrowContainerSmall
-              onClick={async () => {
-                sendMessage();
-              }}
-            >
-              <IoMdSend size="2rem" />
-            </MessageArrowContainerSmall>
-          </MessageArrowContainerBig>
+
+            <MessageArrowContainerBig>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,video/*"
+                onChange={handleFileChange}
+                style={{
+                  display: "none",
+                }}
+              />
+              <MessageArrowContainerSmall onClick={handleIconClick}>
+                <IoMdAttach
+                  size="2rem"
+                  style={{ transform: "rotate(45deg)" }}
+                />
+              </MessageArrowContainerSmall>
+              <MessageArrowContainerSmall
+                onClick={async () => {
+                  sendMessage();
+                }}
+              >
+                <IoMdSend size="2rem" />
+              </MessageArrowContainerSmall>
+            </MessageArrowContainerBig>
+          </MessageInputGroup>
         </MessageInputBar>
       </MessagingContainer>
     </ThemeProvider>

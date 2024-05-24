@@ -35,6 +35,7 @@ const RecievedMessage = ({
     message_recipient_id,
     parent_message_id,
     creator_id,
+    username,
   } = message;
 
   // console.log("RecievedMessage", message);
@@ -64,6 +65,7 @@ const RecievedMessage = ({
   const [messageModalX, setMessageModalX] = useState(0);
   const [messageModalY, setMessageModalY] = useState(0);
   const [parentMessageContent, setParentMessageContent] = useState(null);
+  const [creatorData, setCreatorData] = useState("");
 
   const handleBlockerClicked = () => {
     setOpenMessageModal(false);
@@ -74,6 +76,9 @@ const RecievedMessage = ({
       getParentMessage();
     }
   }, [parent_message_id]);
+  useEffect(() => {
+    getCreatorData();
+  }, []);
 
   const getParentMessage = () => {
     //get the name of parent message
@@ -90,6 +95,15 @@ const RecievedMessage = ({
     });
   };
 
+  const getCreatorData = () => {
+    //geting creator data
+    const creatorData = allUserData.filter((user) => {
+      return user.userId === creator_id;
+    });
+    console.log("creatorData", creatorData[0].username);
+    setCreatorData(creatorData[0]);
+  };
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <MessageModal
@@ -99,7 +113,11 @@ const RecievedMessage = ({
         messageModalX={messageModalX}
         messageModalY={messageModalY}
         handleReply={() => {
-          handleReply({ id: id, message_body: message_body });
+          handleReply({
+            id: id,
+            message_body: message_body,
+            username: creatorData.username,
+          });
         }}
       />
       <RecievedMessageContainer>

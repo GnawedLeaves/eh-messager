@@ -21,6 +21,20 @@ export const MessagingDisplayContainer = styled.div`
     width: 0px;
   }
 `;
+export const MessageInputBar = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: ${(props) => props.theme.innerBackground};
+  border-bottom: 1px solid ${(props) => props.theme.borderGrey};
+  position: relative;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+  bottom: 0;
+`;
 
 export const MessageRecieveDisplay = styled.div``;
 export const RecievedMessageContainer = styled.div`
@@ -89,20 +103,6 @@ export const MessageInput = styled.textarea`
   // &::-webkit-scrollbar-thumb:hover {
   //   background: #b30000;
   // }
-`;
-
-export const MessageInputBar = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  background: ${(props) => props.theme.innerBackground};
-  border-bottom: 1px solid ${(props) => props.theme.borderGrey};
-  position: relative;
-  justify-content: space-between;
-  position: fixed;
-  width: 100%;
-  z-index: 99;
-  bottom: 0;
 `;
 
 export const MessageArrowContainer = styled.div`
@@ -260,4 +260,40 @@ export const SentMessageOptionsModal = styled.div`
   background: salmon;
   z-index: 99;
   padding: 1rem;
+`;
+export const ReplyMessageContainer = styled.div`
+  width: 100%;
+  // border: 1px solid red;
+  background: ${(props) => props.theme.innerBackground};
+  padding: 8px 16px;
+  color: ${(props) => props.theme.text};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // height: 64px;
+`;
+
+export const ReplyMessageTitle = styled.div`
+  font-weight: bold;
+  color: ${(props) => props.theme.primary};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+export const ReplyMessageText = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+export const ReplyMessageContentGroup = styled.div`
+  width: 90%;
+`;
+
+export const MessageInputGroup = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
 `;

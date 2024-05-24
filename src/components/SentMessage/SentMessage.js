@@ -38,6 +38,7 @@ const SentMessage = ({
     parent_message_id,
     is_read,
     creator_id,
+    username,
   } = message;
   const user = useContext(UserContext);
 
@@ -49,6 +50,8 @@ const SentMessage = ({
   const [messageModalX, setMessageModalX] = useState(0);
   const [messageModalY, setMessageModalY] = useState(0);
   const [parentMessageContent, setParentMessageContent] = useState(null);
+  const [parentMessageUsername, setParentMessageUsername] = useState("");
+  const [creatorData, setCreatorData] = useState("");
 
   const handleBlockerClicked = () => {
     setOpenMessageModal(false);
@@ -59,6 +62,10 @@ const SentMessage = ({
       getParentMessage();
     }
   }, [parent_message_id]);
+
+  useEffect(() => {
+    getCreatorData();
+  }, []);
 
   const getParentMessage = () => {
     const parentMessage = conversationData.filter((message) => {
@@ -71,8 +78,17 @@ const SentMessage = ({
       message: parentMessage[0],
       creatorData: parentMessageCreatorUsername[0],
     });
+    setParentMessageUsername(parentMessageCreatorUsername[0].username);
   };
 
+  const getCreatorData = () => {
+    //geting creator data
+    const creatorData = allUserData.filter((user) => {
+      return user.userId === creator_id;
+    });
+    console.log("creatorData", creatorData[0].username);
+    setCreatorData(creatorData[0]);
+  };
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <MessageModal
@@ -82,7 +98,11 @@ const SentMessage = ({
         messageModalX={messageModalX}
         messageModalY={messageModalY}
         handleReply={() => {
-          handleReply({ id: id, message_body: message_body });
+          handleReply({
+            id: id,
+            message_body: message_body,
+            username: creatorData.username,
+          });
         }}
       />
       <SentMessageContainer>
