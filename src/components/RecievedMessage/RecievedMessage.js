@@ -38,8 +38,6 @@ const RecievedMessage = ({
     username,
   } = message;
 
-  // console.log("RecievedMessage", message);
-
   useEffect(() => {
     if (!is_read) {
       markAsRead(message_recipient_id);
@@ -71,6 +69,13 @@ const RecievedMessage = ({
     setOpenMessageModal(false);
   };
 
+  const handleOpenMessageModal = (e) => {
+    console.log("e inside open modal function", e.clientX);
+    setOpenMessageModal(true);
+    setMessageModalX(e.clientX);
+    setMessageModalY(e.clientY);
+  };
+
   useEffect(() => {
     if (parent_message_id !== null) {
       getParentMessage();
@@ -100,8 +105,32 @@ const RecievedMessage = ({
     const creatorData = allUserData.filter((user) => {
       return user.userId === creator_id;
     });
-    console.log("creatorData", creatorData[0].username);
+
     setCreatorData(creatorData[0]);
+  };
+
+  //detect swipe
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
+
+  const minSwipeDistance = 150;
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    console.log("starting", e);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+    // console.log("Move", e);
+  };
+
+  const handleTouchEnd = (e) => {
+    console.log("end", e);
+    if (touchStartX - touchEndX > minSwipeDistance) {
+      console.log("Swiped left");
+      handleOpenMessageModal(e);
+      // Add your swipe left handling logic here
+    }
   };
 
   return (
@@ -120,7 +149,11 @@ const RecievedMessage = ({
           });
         }}
       />
-      <RecievedMessageContainer>
+      <RecievedMessageContainer
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {message.attachment_url ? (
           <>
             <RecievedMessageDate>
@@ -142,9 +175,7 @@ const RecievedMessage = ({
         </RecievedMessageDate>
         <RecievedMessageBubble
           onClick={(e) => {
-            setOpenMessageModal(true);
-            setMessageModalX(e.clientX);
-            setMessageModalY(e.clientY);
+            handleOpenMessageModal(e);
           }}
         >
           {parent_message_id !== null ? (

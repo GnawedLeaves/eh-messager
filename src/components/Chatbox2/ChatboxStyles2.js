@@ -279,6 +279,7 @@ export const ReplyMessageTitle = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin-bottom: 4px;
 `;
 
 export const ReplyMessageText = styled.div`
