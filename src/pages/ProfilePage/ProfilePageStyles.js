@@ -152,4 +152,5 @@ export const ProfilePageButton = styled.div`
   font-size: 16px;
   text-align: center;
   box-shadow: ${(props) => props.theme.boxShadow};
+  cursor: pointer;
 `;

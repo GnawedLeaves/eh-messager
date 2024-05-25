@@ -6,8 +6,10 @@ export const handleSignOut = async () => {
   signOut(auth)
     .then(() => {
       console.log("Sign out successful");
+      return true;
     })
     .catch((error) => {
       console.log("Error when signing out: ", error);
+      return false;
     });
 };

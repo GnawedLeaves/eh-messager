@@ -8,7 +8,7 @@ import { useContext, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { useEffect } from "react";
 import { UserContext } from "../../App";
-import { db } from "../../database/firebase";
+import { auth, db } from "../../database/firebase";
 import {
   Timestamp,
   collection,
@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
+import { onAuthStateChanged } from "firebase/auth";
 
 const HomePage = (props) => {
   const user = useContext(UserContext);
@@ -39,6 +40,18 @@ const HomePage = (props) => {
       }
     }
   };
+
+  //Check if there is a user logged in, if not then log them out
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        navigate("/login");
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [navigate]);
 
   // Creating Message Previews
   //1. Get all messages recieved by user

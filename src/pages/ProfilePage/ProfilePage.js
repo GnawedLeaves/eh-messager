@@ -27,7 +27,8 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import { handleSignOut } from "../../database/functions/handleSignOut";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../database/firebase";
+import { auth, db } from "../../database/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -39,6 +40,19 @@ const ProfilePage = () => {
 
   const fileInputRef = useRef(null);
   const [messageFile, setMessageFile] = useState(null);
+
+  //Check if there is a user logged in, if not then log them out
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        navigate("/login");
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [navigate]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     setMessageFile(file);
@@ -196,8 +210,10 @@ const ProfilePage = () => {
           <ProfilePageButtonContainer>
             <ProfilePageButton
               onClick={() => {
-                handleSignOut();
-                navigate("/login");
+                if (handleSignOut()) {
+                  console.log("logging in");
+                  navigate("/login");
+                }
               }}
             >
               Sign Out

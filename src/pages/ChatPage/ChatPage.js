@@ -27,6 +27,18 @@ const ChatPage = () => {
       });
   };
 
+  //Check if there is a user logged in, if not then log them out
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        navigate("/login");
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [navigate]);
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
