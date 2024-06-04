@@ -32,7 +32,7 @@ export const ChatPreviewNameAndMessageGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 170px;
+  width: 150px;
 `;
 export const ChatPreviewName = styled.div`
   color: ${(props) => props.theme.text};
@@ -63,7 +63,6 @@ export const ChatPreviewCountReadTimeGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
 `;
 
 export const ChatPreviewMessageCount = styled.div`
@@ -85,7 +84,7 @@ export const ChatPreviewReadContainer = styled.div`
   align-items: flex-start;
   justify-content: center;
   height: 100%;
-  height: 61px;
+  height: 50px;
   opacity: ${(props) => props.opacity};
 `;
 

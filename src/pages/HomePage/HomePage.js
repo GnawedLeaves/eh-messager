@@ -186,8 +186,13 @@ const HomePage = (props) => {
           const dayAndMonth = parts.slice(1, 3).join(" ");
           dateStringFinal = dayAndMonth;
         }
-        dateStringFinal = handledDate.slice(3);
+        dateStringFinal = handledDate.substring(4, 11);
+        console.log(
+          "more than 1 week dateStringFinal",
+          handledDate.substring(4, 11)
+        );
       } else {
+        // console.log(" more than 24h dateStringFinal", handledDate.slice(-5));
         dateStringFinal = handledDate.slice(-5);
       }
 
