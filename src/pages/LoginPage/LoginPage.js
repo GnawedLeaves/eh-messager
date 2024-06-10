@@ -4,15 +4,23 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { LoginPageContainer } from "./LoginPageStyles";
+import {
+  LoginPageAppTitle,
+  LoginPageButton,
+  LoginPageContainer,
+  LoginPageSignUpSpan,
+  LoginPageSignUpText,
+  SignUpPageTitle,
+} from "./LoginPageStyles";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal/Modal";
-import { theme, theme2 } from "../../theme";
+import { lightTheme, theme, theme2 } from "../../theme";
 import { ThemeProvider } from "styled-components";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase";
+import LoginField from "../../components/LoginField/LoginField";
 
 const LoginPage = (props) => {
   const auth = getAuth();
@@ -54,6 +62,8 @@ const LoginPage = (props) => {
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserUsername, setNewUserUsername] = useState("");
   const [newConfirmUserPassword, setNewConfirmUserPassword] = useState("");
+
+  const [showSignInPage, setShowSignInPage] = useState(true);
 
   const handleSignUp = async () => {
     if (newUserPassword === newConfirmUserPassword) {
@@ -107,7 +117,7 @@ const LoginPage = (props) => {
   //--------------------------------------------------------------------------------------------
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={lightTheme}>
       <Modal
         handleModalClose={() => {
           setShowLogInFailureModal(false);
@@ -120,71 +130,89 @@ const LoginPage = (props) => {
         modalTitle="Error"
         modalContent={loginFailureMessage}
       />
-      <LoginPageContainer>
-        <h2>Sign In</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => {
-            setInputEmail(e.target.value);
-          }}
-        />
-        <br />
-        <input
-          placeholder="Password"
-          type="password"
-          onChange={(e) => {
-            setInputPassword(e.target.value);
-          }}
-        />
-        <br />
-        <button
-          onClick={() => {
-            handleLogin();
-          }}
-        >
-          Sign In
-        </button>
+      {showSignInPage ? (
+        <LoginPageContainer>
+          <LoginPageAppTitle>Eh</LoginPageAppTitle>
+          <LoginField
+            inputOnChange={(e) => {
+              setInputEmail(e.target.value);
+            }}
+            placeholder={"Email"}
+          />
+          <LoginField
+            inputOnChange={(e) => {
+              setInputPassword(e.target.value);
+            }}
+            placeholder={"Password"}
+            type="password"
+          />
+          <LoginPageButton
+            onClick={() => {
+              handleLogin();
+            }}
+          >
+            Sign In
+          </LoginPageButton>
+          <LoginPageSignUpText>
+            No account?{" "}
+            <LoginPageSignUpSpan
+              onClick={() => {
+                setShowSignInPage(false);
+              }}
+            >
+              Create One{" "}
+            </LoginPageSignUpSpan>
+          </LoginPageSignUpText>
+        </LoginPageContainer>
+      ) : (
+        <LoginPageContainer>
+          <SignUpPageTitle>Create Account</SignUpPageTitle>
+          <LoginField
+            inputOnChange={(e) => {
+              setNewUserEmail(e.target.value);
+            }}
+            placeholder={"Email"}
+          />
+          <LoginField
+            inputOnChange={(e) => {
+              setNewUserUsername(e.target.value);
+            }}
+            placeholder={"Username"}
+          />
+          <LoginField
+            inputOnChange={(e) => {
+              setNewUserPassword(e.target.value);
+            }}
+            placeholder={"Password"}
+            type="password"
+          />
+          <LoginField
+            inputOnChange={(e) => {
+              setNewConfirmUserPassword(e.target.value);
+            }}
+            placeholder={"Confirm Password"}
+            type="password"
+          />
 
-        <h2>Sign Up</h2>
-        <input
-          placeholder="Email"
-          onChange={(e) => {
-            setNewUserEmail(e.target.value);
-          }}
-        />
-        <br />
-        <input
-          placeholder="Password"
-          type="password"
-          onChange={(e) => {
-            setNewUserPassword(e.target.value);
-          }}
-        />
-        <br />
-        <input
-          placeholder="Confirm Password"
-          type="password"
-          onChange={(e) => {
-            setNewConfirmUserPassword(e.target.value);
-          }}
-        />
-        <br />
-        <input
-          placeholder="Username"
-          onChange={(e) => {
-            setNewUserUsername(e.target.value);
-          }}
-        />
-
-        <button
-          onClick={() => {
-            handleSignUp();
-          }}
-        >
-          Sign Up
-        </button>
-      </LoginPageContainer>
+          <LoginPageButton
+            onClick={() => {
+              handleSignUp();
+            }}
+          >
+            Create Account
+          </LoginPageButton>
+          <LoginPageSignUpText>
+            Already have an account?{" "}
+            <LoginPageSignUpSpan
+              onClick={() => {
+                setShowSignInPage(true);
+              }}
+            >
+              Sign In
+            </LoginPageSignUpSpan>
+          </LoginPageSignUpText>
+        </LoginPageContainer>
+      )}
     </ThemeProvider>
   );
 };
