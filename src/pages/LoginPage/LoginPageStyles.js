@@ -29,6 +29,7 @@ export const LoginPageButton = styled.button`
   color: ${(props) => props.theme.white};
   margin-top: 16px;
   box-shadow: ${(props) => props.theme.boxShadow};
+  cursor: pointer;
 `;
 
 export const LoginPageSignUpText = styled.div`

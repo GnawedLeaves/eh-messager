@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-export const LoginFieldContainer = styled.div``;
+export const LoginFieldContainer = styled.div`
+  cursor: text;
+`;
 
 export const LoginFieldInput = styled.input`
   width: 250px;

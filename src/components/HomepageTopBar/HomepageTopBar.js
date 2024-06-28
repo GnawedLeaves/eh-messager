@@ -4,6 +4,7 @@ import { darktheme, lightTheme } from "../../theme";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { useEffect } from "react";
+import SearchBar from "../SearchBar/SearchBar";
 
 const HomepageTopBar = (props) => {
   return (
@@ -16,6 +17,8 @@ const HomepageTopBar = (props) => {
           }}
         />
         Chats
+        <br />
+        <SearchBar themeMode={props.themeMode} />
       </HomePageTopBarContainer>
     </ThemeProvider>
   );
