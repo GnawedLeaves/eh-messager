@@ -6,7 +6,7 @@ export const HomePageTopBarContainer = styled.div`
   height: 56px;
   box-sizing: border-box;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 18px;
 
   color: ${(props) => props.theme.text};
