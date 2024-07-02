@@ -127,6 +127,7 @@ export const ChatboxLoading = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${(props) => props.theme.text};
 `;
 
 export const ChatboxHeader = styled.div`

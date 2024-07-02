@@ -8,7 +8,7 @@ export const SearchBarContainer = styled.div`
   border-radius: 1rem;
   padding: 0.5rem;
   gap: 0.2rem;
-  position: relative;
+  // position: relative;
 `;
 
 export const SearchBarInput = styled.input`

@@ -1,5 +1,8 @@
 import { ThemeProvider } from "styled-components";
-import { HomePageTopBarContainer } from "./HomepageTopBarStyles";
+import {
+  HomePageTopBarContainer,
+  HomePageTopBarHamburgerAndTitle,
+} from "./HomepageTopBarStyles";
 import { darktheme, lightTheme } from "../../theme";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
@@ -10,15 +13,17 @@ const HomepageTopBar = (props) => {
   return (
     <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
       <HomePageTopBarContainer>
-        <RxHamburgerMenu
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            props.handleOpenSidebar();
-          }}
-        />
-        Chats
-        <br />
-        <SearchBar themeMode={props.themeMode} />
+        <HomePageTopBarHamburgerAndTitle>
+          <RxHamburgerMenu
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              props.handleOpenSidebar();
+            }}
+          />
+          Chats
+        </HomePageTopBarHamburgerAndTitle>
+
+        <SearchBar allUsers={props.allUsers} themeMode={props.themeMode} />
       </HomePageTopBarContainer>
     </ThemeProvider>
   );

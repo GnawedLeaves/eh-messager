@@ -19,6 +19,7 @@ import {
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { onAuthStateChanged } from "firebase/auth";
+import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const HomePage = (props) => {
   const user = useContext(UserContext);
@@ -98,6 +99,9 @@ const HomePage = (props) => {
     });
     setAllUsers(allUsers);
   };
+  useEffect(() => {
+    console.log("allUsers", allUsers.length);
+  }, [allUsers]);
 
   const combineMessages = () => {
     const mapA = new Map(
@@ -292,6 +296,14 @@ const HomePage = (props) => {
 
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+      {allUsers.length > 0 ? (
+        <></>
+      ) : (
+        <LoadingScreen
+          theme={user?.themeMode === "light" ? lightTheme : darktheme}
+        />
+      )}
+
       <HomePageContainer>
         <Sidebar
           showSidebar={openSideBar}
@@ -305,6 +317,7 @@ const HomePage = (props) => {
           handleThemeModeChange={handleThemeModeChange}
         />
         <HomepageTopBar
+          allUsers={allUsers}
           handleOpenSidebar={() => {
             setOpenSideBar(true);
           }}
