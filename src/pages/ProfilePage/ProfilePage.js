@@ -34,7 +34,12 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "../../database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Modal from "../../components/Modal/Modal";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -47,7 +52,9 @@ const ProfilePage = () => {
   const fileInputRef = useRef(null);
   const [inputProfilePic, setInputProfilePic] = useState(null);
   const [showAddPicModal, setShowAddPicModal] = useState(false);
-  const [messageFileForDisplay, setMessageFileForDisplay] = useState();
+  const [messageFileForDisplay, setMessageFileForDisplay] = useState(null);
+  const [showDeleteProfilePicModal, setShowDeleteProfilePicModal] =
+    useState(false);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -66,18 +73,17 @@ const ProfilePage = () => {
     setInputProfilePic(file);
     const fileURL = URL.createObjectURL(file); // Create a URL for the file
     setMessageFileForDisplay(fileURL);
-    console.log("file", file);
   };
   const handleAddPicture = () => {
     setInputProfilePic(null);
     fileInputRef.current.click();
   };
   useEffect(() => {
-    console.log("messageFile", inputProfilePic);
-    console.log("user", user);
     if (inputProfilePic) {
       //show upload modal
       setShowAddPicModal(true);
+    } else {
+      setShowAddPicModal(false);
     }
   }, [inputProfilePic]);
 
@@ -94,12 +100,13 @@ const ProfilePage = () => {
       // Get the download URL of the uploaded file
       attachmentUrl = await getDownloadURL(fileRef);
       console.log("File uploaded successfully!", fileRef, attachmentUrl);
+      const userRef = doc(db, "users", user.userId);
 
       //update the user array about new profile pic
-      const userRef = doc(db, "users", user.userId);
       await updateDoc(userRef, {
         profilePicture: [attachmentUrl, ...user.profilePicture],
       });
+      setShowAddPicModal(false);
     } catch (e) {
       console.log("Error uploading new profile pic", e);
     }
@@ -139,6 +146,34 @@ const ProfilePage = () => {
       navigate("/home");
     }
   };
+  const getPathFromUrl = (url) => {
+    const decodedUrl = decodeURIComponent(url);
+    const baseUrl =
+      "https://firebasestorage.googleapis.com/v0/b/eh-messager-2-d4818.appspot.com/o/";
+    return decodedUrl.substring(baseUrl.length, decodedUrl.indexOf("?"));
+  };
+
+  const handleDeleteProfilePicture = async () => {
+    console.log("deleting: ", pictureCounter);
+    const userRef = doc(db, "users", user.userId);
+
+    try {
+      const fileUrl = user.profilePicture[pictureCounter];
+      const filePath = getPathFromUrl(fileUrl);
+      const pictureDeleteRef = ref(storage, filePath);
+      await deleteObject(pictureDeleteRef);
+
+      const updatedProfilePictures = [...user.profilePicture];
+      updatedProfilePictures.splice(pictureCounter, 1);
+      await updateDoc(userRef, {
+        profilePicture: updatedProfilePictures,
+      });
+
+      //delete from storage
+    } catch (e) {
+      console.log("Error deleting profile pic:", e);
+    }
+  };
 
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
@@ -163,9 +198,34 @@ const ProfilePage = () => {
             >
               Upload
             </ProfilePageButton>
-            <ProfilePageModalButton2>Cancel</ProfilePageModalButton2>
+            <ProfilePageModalButton2
+              onClick={() => {
+                setInputProfilePic(null);
+              }}
+            >
+              Cancel
+            </ProfilePageModalButton2>
           </ProfilePageModalButtonsContainer>
         </Modal>
+
+        <Modal
+          handleModalClose={() => {
+            setShowDeleteProfilePicModal(false);
+          }}
+          modalType="action"
+          actionButtonText="Delete"
+          actionButtonColor={
+            user?.themeMode === "light" ? lightTheme.error : darktheme.error
+          }
+          actionButtonClick={() => {
+            handleDeleteProfilePicture();
+          }}
+          show={showDeleteProfilePicModal}
+          modalTitle="Delete Picture?"
+          modalContent=""
+          theme={user?.themeMode === "light" ? lightTheme : darktheme}
+        />
+
         <ProfilePageProfilePictureContainer
           src={user?.profilePicture[pictureCounter]}
         >
@@ -203,6 +263,9 @@ const ProfilePage = () => {
           {viewingOwnProfile ? (
             <ProfilePageProfilePictureIcon>
               <IoTrashOutline
+                onClick={() => {
+                  setShowDeleteProfilePicModal(true);
+                }}
                 color={
                   user?.themeMode === "light"
                     ? lightTheme.white
@@ -270,7 +333,6 @@ const ProfilePage = () => {
             <ProfilePageButton
               onClick={() => {
                 if (handleSignOut()) {
-                  console.log("logging in");
                   navigate("/login");
                 }
               }}
