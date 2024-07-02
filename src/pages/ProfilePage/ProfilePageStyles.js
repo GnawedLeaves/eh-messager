@@ -154,3 +154,28 @@ export const ProfilePageButton = styled.div`
   box-shadow: ${(props) => props.theme.boxShadow};
   cursor: pointer;
 `;
+export const ProfilePageModalButton2 = styled(ProfilePageButton)`
+  background: ${(props) => props.theme.background};
+  color: ${(props) => props.theme.text};
+  border: 1px solid ${(props) => props.theme.borderGrey};
+`;
+
+export const ProfilePageModalButtonsContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+export const ProfilePageModalImage = styled.img`
+  width: 100%;
+  height: 10rem;
+  margin-bottom: 2rem;
+  object-fit: cover;
+  border-radius: 0.3rem;
+  border: 1px solid ${(props) => props.theme.borderGrey};
+`;
+
+export const ProfilePageModalAddPicTitle = styled.div`
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+`;

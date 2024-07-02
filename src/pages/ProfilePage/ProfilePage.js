@@ -15,6 +15,10 @@ import {
   ProfilePageProfilePictureContainer,
   ProfilePageProfilePictureContainerSide,
   ProfilePageProfilePictureIcon,
+  ProfilePageModalButton2,
+  ProfilePageModalButtonsContainer,
+  ProfilePageModalImage,
+  ProfilePageModalAddPicTitle,
 } from "./ProfilePageStyles";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
@@ -26,9 +30,11 @@ import { IoAddOutline } from "react-icons/io5";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { handleSignOut } from "../../database/functions/handleSignOut";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../database/firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, db, storage } from "../../database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import Modal from "../../components/Modal/Modal";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -39,7 +45,9 @@ const ProfilePage = () => {
   const [pictureCounter, setPictureCounter] = useState(0);
 
   const fileInputRef = useRef(null);
-  const [messageFile, setMessageFile] = useState(null);
+  const [inputProfilePic, setInputProfilePic] = useState(null);
+  const [showAddPicModal, setShowAddPicModal] = useState(false);
+  const [messageFileForDisplay, setMessageFileForDisplay] = useState();
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -55,19 +63,47 @@ const ProfilePage = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
-    setMessageFile(file);
+    setInputProfilePic(file);
+    const fileURL = URL.createObjectURL(file); // Create a URL for the file
+    setMessageFileForDisplay(fileURL);
     console.log("file", file);
   };
   const handleAddPicture = () => {
-    setMessageFile(null);
+    setInputProfilePic(null);
     fileInputRef.current.click();
   };
-
-  //TODO: Add confirmation modal for uploading new pic
   useEffect(() => {
-    console.log("messageFile", messageFile);
-  }, [messageFile]);
-  //  TODO: check if user is at his own page, if yes then allow edit if not then normal profile viewing
+    console.log("messageFile", inputProfilePic);
+    console.log("user", user);
+    if (inputProfilePic) {
+      //show upload modal
+      setShowAddPicModal(true);
+    }
+  }, [inputProfilePic]);
+
+  const handleAddNewProfilePic = async () => {
+    let attachmentUrl = null;
+    let attachmentName = "";
+    const timestamp = new Date().getTime();
+    attachmentName = `file_${timestamp}_${inputProfilePic.name}`;
+    // Get a reference to the storage location and the path where the file is saved
+    const fileRef = ref(storage, `profilePictures/${attachmentName}`);
+    // Upload the file to Firebase Storage
+    try {
+      await uploadBytes(fileRef, inputProfilePic);
+      // Get the download URL of the uploaded file
+      attachmentUrl = await getDownloadURL(fileRef);
+      console.log("File uploaded successfully!", fileRef, attachmentUrl);
+
+      //update the user array about new profile pic
+      const userRef = doc(db, "users", user.userId);
+      await updateDoc(userRef, {
+        profilePicture: [attachmentUrl, ...user.profilePicture],
+      });
+    } catch (e) {
+      console.log("Error uploading new profile pic", e);
+    }
+  };
 
   const [viewingOwnProfile, setViewingOwnProfile] = useState(false);
   const [otherUserData, setOtherUserData] = useState(null);
@@ -107,6 +143,29 @@ const ProfilePage = () => {
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <ProfilePageContainer>
+        <Modal
+          theme={user?.themeMode === "light" ? lightTheme : darktheme}
+          modalType="empty"
+          show={showAddPicModal}
+          handleModalClose={() => {
+            setShowAddPicModal(false);
+          }}
+        >
+          <ProfilePageModalAddPicTitle>
+            Upload Picture?
+          </ProfilePageModalAddPicTitle>
+          <ProfilePageModalImage src={messageFileForDisplay} />
+          <ProfilePageModalButtonsContainer>
+            <ProfilePageButton
+              onClick={() => {
+                handleAddNewProfilePic();
+              }}
+            >
+              Upload
+            </ProfilePageButton>
+            <ProfilePageModalButton2>Cancel</ProfilePageModalButton2>
+          </ProfilePageModalButtonsContainer>
+        </Modal>
         <ProfilePageProfilePictureContainer
           src={user?.profilePicture[pictureCounter]}
         >

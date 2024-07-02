@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ModalContainer = styled.dialog`
   border-radius: 1rem;
-  width: 15rem;
+  max-width: 80%;
   min-height: 9rem;
   border: none;
   display: ${(props) => (props.display ? "flex" : "none")};
@@ -11,6 +11,10 @@ export const ModalContainer = styled.dialog`
   justify-content: center;
   gap: 0.5rem;
   padding: 2rem;
+  text-align: center;
+  border: 1px solid ${(props) => props.theme.borderGrey};
+  background: ${(props) => props.theme.background};
+  color: ${(props) => props.theme.text};
 `;
 
 export const ModalTitle = styled.div`
@@ -30,12 +34,17 @@ export const ModalButtonContainer = styled.div`
 `;
 
 export const EmptyModalContainer = styled.dialog`
-  display: ${(props) => (props.display ? "" : "none")};
+  display: ${(props) => (props.display ? "flex" : "none")};
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border-radius: 1rem;
   border: none;
-  // min-height: 10rem;
-  // min-width: 10rem;
-  padding: 1rem;
+  width: 80%;
+  padding: 2rem;
+  border: 1px solid ${(props) => props.theme.borderGrey};
+  background: ${(props) => props.theme.background};
+  color: ${(props) => props.theme.text};
 `;
 export const EmptyModalCloseContainer = styled.div`
   width: 100%;

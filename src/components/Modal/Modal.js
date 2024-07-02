@@ -77,46 +77,50 @@ const Modal = (props) => {
     switch (modalType) {
       case "empty":
         return (
-          <EmptyModalContainer ref={modalRef} display={props.show}>
-            <EmptyModalCloseContainer display={props.showCross}>
-              <IoMdClose
-                size="1.8rem"
-                onClick={() => {
-                  closeModal();
-                }}
-                style={{ cursor: "pointer" }}
-              />
-            </EmptyModalCloseContainer>
+          <ThemeProvider theme={props.theme}>
+            <EmptyModalContainer ref={modalRef} display={props.show}>
+              <EmptyModalCloseContainer display={props.showCross}>
+                <IoMdClose
+                  size="1.8rem"
+                  onClick={() => {
+                    closeModal();
+                  }}
+                  style={{ cursor: "pointer" }}
+                />
+              </EmptyModalCloseContainer>
 
-            {props.children}
-          </EmptyModalContainer>
+              {props.children}
+            </EmptyModalContainer>
+          </ThemeProvider>
         );
       case "action":
         return (
-          <ModalContainer display={props.show} ref={modalRef}>
-            <ModalTitle>{props.modalTitle}</ModalTitle>
-            <ModalContent>{props.modalContent}</ModalContent>
-            <ModalButtonContainer>
-              <Button
-                filled={true}
-                filledColor={props.actionButtonColor}
-                defaultColor={props.actionButtonColor}
-                onClick={() => {
-                  closeModal();
-                  props.actionButtonClick();
-                }}
-              >
-                {props.actionButtonText ? props.actionButtonText : "OK"}
-              </Button>
-              <Button
-                onClick={() => {
-                  closeModal();
-                }}
-              >
-                {props.closingButtonText ? props.closingButtonText : "Cancel"}
-              </Button>
-            </ModalButtonContainer>
-          </ModalContainer>
+          <ThemeProvider theme={props.theme}>
+            <ModalContainer display={props.show} ref={modalRef}>
+              <ModalTitle>{props.modalTitle}</ModalTitle>
+              <ModalContent>{props.modalContent}</ModalContent>
+              <ModalButtonContainer>
+                <Button
+                  filled={true}
+                  filledColor={props.actionButtonColor}
+                  defaultColor={props.actionButtonColor}
+                  onClick={() => {
+                    closeModal();
+                    props.actionButtonClick();
+                  }}
+                >
+                  {props.actionButtonText ? props.actionButtonText : "OK"}
+                </Button>
+                <Button
+                  onClick={() => {
+                    closeModal();
+                  }}
+                >
+                  {props.closingButtonText ? props.closingButtonText : "Cancel"}
+                </Button>
+              </ModalButtonContainer>
+            </ModalContainer>
+          </ThemeProvider>
         );
       default:
         return (
