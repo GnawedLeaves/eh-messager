@@ -105,9 +105,17 @@ const LoginPage = (props) => {
         dateAdded: timestamp,
         themeMode: "light",
         profilePicture: [
-          "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/profilePictures%2Fphoto_2024-05-19%2015.40.14.jpeg?alt=media&token=13e40b41-8311-4f84-a881-8a70436b2318",
+          "hhttps://firebasestorage.googleapis.com/v0/b/eh-messager-2-d4818.appspot.com/o/profilePictures%2Ffile_1720006592709_rothus%20the%20traveler.png?alt=media&token=8320c536-1d6e-48f8-9ae2-a3684a73ded1",
         ],
         bio: "Eh hello",
+        themeColor: {
+          lightThemeBackground: "#F7F3E6",
+          darkThemeBackground: "#1B1B1B",
+          userTextBackgroundColor: "#F8865C",
+          userTextColor: "#FEFBF1",
+          otherUserTextBackgroundColor: "#ff787f",
+          otherUserTextColor: "#FEFBF1",
+        },
       });
       console.log("user added", userDocRef);
     } catch (e) {

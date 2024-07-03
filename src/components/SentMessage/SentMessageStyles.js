@@ -18,11 +18,6 @@ export const SentMessageBubble = styled.div`
   background: ${(props) => props.theme.primary};
   color: ${(props) => props.theme.white};
   box-sizing: border-box;
-  // display: flex;
-  // align-items: flex-end;
-  // gap: 8px;
-  // word-wrap: wrap;
-  // overflow-wrap: break-word;
 `;
 
 export const SentMessageTickContainer = styled.div`

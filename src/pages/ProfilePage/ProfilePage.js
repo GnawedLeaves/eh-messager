@@ -19,6 +19,11 @@ import {
   ProfilePageModalButtonsContainer,
   ProfilePageModalImage,
   ProfilePageModalAddPicTitle,
+  ProfilePageInput,
+  ProfilePageInputAndCounterContainer,
+  ProfilePageUsernameCharCounter,
+  ProfilePageUsernameInfoContainer,
+  ProfilePageCharacterLeft,
 } from "./ProfilePageStyles";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
@@ -40,6 +45,9 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
+import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
+import { RxCross2 } from "react-icons/rx";
+import { BiPencil } from "react-icons/bi";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -55,6 +63,10 @@ const ProfilePage = () => {
   const [messageFileForDisplay, setMessageFileForDisplay] = useState(null);
   const [showDeleteProfilePicModal, setShowDeleteProfilePicModal] =
     useState(false);
+
+  const [editingNewUsername, setEditingNewUsername] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [usernameCharRemaining, setUsernameCharRemaining] = useState(30);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -117,12 +129,14 @@ const ProfilePage = () => {
 
   useEffect(() => {
     setViewingOwnProfile(user?.userId === params.userId);
+    setNewUsername(user?.username);
   }, [user, params]);
 
   useEffect(() => {
     if (!viewingOwnProfile) {
       getOtherUserData();
     }
+    console.log(user?.profilePicture[0]);
   }, [viewingOwnProfile]);
 
   const getOtherUserData = async () => {
@@ -175,97 +189,124 @@ const ProfilePage = () => {
     }
   };
 
+  //count the number of characters remaining
+  useEffect(() => {
+    let remainingChars = 30 - newUsername?.length;
+    if (remainingChars < 0) {
+      remainingChars = 0;
+    }
+    setUsernameCharRemaining(remainingChars);
+    console.log("remainingChars", remainingChars);
+  }, [newUsername]);
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
-      <ProfilePageContainer>
-        <Modal
-          theme={user?.themeMode === "light" ? lightTheme : darktheme}
-          modalType="empty"
-          show={showAddPicModal}
-          handleModalClose={() => {
-            setShowAddPicModal(false);
-          }}
-        >
-          <ProfilePageModalAddPicTitle>
-            Upload Picture?
-          </ProfilePageModalAddPicTitle>
-          <ProfilePageModalImage src={messageFileForDisplay} />
-          <ProfilePageModalButtonsContainer>
-            <ProfilePageButton
-              onClick={() => {
-                handleAddNewProfilePic();
-              }}
-            >
-              Upload
-            </ProfilePageButton>
-            <ProfilePageModalButton2
-              onClick={() => {
-                setInputProfilePic(null);
-              }}
-            >
-              Cancel
-            </ProfilePageModalButton2>
-          </ProfilePageModalButtonsContainer>
-        </Modal>
-
-        <Modal
-          handleModalClose={() => {
-            setShowDeleteProfilePicModal(false);
-          }}
-          modalType="action"
-          actionButtonText="Delete"
-          actionButtonColor={
-            user?.themeMode === "light" ? lightTheme.error : darktheme.error
-          }
-          actionButtonClick={() => {
-            handleDeleteProfilePicture();
-          }}
-          show={showDeleteProfilePicModal}
-          modalTitle="Delete Picture?"
-          modalContent=""
-          theme={user?.themeMode === "light" ? lightTheme : darktheme}
-        />
-
-        <ProfilePageProfilePictureContainer
-          src={user?.profilePicture[pictureCounter]}
-        >
-          <ProfilePageProfilePictureContainerSide
-            onClick={() => {
-              if (pictureCounter === 0) {
-                setPictureCounter(
-                  viewingOwnProfile
-                    ? user?.profilePicture.length - 1
-                    : otherUserData?.profilePicture.length - 1
-                );
-              } else {
-                setPictureCounter((prevState) => prevState - 1);
-              }
+      {user ? (
+        <ProfilePageContainer>
+          <Modal
+            theme={user?.themeMode === "light" ? lightTheme : darktheme}
+            modalType="empty"
+            show={showAddPicModal}
+            handleModalClose={() => {
+              setShowAddPicModal(false);
             }}
-          />
-          <ProfilePageProfilePictureContainerSide
-            onClick={() => {
-              if (
-                viewingOwnProfile
-                  ? pictureCounter === user?.profilePicture.length - 1
-                  : pictureCounter === otherUserData?.profilePicture.length - 1
-              ) {
-                setPictureCounter(0);
-              } else {
-                setPictureCounter((prevState) => prevState + 1);
-              }
-            }}
-          />
-
-          <ProfilePagePictureCounter viewingOwnProfile={viewingOwnProfile}>
-            {pictureCounter + 1 + "/" + otherUserData?.profilePicture.length}
-          </ProfilePagePictureCounter>
-
-          {viewingOwnProfile ? (
-            <ProfilePageProfilePictureIcon>
-              <IoTrashOutline
+          >
+            <ProfilePageModalAddPicTitle>
+              Upload Picture?
+            </ProfilePageModalAddPicTitle>
+            <ProfilePageModalImage src={messageFileForDisplay} />
+            <ProfilePageModalButtonsContainer>
+              <ProfilePageButton
                 onClick={() => {
-                  setShowDeleteProfilePicModal(true);
+                  handleAddNewProfilePic();
                 }}
+              >
+                Upload
+              </ProfilePageButton>
+              <ProfilePageModalButton2
+                onClick={() => {
+                  setInputProfilePic(null);
+                }}
+              >
+                Cancel
+              </ProfilePageModalButton2>
+            </ProfilePageModalButtonsContainer>
+          </Modal>
+
+          <Modal
+            handleModalClose={() => {
+              setShowDeleteProfilePicModal(false);
+            }}
+            modalType="action"
+            actionButtonText="Delete"
+            actionButtonColor={
+              user?.themeMode === "light" ? lightTheme.error : darktheme.error
+            }
+            actionButtonClick={() => {
+              handleDeleteProfilePicture();
+            }}
+            show={showDeleteProfilePicModal}
+            modalTitle="Delete Picture?"
+            modalContent=""
+            theme={user?.themeMode === "light" ? lightTheme : darktheme}
+          />
+
+          <ProfilePageProfilePictureContainer
+            src={user?.profilePicture[pictureCounter]}
+          >
+            <ProfilePageProfilePictureContainerSide
+              onClick={() => {
+                if (pictureCounter === 0) {
+                  setPictureCounter(
+                    viewingOwnProfile
+                      ? user?.profilePicture.length - 1
+                      : otherUserData?.profilePicture.length - 1
+                  );
+                } else {
+                  setPictureCounter((prevState) => prevState - 1);
+                }
+              }}
+            />
+            <ProfilePageProfilePictureContainerSide
+              onClick={() => {
+                if (
+                  viewingOwnProfile
+                    ? pictureCounter === user?.profilePicture.length - 1
+                    : pictureCounter ===
+                      otherUserData?.profilePicture.length - 1
+                ) {
+                  setPictureCounter(0);
+                } else {
+                  setPictureCounter((prevState) => prevState + 1);
+                }
+              }}
+            />
+
+            <ProfilePagePictureCounter viewingOwnProfile={viewingOwnProfile}>
+              {pictureCounter + 1 + "/" + otherUserData?.profilePicture.length}
+            </ProfilePagePictureCounter>
+
+            {viewingOwnProfile ? (
+              <ProfilePageProfilePictureIcon>
+                <IoTrashOutline
+                  onClick={() => {
+                    setShowDeleteProfilePicModal(true);
+                  }}
+                  color={
+                    user?.themeMode === "light"
+                      ? lightTheme.white
+                      : darktheme.white
+                  }
+                  size={"25px"}
+                />
+              </ProfilePageProfilePictureIcon>
+            ) : (
+              <></>
+            )}
+
+            <ProfilePageProfilePictureBackIcon onClick={handleNavigateBack}>
+              <IoArrowBackOutline
+                style={{ cursor: "pointer" }}
                 color={
                   user?.themeMode === "light"
                     ? lightTheme.white
@@ -273,77 +314,150 @@ const ProfilePage = () => {
                 }
                 size={"25px"}
               />
-            </ProfilePageProfilePictureIcon>
-          ) : (
-            <></>
-          )}
+            </ProfilePageProfilePictureBackIcon>
 
-          <ProfilePageProfilePictureBackIcon onClick={handleNavigateBack}>
-            <IoArrowBackOutline
-              style={{ cursor: "pointer" }}
-              color={
-                user?.themeMode === "light" ? lightTheme.white : darktheme.white
-              }
-              size={"25px"}
-            />
-          </ProfilePageProfilePictureBackIcon>
+            {viewingOwnProfile ? (
+              <ProfilePageProfilePictureButton onClick={handleAddPicture}>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  style={{
+                    display: "none",
+                  }}
+                />
+                <IoAddOutline
+                  size={"34px"}
+                  color={
+                    user?.themeMode === "light"
+                      ? lightTheme.white
+                      : darktheme.white
+                  }
+                />
+              </ProfilePageProfilePictureButton>
+            ) : (
+              <></>
+            )}
+          </ProfilePageProfilePictureContainer>
+          <ProfilePageDetailsContainer>
+            <ProfilePageDetailsSubtitleAndTitleGroup>
+              <ProfilePageDetailsSubtitle>Username</ProfilePageDetailsSubtitle>
+              {viewingOwnProfile ? (
+                <ProfilePageDetailsTitle>
+                  {editingNewUsername ? (
+                    <ProfilePageInput
+                      type="text"
+                      value={newUsername}
+                      onChange={(e) => {
+                        if (usernameCharRemaining !== 0) {
+                          setNewUsername(e.target.value);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <>
+                      {viewingOwnProfile
+                        ? user?.username
+                        : otherUserData?.username}
+                    </>
+                  )}
+                  {editingNewUsername ? (
+                    <RxCross2
+                      size={"1.4rem"}
+                      color={
+                        user?.themeMode === "light"
+                          ? lightTheme.text
+                          : darktheme.text
+                      }
+                      onClick={() => {
+                        setEditingNewUsername(false);
+                        setNewUsername(user.username);
+                      }}
+                    />
+                  ) : (
+                    <BiPencil
+                      size="1.4rem"
+                      color={
+                        user?.themeMode === "light"
+                          ? lightTheme.text
+                          : darktheme.text
+                      }
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setEditingNewUsername(true);
+                      }}
+                    />
+                  )}
+                </ProfilePageDetailsTitle>
+              ) : (
+                <ProfilePageDetailsTitle>
+                  {otherUserData?.username}
+                </ProfilePageDetailsTitle>
+              )}
+
+              <ProfilePageUsernameInfoContainer>
+                {editingNewUsername ? (
+                  <>
+                    <ProfilePageCharacterLeft
+                      color={
+                        usernameCharRemaining <= 0
+                          ? user?.themeMode === "light"
+                            ? lightTheme.error
+                            : darktheme.error
+                          : user?.themeMode === "light"
+                          ? lightTheme.grey
+                          : darktheme.grey
+                      }
+                    >
+                      Number of characters left: {usernameCharRemaining}
+                    </ProfilePageCharacterLeft>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </ProfilePageUsernameInfoContainer>
+            </ProfilePageDetailsSubtitleAndTitleGroup>
+
+            <ProfilePageDetailsSubtitleAndTitleGroup>
+              <ProfilePageDetailsSubtitle>Bio</ProfilePageDetailsSubtitle>
+              <ProfilePageDetailsTitle>
+                {viewingOwnProfile ? user?.bio : otherUserData?.bio}
+                <BiPencil
+                  size="1.4rem"
+                  color={
+                    user?.themeMode === "light"
+                      ? lightTheme.white
+                      : darktheme.white
+                  }
+                  style={{ cursor: "pointer" }}
+                />
+              </ProfilePageDetailsTitle>
+            </ProfilePageDetailsSubtitleAndTitleGroup>
+          </ProfilePageDetailsContainer>
 
           {viewingOwnProfile ? (
-            <ProfilePageProfilePictureButton onClick={handleAddPicture}>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                style={{
-                  display: "none",
+            <ProfilePageButtonContainer>
+              <ProfilePageButton
+                onClick={() => {
+                  if (handleSignOut()) {
+                    navigate("/login");
+                  }
                 }}
-              />
-              <IoAddOutline
-                size={"34px"}
-                color={
-                  user?.themeMode === "light"
-                    ? lightTheme.white
-                    : darktheme.white
-                }
-              />
-            </ProfilePageProfilePictureButton>
+              >
+                Sign Out
+              </ProfilePageButton>
+            </ProfilePageButtonContainer>
           ) : (
             <></>
           )}
-        </ProfilePageProfilePictureContainer>
-        <ProfilePageDetailsContainer>
-          <ProfilePageDetailsSubtitleAndTitleGroup>
-            <ProfilePageDetailsSubtitle>Username</ProfilePageDetailsSubtitle>
-            <ProfilePageDetailsTitle>
-              {viewingOwnProfile ? user?.username : otherUserData?.username}
-            </ProfilePageDetailsTitle>
-          </ProfilePageDetailsSubtitleAndTitleGroup>
-
-          <ProfilePageDetailsSubtitleAndTitleGroup>
-            <ProfilePageDetailsSubtitle>Bio</ProfilePageDetailsSubtitle>
-            <ProfilePageDetailsTitle>
-              {viewingOwnProfile ? user?.bio : otherUserData?.bio}
-            </ProfilePageDetailsTitle>
-          </ProfilePageDetailsSubtitleAndTitleGroup>
-        </ProfilePageDetailsContainer>
-
-        {viewingOwnProfile ? (
-          <ProfilePageButtonContainer>
-            <ProfilePageButton
-              onClick={() => {
-                if (handleSignOut()) {
-                  navigate("/login");
-                }
-              }}
-            >
-              Sign Out
-            </ProfilePageButton>
-          </ProfilePageButtonContainer>
-        ) : (
-          <></>
-        )}
-      </ProfilePageContainer>
+        </ProfilePageContainer>
+      ) : (
+        <LoadingScreen
+          theme={user?.themeMode === "light" ? lightTheme : darktheme}
+          text="Loading Profile..."
+        />
+      )}
     </ThemeProvider>
   );
 };

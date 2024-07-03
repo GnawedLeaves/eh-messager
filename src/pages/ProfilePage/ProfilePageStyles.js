@@ -119,6 +119,9 @@ export const ProfilePageDetailsContainer = styled.div`
 `;
 export const ProfilePageDetailsSubtitleAndTitleGroup = styled.div`
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 export const ProfilePageDetailsSubtitle = styled.div`
   color: ${(props) => props.theme.grey};
@@ -127,11 +130,15 @@ export const ProfilePageDetailsSubtitle = styled.div`
   font-weight: 400;
 `;
 export const ProfilePageDetailsTitle = styled.div`
-  width: 296px;
   color: ${(props) => props.theme.text};
+  width: 296px;
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 export const ProfilePageButtonContainer = styled.div`
@@ -147,7 +154,7 @@ export const ProfilePageButton = styled.div`
   align-items: center;
   gap: 10px;
   border-radius: 24px;
-  background: ${(props) => props.theme.primary};
+  background: ${(props) => props.theme.error};
   color: ${(props) => props.theme.white};
   font-size: 16px;
   text-align: center;
@@ -178,4 +185,38 @@ export const ProfilePageModalAddPicTitle = styled.div`
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 2rem;
+`;
+
+export const ProfilePageInput = styled.input`
+  background: ${(props) => props.theme.background};
+  border: none;
+  color: ${(props) => props.theme.text};
+  width: 296px;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  outline: 0;
+  border-bottom: 1px solid ${(props) => props.theme.borderGrey};
+  padding: 0;
+  &:focus {
+    border-bottom: 1px solid ${(props) => props.theme.primary};
+  }
+`;
+
+export const ProfilePageInputAndCounterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const ProfilePageUsernameCharCounter = styled.div`
+  color: ${(props) => props.theme.borderGrey};
+  // border-bottom: 1px solid ${(props) => props.theme.borderGrey};
+`;
+
+export const ProfilePageUsernameInfoContainer = styled.div`
+  color: ${(props) => props.theme.grey};
+`;
+
+export const ProfilePageCharacterLeft = styled.span`
+  color: ${(props) => props.color};
 `;

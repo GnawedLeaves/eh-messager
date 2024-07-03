@@ -5,7 +5,6 @@ const LoadingScreen = (props) => {
   return (
     <ThemeProvider theme={props.theme}>
       <LoadingScreenContainer>
-        Loading Chats
         <Oval
           visible={true}
           height="80"
@@ -16,6 +15,7 @@ const LoadingScreen = (props) => {
           wrapperStyle={{}}
           wrapperClass=""
         />
+        {props.text}
       </LoadingScreenContainer>
     </ThemeProvider>
   );

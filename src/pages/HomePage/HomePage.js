@@ -301,6 +301,7 @@ const HomePage = (props) => {
       ) : (
         <LoadingScreen
           theme={user?.themeMode === "light" ? lightTheme : darktheme}
+          text="Loading Chats"
         />
       )}
 
