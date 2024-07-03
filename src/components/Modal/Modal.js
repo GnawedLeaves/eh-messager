@@ -129,7 +129,7 @@ const Modal = (props) => {
             <ModalContent>{props.modalContent}</ModalContent>
             <ModalButtonContainer>
               <Button
-                filled={false}
+                filled={true}
                 filledColor={props.actionButtonColor}
                 defaultColor={props.actionButtonColor}
                 onClick={() => {
@@ -144,7 +144,7 @@ const Modal = (props) => {
     }
   };
 
-  return <ThemeProvider theme={theme}>{getModalType()}</ThemeProvider>;
+  return <ThemeProvider theme={props.theme}>{getModalType()}</ThemeProvider>;
 };
 
 export default Modal;

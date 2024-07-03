@@ -74,6 +74,9 @@ const ProfilePage = () => {
   const [usernameCharRemaining, setUsernameCharRemaining] = useState(30);
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [bioCharRemaining, setBioCharRemaining] = useState(100);
+  const [errorModalTitle, setErrorModalTitle] = useState("");
+  const [errorModalMessage, setErrorModalMessage] = useState("");
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -128,6 +131,9 @@ const ProfilePage = () => {
       setShowAddPicModal(false);
       window.location.reload();
     } catch (e) {
+      setErrorModalTitle("Error Uploading Picture");
+      setErrorModalMessage(e);
+      setShowErrorModal(true);
       console.log("Error uploading new profile pic", e);
     }
   };
@@ -193,7 +199,10 @@ const ProfilePage = () => {
 
       //delete from storage
     } catch (e) {
+      setErrorModalTitle("Error Deleting Picture");
+      setErrorModalMessage(e);
       console.log("Error deleting profile pic:", e);
+      setShowErrorModal(true);
     }
   };
 
@@ -229,7 +238,10 @@ const ProfilePage = () => {
       console.log("Update username/bio successful");
       window.location.reload();
     } catch (e) {
+      setErrorModalTitle("Error Updating Username / Bio");
+      setErrorModalMessage(e);
       console.log("error updating username/bio", e);
+      setShowErrorModal(true);
     }
   };
 
@@ -285,6 +297,21 @@ const ProfilePage = () => {
             theme={user?.themeMode === "light" ? lightTheme : darktheme}
           />
 
+          <Modal
+            modalTitle={errorModalTitle}
+            modalContent={errorModalMessage}
+            handleModalClose={() => {
+              setErrorModalTitle("");
+              setErrorModalMessage("");
+              setShowErrorModal(false);
+            }}
+            theme={user?.themeMode === "light" ? lightTheme : darktheme}
+            show={showErrorModal}
+            actionButtonColor={
+              user?.themeMode === "light" ? lightTheme.error : darktheme.error
+            }
+          />
+
           <ProfilePageProfilePictureContainer
             src={user?.profilePicture[pictureCounter]}
           >
@@ -320,7 +347,7 @@ const ProfilePage = () => {
               {pictureCounter + 1 + "/" + otherUserData?.profilePicture.length}
             </ProfilePagePictureCounter>
 
-            {viewingOwnProfile ? (
+            {viewingOwnProfile && user?.profilePicture.length > 1 ? (
               <ProfilePageProfilePictureIcon>
                 <IoTrashOutline
                   onClick={() => {

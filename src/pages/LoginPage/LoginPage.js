@@ -127,6 +127,7 @@ const LoginPage = (props) => {
   return (
     <ThemeProvider theme={lightTheme}>
       <Modal
+        theme={lightTheme}
         handleModalClose={() => {
           setShowLogInFailureModal(false);
           setLoginFailureMessage("");
