@@ -24,6 +24,8 @@ import {
   ProfilePageUsernameCharCounter,
   ProfilePageUsernameInfoContainer,
   ProfilePageCharacterLeft,
+  ProfilePageSaveButton,
+  ProfilePageTextArea,
 } from "./ProfilePageStyles";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
@@ -65,8 +67,13 @@ const ProfilePage = () => {
     useState(false);
 
   const [editingNewUsername, setEditingNewUsername] = useState(false);
+  const [editingNewBio, setEditingNewBio] = useState(false);
+
   const [newUsername, setNewUsername] = useState("");
+  const [newBio, setNewBio] = useState("");
   const [usernameCharRemaining, setUsernameCharRemaining] = useState(30);
+  const [showSaveButton, setShowSaveButton] = useState(false);
+  const [bioCharRemaining, setBioCharRemaining] = useState(100);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -119,6 +126,7 @@ const ProfilePage = () => {
         profilePicture: [attachmentUrl, ...user.profilePicture],
       });
       setShowAddPicModal(false);
+      window.location.reload();
     } catch (e) {
       console.log("Error uploading new profile pic", e);
     }
@@ -130,13 +138,13 @@ const ProfilePage = () => {
   useEffect(() => {
     setViewingOwnProfile(user?.userId === params.userId);
     setNewUsername(user?.username);
+    setNewBio(user?.bio);
   }, [user, params]);
 
   useEffect(() => {
     if (!viewingOwnProfile) {
       getOtherUserData();
     }
-    console.log(user?.profilePicture[0]);
   }, [viewingOwnProfile]);
 
   const getOtherUserData = async () => {
@@ -168,7 +176,6 @@ const ProfilePage = () => {
   };
 
   const handleDeleteProfilePicture = async () => {
-    console.log("deleting: ", pictureCounter);
     const userRef = doc(db, "users", user.userId);
 
     try {
@@ -182,6 +189,7 @@ const ProfilePage = () => {
       await updateDoc(userRef, {
         profilePicture: updatedProfilePictures,
       });
+      window.location.reload();
 
       //delete from storage
     } catch (e) {
@@ -191,13 +199,39 @@ const ProfilePage = () => {
 
   //count the number of characters remaining
   useEffect(() => {
-    let remainingChars = 30 - newUsername?.length;
-    if (remainingChars < 0) {
-      remainingChars = 0;
+    let newUsernameRemainingChars = 30 - newUsername?.length;
+    if (newUsernameRemainingChars < 0) {
+      newUsernameRemainingChars = 0;
     }
-    setUsernameCharRemaining(remainingChars);
-    console.log("remainingChars", remainingChars);
-  }, [newUsername]);
+    setUsernameCharRemaining(newUsernameRemainingChars);
+
+    let newBioRemainingChars = 100 - newBio?.length;
+    if (newBioRemainingChars < 0) {
+      newBioRemainingChars = 0;
+    }
+    setBioCharRemaining(newBioRemainingChars);
+
+    if (newUsername !== user?.username || newBio !== user?.bio) {
+      setShowSaveButton(true);
+    } else {
+      setShowSaveButton(false);
+    }
+  }, [newUsername, newBio]);
+
+  //todo: function to update username and bio
+  const handleUsernameAndBioUpdate = async () => {
+    const userRef = doc(db, "users", user.userId);
+    try {
+      await updateDoc(userRef, {
+        username: newUsername,
+        bio: newBio,
+      });
+      console.log("Update username/bio successful");
+      window.location.reload();
+    } catch (e) {
+      console.log("error updating username/bio", e);
+    }
+  };
 
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
@@ -216,13 +250,13 @@ const ProfilePage = () => {
             </ProfilePageModalAddPicTitle>
             <ProfilePageModalImage src={messageFileForDisplay} />
             <ProfilePageModalButtonsContainer>
-              <ProfilePageButton
+              <ProfilePageSaveButton
                 onClick={() => {
                   handleAddNewProfilePic();
                 }}
               >
                 Upload
-              </ProfilePageButton>
+              </ProfilePageSaveButton>
               <ProfilePageModalButton2
                 onClick={() => {
                   setInputProfilePic(null);
@@ -350,17 +384,13 @@ const ProfilePage = () => {
                       type="text"
                       value={newUsername}
                       onChange={(e) => {
-                        if (usernameCharRemaining !== 0) {
+                        if (e.target.value.length <= 30) {
                           setNewUsername(e.target.value);
                         }
                       }}
                     />
                   ) : (
-                    <>
-                      {viewingOwnProfile
-                        ? user?.username
-                        : otherUserData?.username}
-                    </>
+                    <>{user?.username}</>
                   )}
                   {editingNewUsername ? (
                     <RxCross2
@@ -421,21 +451,93 @@ const ProfilePage = () => {
 
             <ProfilePageDetailsSubtitleAndTitleGroup>
               <ProfilePageDetailsSubtitle>Bio</ProfilePageDetailsSubtitle>
-              <ProfilePageDetailsTitle>
-                {viewingOwnProfile ? user?.bio : otherUserData?.bio}
-                <BiPencil
-                  size="1.4rem"
-                  color={
-                    user?.themeMode === "light"
-                      ? lightTheme.white
-                      : darktheme.white
-                  }
-                  style={{ cursor: "pointer" }}
-                />
-              </ProfilePageDetailsTitle>
+              {viewingOwnProfile ? (
+                <ProfilePageDetailsTitle>
+                  {editingNewBio ? (
+                    <ProfilePageTextArea
+                      rows="3"
+                      type="text"
+                      value={newBio}
+                      onChange={(e) => {
+                        if (e.target.value.length <= 100) {
+                          setNewBio(e.target.value);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <>{user?.bio}</>
+                  )}
+                  {editingNewBio ? (
+                    <RxCross2
+                      size={"1.4rem"}
+                      color={
+                        user?.themeMode === "light"
+                          ? lightTheme.text
+                          : darktheme.text
+                      }
+                      onClick={() => {
+                        setEditingNewBio(false);
+                        setNewBio(user.bio);
+                      }}
+                    />
+                  ) : (
+                    <BiPencil
+                      size="1.4rem"
+                      color={
+                        user?.themeMode === "light"
+                          ? lightTheme.text
+                          : darktheme.text
+                      }
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setEditingNewBio(true);
+                      }}
+                    />
+                  )}
+                </ProfilePageDetailsTitle>
+              ) : (
+                <ProfilePageDetailsTitle>
+                  {otherUserData?.bio}
+                </ProfilePageDetailsTitle>
+              )}
+
+              <ProfilePageUsernameInfoContainer>
+                {editingNewBio ? (
+                  <>
+                    <ProfilePageCharacterLeft
+                      color={
+                        bioCharRemaining <= 0
+                          ? user?.themeMode === "light"
+                            ? lightTheme.error
+                            : darktheme.error
+                          : user?.themeMode === "light"
+                          ? lightTheme.grey
+                          : darktheme.grey
+                      }
+                    >
+                      Number of characters left: {bioCharRemaining}
+                    </ProfilePageCharacterLeft>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </ProfilePageUsernameInfoContainer>
             </ProfilePageDetailsSubtitleAndTitleGroup>
           </ProfilePageDetailsContainer>
 
+          {viewingOwnProfile && showSaveButton ? (
+            <ProfilePageButtonContainer>
+              <ProfilePageSaveButton
+                onClick={() => {
+                  handleUsernameAndBioUpdate();
+                }}
+              >
+                Save Changes
+              </ProfilePageSaveButton>
+            </ProfilePageButtonContainer>
+          ) : (
+            <></>
+          )}
           {viewingOwnProfile ? (
             <ProfilePageButtonContainer>
               <ProfilePageButton

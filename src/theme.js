@@ -11,6 +11,7 @@ export const lightTheme = {
   borderGrey: "#D1D1D1",
   boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
   error: "#FF565D",
+  font: "Poppins, sans-serif",
 };
 
 export const darktheme = {
@@ -26,6 +27,7 @@ export const darktheme = {
   borderGrey: "#464646",
   boxShadow: "",
   error: "#FF565D",
+  font: "Poppins, sans-serif",
 };
 
 export const theme = {

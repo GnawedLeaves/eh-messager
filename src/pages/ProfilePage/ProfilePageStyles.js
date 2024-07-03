@@ -145,6 +145,7 @@ export const ProfilePageButtonContainer = styled.div`
   width: 100%;
   justify-content: center;
   display: flex;
+  margin-bottom: 2rem;
 `;
 
 export const ProfilePageButton = styled.div`
@@ -154,11 +155,12 @@ export const ProfilePageButton = styled.div`
   align-items: center;
   gap: 10px;
   border-radius: 24px;
-  background: ${(props) => props.theme.error};
-  color: ${(props) => props.theme.white};
+  border: 2px solid ${(props) => props.theme.error};
+  background: ${(props) => props.theme.background};
+  color: ${(props) => props.theme.error};
   font-size: 16px;
   text-align: center;
-  box-shadow: ${(props) => props.theme.boxShadow};
+  // box-shadow: ${(props) => props.theme.boxShadow};
   cursor: pointer;
 `;
 export const ProfilePageModalButton2 = styled(ProfilePageButton)`
@@ -219,4 +221,25 @@ export const ProfilePageUsernameInfoContainer = styled.div`
 
 export const ProfilePageCharacterLeft = styled.span`
   color: ${(props) => props.color};
+`;
+
+export const ProfilePageSaveButton = styled(ProfilePageButton)`
+  border: 2px solid ${(props) => props.theme.primary};
+  background: ${(props) => props.theme.primary};
+  color: ${(props) => props.theme.white};
+`;
+
+export const ProfilePageTextArea = styled.textarea`
+  background: ${(props) => props.theme.background};
+  color: ${(props) => props.theme.text};
+  border: none;
+  width: 100%;
+  font-family: ${(props) => props.theme.font};
+  font-size: 20px;
+  outline: 0;
+  border-bottom: 1px solid ${(props) => props.theme.borderGrey};
+  padding: 0 0.5rem 0 0;
+  &:focus {
+    border-bottom: 1px solid ${(props) => props.theme.primary};
+  }
 `;
