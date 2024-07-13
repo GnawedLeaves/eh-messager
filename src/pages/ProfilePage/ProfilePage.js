@@ -26,6 +26,7 @@ import {
   ProfilePageCharacterLeft,
   ProfilePageSaveButton,
   ProfilePageTextArea,
+  ProfilePageModalAddPicSubtitle,
 } from "./ProfilePageStyles";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
@@ -50,6 +51,7 @@ import {
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import { RxCross2 } from "react-icons/rx";
 import { BiPencil } from "react-icons/bi";
+import { Oval } from "react-loader-spinner";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -77,6 +79,7 @@ const ProfilePage = () => {
   const [errorModalTitle, setErrorModalTitle] = useState("");
   const [errorModalMessage, setErrorModalMessage] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [uploadingNewProfilePic, setUploadingNewProfilePic] = useState(false);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -110,6 +113,7 @@ const ProfilePage = () => {
   }, [inputProfilePic]);
 
   const handleAddNewProfilePic = async () => {
+    setUploadingNewProfilePic(true);
     let attachmentUrl = null;
     let attachmentName = "";
     const timestamp = new Date().getTime();
@@ -129,8 +133,10 @@ const ProfilePage = () => {
         profilePicture: [attachmentUrl, ...user.profilePicture],
       });
       setShowAddPicModal(false);
+      setUploadingNewProfilePic(false);
       window.location.reload();
     } catch (e) {
+      setUploadingNewProfilePic(false);
       setErrorModalTitle("Error Uploading Picture");
       setErrorModalMessage(e);
       setShowErrorModal(true);
@@ -262,26 +268,54 @@ const ProfilePage = () => {
               setShowAddPicModal(false);
             }}
           >
-            <ProfilePageModalAddPicTitle>
-              Upload Picture?
-            </ProfilePageModalAddPicTitle>
-            <ProfilePageModalImage src={messageFileForDisplay} />
-            <ProfilePageModalButtonsContainer>
-              <ProfilePageSaveButton
-                onClick={() => {
-                  handleAddNewProfilePic();
-                }}
-              >
-                Upload
-              </ProfilePageSaveButton>
-              <ProfilePageModalButton2
-                onClick={() => {
-                  setInputProfilePic(null);
-                }}
-              >
-                Cancel
-              </ProfilePageModalButton2>
-            </ProfilePageModalButtonsContainer>
+            {uploadingNewProfilePic ? (
+              <>
+                <ProfilePageModalAddPicSubtitle>
+                  Uploading Picture...
+                </ProfilePageModalAddPicSubtitle>
+                <Oval
+                  visible={true}
+                  height="60"
+                  width="60"
+                  color={
+                    user?.themeMode === "light"
+                      ? lightTheme.primary
+                      : darktheme.primary
+                  }
+                  secondaryColor={
+                    user?.themeMode === "light"
+                      ? lightTheme.primary
+                      : darktheme.primary
+                  }
+                  ariaLabel="oval-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+              </>
+            ) : (
+              <>
+                <ProfilePageModalAddPicTitle>
+                  Upload Picture?
+                </ProfilePageModalAddPicTitle>
+                <ProfilePageModalImage src={messageFileForDisplay} />
+                <ProfilePageModalButtonsContainer>
+                  <ProfilePageSaveButton
+                    onClick={() => {
+                      handleAddNewProfilePic();
+                    }}
+                  >
+                    Upload
+                  </ProfilePageSaveButton>
+                  <ProfilePageModalButton2
+                    onClick={() => {
+                      setInputProfilePic(null);
+                    }}
+                  >
+                    Cancel
+                  </ProfilePageModalButton2>
+                </ProfilePageModalButtonsContainer>
+              </>
+            )}
           </Modal>
 
           <Modal

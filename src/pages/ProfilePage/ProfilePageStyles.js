@@ -189,6 +189,13 @@ export const ProfilePageModalAddPicTitle = styled.div`
   margin-bottom: 2rem;
 `;
 
+export const ProfilePageModalAddPicSubtitle = styled.div`
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+`;
+
 export const ProfilePageInput = styled.input`
   background: ${(props) => props.theme.background};
   border: none;
