@@ -72,8 +72,9 @@ const SentMessage = ({
       return message.id === parent_message_id;
     });
     const parentMessageCreatorUsername = allUserData.filter((user) => {
-      return user.userId === creator_id;
+      return user.userId === parentMessage[0].creator_id;
     });
+
     setParentMessageContent({
       message: parentMessage[0],
       creatorData: parentMessageCreatorUsername[0],

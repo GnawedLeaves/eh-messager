@@ -283,7 +283,6 @@ const Chatbox2 = (props) => {
   const inputRef = useRef(null);
 
   const handleReply = (childMessage) => {
-    console.log("childMessage", childMessage);
     setChildMessageToReply(childMessage.message_body);
     setMessageIdToReply(childMessage.id);
     setMessageUsernameToReply(childMessage.username);

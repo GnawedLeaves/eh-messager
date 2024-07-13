@@ -87,11 +87,13 @@ const RecievedMessage = ({
 
   const getParentMessage = () => {
     //get the name of parent message
-    const parentMessageCreatorUsername = allUserData.filter((user) => {
-      return user.userId === creator_id;
-    });
+
     const parentMessage = conversationData.filter((message) => {
       return message.id === parent_message_id;
+    });
+
+    const parentMessageCreatorUsername = allUserData.filter((user) => {
+      return user.userId === parentMessage[0].creator_id;
     });
 
     setParentMessageContent({
