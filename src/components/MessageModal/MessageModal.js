@@ -9,10 +9,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 
 const MessageModal = (props) => {
-  // useEffect(() => {
-  //   console.log("props.messageModalX", props.messageModalX);
-  //   console.log("props.messageModalY", props.messageModalY);
-  // }, [props]);
   return (
     <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
       <MessageModalBlocker
@@ -37,6 +33,7 @@ const MessageModal = (props) => {
         </MessageModalOption>
         <MessageModalOption
           onClick={() => {
+            props.handleDeleteMessage();
             props.handleBlockerClicked();
             console.log("Delete clicked");
           }}

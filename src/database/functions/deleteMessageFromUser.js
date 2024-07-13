@@ -9,16 +9,18 @@ import {
   where,
 } from "firebase/firestore";
 
-export const deleteMessageFromUser = async (messageId, attachmentName) => {
-  if (attachmentName !== null) {
-    const messageStorageRef = ref(storage, `messages/${attachmentName}`);
-    try {
-      await deleteObject(messageStorageRef);
-      console.log("file deleted from storage");
-    } catch (e) {
-      console.log("Error deleting attachment from storage: ", e);
-    }
-  }
+export const deleteMessageFromUser = async (messageId, attachment_url) => {
+  //TODO: Delete file from storage once the attachment feature is completed.
+
+  // if (attachment_url !== null) {
+  //   const messageStorageRef = ref(storage, `messages/${attachment_url}`);
+  //   try {
+  //     await deleteObject(messageStorageRef);
+  //     console.log("file deleted from storage");
+  //   } catch (e) {
+  //     console.log("Error deleting attachment from storage: ", e);
+  //   }
+  // }
 
   if (messageId !== null) {
     const messageRecipientRef = collection(db, "message_recipient");

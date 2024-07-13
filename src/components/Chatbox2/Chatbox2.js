@@ -304,8 +304,9 @@ const Chatbox2 = (props) => {
     setMessageUsernameToReply(null);
   };
   //Delete message function
-  const deleteMessage = async (messageId, attachmentName) => {
-    deleteMessageFromUser(messageId, attachmentName);
+  const handleDeleteMessage = async (messageId, attachment_url) => {
+    console.log(messageId, attachment_url);
+    deleteMessageFromUser(messageId, attachment_url);
   };
 
   useEffect(() => {
@@ -341,6 +342,7 @@ const Chatbox2 = (props) => {
                     handleReply={handleReply}
                     conversationData={conversationData}
                     allUserData={allUserData}
+                    handleDeleteMessage={handleDeleteMessage}
                   />
                 );
               } else {
@@ -352,6 +354,7 @@ const Chatbox2 = (props) => {
                     handleReply={handleReply}
                     conversationData={conversationData}
                     allUserData={allUserData}
+                    handleDeleteMessage={handleDeleteMessage}
                   />
                 );
               }

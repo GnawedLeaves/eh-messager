@@ -24,6 +24,7 @@ const RecievedMessage = ({
   handleReply,
   conversationData,
   allUserData,
+  handleDeleteMessage,
 }) => {
   const user = useContext(UserContext);
   const {
@@ -143,6 +144,9 @@ const RecievedMessage = ({
         handleBlockerClicked={handleBlockerClicked}
         messageModalX={messageModalX}
         messageModalY={messageModalY}
+        handleDeleteMessage={() => {
+          handleDeleteMessage(id, attachment_url);
+        }}
         handleReply={() => {
           handleReply({
             id: id,

@@ -29,6 +29,7 @@ const SentMessage = ({
   handleReply,
   conversationData,
   allUserData,
+  handleDeleteMessage,
 }) => {
   const {
     id,
@@ -98,6 +99,9 @@ const SentMessage = ({
         handleBlockerClicked={handleBlockerClicked}
         messageModalX={messageModalX}
         messageModalY={messageModalY}
+        handleDeleteMessage={() => {
+          handleDeleteMessage(id, attachment_url);
+        }}
         handleReply={() => {
           handleReply({
             id: id,
