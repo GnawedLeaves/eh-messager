@@ -34,9 +34,9 @@ export const SentMessageDate = styled.div`
 
 export const SentMessageMedia = styled.video`
   max-height: 50%;
-  max-width: 90%;
+  max-width: 100%;
   border: 1px solid ${(props) => props.theme.primary};
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
 `;
 

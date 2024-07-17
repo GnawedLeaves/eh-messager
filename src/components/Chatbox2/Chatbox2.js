@@ -140,7 +140,7 @@ const Chatbox2 = (props) => {
   };
 
   const sendMessage = async () => {
-    if (messageContent !== "") {
+    if (messageContent !== "" || messageFile !== null) {
       await sendMessageToUser(
         userId,
         otherPersonId,
@@ -313,6 +313,11 @@ const Chatbox2 = (props) => {
     scrollToBottom();
   }, [conversationData]);
 
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
       <MessagingContainer>
@@ -365,10 +370,10 @@ const Chatbox2 = (props) => {
         </MessagingDisplayContainer>
 
         <MessageInputBar>
-          {/* <MessageAttachmentPreview
-            transformValue={messageFile ? "-4.5rem" : "3rem"}
+          <MessageAttachmentPreview
+            transformValue={messageFile ? "-2.5rem" : "4rem"}
           >
-            Attached File: {messageFile ? messageFile.name : ""}
+            Attached: {messageFile ? truncateText(messageFile.name, 30) : ""}
             <MessageAttachmentPreviewIcon
               onClick={() => {
                 setMessageFile(null);
@@ -376,7 +381,7 @@ const Chatbox2 = (props) => {
             >
               <RxCross2 size={"1.4rem"} />
             </MessageAttachmentPreviewIcon>
-          </MessageAttachmentPreview> */}
+          </MessageAttachmentPreview>
           {childMessageToReply !== null ? (
             <ReplyMessageContainer>
               <ReplyMessageContentGroup>

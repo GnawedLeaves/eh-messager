@@ -111,22 +111,6 @@ const SentMessage = ({
         }}
       />
       <SentMessageContainer>
-        {message.attachment_url ? (
-          <>
-            <SentMessageDate>
-              {getDateFromFirebaseDate(date_created)}
-            </SentMessageDate>
-            <SentMessageMedia
-              onClick={() => {
-                window.open(attachment_url, "_blank", "noopener");
-              }}
-              src={attachment_url}
-              poster={attachment_url}
-            />
-          </>
-        ) : (
-          <></>
-        )}
         <SentMessageDate>
           {getDateFromFirebaseDate(date_created)}
         </SentMessageDate>
@@ -144,6 +128,19 @@ const SentMessage = ({
               </SentMessageReplyUsername>
               {parentMessageContent?.message.message_body}
             </SentMessageReplyContainer>
+          ) : (
+            <></>
+          )}
+          {message.attachment_url ? (
+            <>
+              <SentMessageMedia
+                onClick={() => {
+                  window.open(attachment_url, "_blank", "noopener");
+                }}
+                src={attachment_url}
+                poster={attachment_url}
+              />
+            </>
           ) : (
             <></>
           )}

@@ -25,9 +25,9 @@ export const RecievedMessageBubble = styled.div`
 
 export const RecievedMessageMedia = styled.video`
   max-height: 50%;
-  max-width: 90%;
+  max-width: 100%;
   border: 1px solid ${(props) => props.theme.grey};
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
 `;
 

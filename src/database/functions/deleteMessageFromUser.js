@@ -12,15 +12,18 @@ import {
 export const deleteMessageFromUser = async (messageId, attachment_url) => {
   //TODO: Delete file from storage once the attachment feature is completed.
 
-  // if (attachment_url !== null) {
-  //   const messageStorageRef = ref(storage, `messages/${attachment_url}`);
-  //   try {
-  //     await deleteObject(messageStorageRef);
-  //     console.log("file deleted from storage");
-  //   } catch (e) {
-  //     console.log("Error deleting attachment from storage: ", e);
-  //   }
-  // }
+  if (attachment_url !== null) {
+    const storagePath = decodeURIComponent(
+      attachment_url.split("/o/")[1].split("?alt=media")[0]
+    );
+    const messageStorageRef = ref(storage, storagePath);
+    try {
+      await deleteObject(messageStorageRef);
+      console.log("file deleted from storage");
+    } catch (e) {
+      console.log("Error deleting attachment from storage: ", e);
+    }
+  }
 
   if (messageId !== null) {
     const messageRecipientRef = collection(db, "message_recipient");

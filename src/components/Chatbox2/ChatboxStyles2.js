@@ -206,9 +206,11 @@ export const MessageArrowContainerBig = styled.div`
   gap: 0.5rem;
   width: fit-content;
   padding-right: 0.5rem;
-  z-index: 11;
+
   color: ${(props) => props.theme.text};
   height: 100%;
+  position: relative;
+  z-index: 8;
 `;
 
 export const MessageArrowContainerSmall = styled.div`
@@ -216,21 +218,24 @@ export const MessageArrowContainerSmall = styled.div`
   &:hover {
     transform: scale(1.2);
   }
+  position: relative;
+  z-index: 8;
 `;
 
 export const MessageAttachmentPreview = styled.div`
   position: absolute;
   width: 100%;
   top: ${(props) => props.transformValue};
-  z-index: 10;
+  z-index: 9;
   transition: 0.3s;
-  // border-top: 1px solid ${(props) => props.theme.borderGrey};
-  background: ${(props) => props.theme.background};
-  padding: 0.6rem 1rem;
+  // border-top: 1px solid ${(props) => props.theme.white};
+  background: ${(props) => props.theme.innerBackground};
+  padding: 0.8rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  color: ${(props) => props.theme.text};
 `;
 
 export const MessageAttachmentPreviewIcon = styled.div`
@@ -272,6 +277,8 @@ export const ReplyMessageContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   // height: 64px;
+  position: relative;
+  z-index: 11;
 `;
 
 export const ReplyMessageTitle = styled.div`
@@ -298,4 +305,7 @@ export const MessageInputGroup = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  position: relative;
+  z-index: 11;
+  background: ${(props) => props.theme.innerBackground};
 `;

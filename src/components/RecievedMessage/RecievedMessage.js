@@ -160,22 +160,6 @@ const RecievedMessage = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {message.attachment_url ? (
-          <>
-            <RecievedMessageDate>
-              {getDateFromFirebaseDate(date_created)}
-            </RecievedMessageDate>
-            <RecievedMessageMedia
-              onClick={() => {
-                window.open(attachment_url, "_blank", "noopener");
-              }}
-              src={attachment_url}
-              poster={attachment_url}
-            />
-          </>
-        ) : (
-          <></>
-        )}
         <RecievedMessageDate>
           {getDateFromFirebaseDate(date_created)}
         </RecievedMessageDate>
@@ -191,6 +175,19 @@ const RecievedMessage = ({
               </RecievedMessageReplyUsername>
               {parentMessageContent?.message.message_body}
             </RecievedMessageReplyContainer>
+          ) : (
+            <></>
+          )}
+          {message.attachment_url ? (
+            <>
+              <RecievedMessageMedia
+                onClick={() => {
+                  window.open(attachment_url, "_blank", "noopener");
+                }}
+                src={attachment_url}
+                poster={attachment_url}
+              />
+            </>
           ) : (
             <></>
           )}
