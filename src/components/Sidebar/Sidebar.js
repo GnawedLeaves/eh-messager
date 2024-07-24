@@ -13,10 +13,10 @@ import {
 import { darktheme, lightTheme } from "../../theme";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoPersonCircleOutline } from "react-icons/io5";
-
+import { IoHomeSharp } from "react-icons/io5";
 import { IoColorPaletteSharp } from "react-icons/io5";
 import { IoColorPaletteOutline } from "react-icons/io5";
-
+import { IoHomeOutline } from "react-icons/io5";
 import { IoSunnyOutline } from "react-icons/io5";
 import { IoMoon } from "react-icons/io5";
 import { signOut } from "firebase/auth";
@@ -34,6 +34,11 @@ const Sidebar = (props) => {
 
   const lightSidebarOptions = [
     {
+      title: "Home",
+      icon: <IoHomeSharp size={"24px"} />,
+      navigateTo: "/home",
+    },
+    {
       title: "Profile",
       icon: <IoPersonCircleSharp size={"24px"} />,
       navigateTo: profileNavigationString,
@@ -46,6 +51,11 @@ const Sidebar = (props) => {
   ];
 
   const darkSidebarOptions = [
+    {
+      title: "Home",
+      icon: <IoHomeOutline size={"24px"} />,
+      navigateTo: "/home",
+    },
     {
       title: "Profile",
       icon: <IoPersonCircleOutline size={"24px"} />,

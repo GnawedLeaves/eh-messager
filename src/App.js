@@ -64,7 +64,10 @@ function App() {
                 element={<HomePage getUserData={getUserData} />}
               />
               <Route path="/profile/:userId" element={<ProfilePage />} />
-              <Route path="/theme" element={<ThemePage />} />
+              <Route
+                path="/theme"
+                element={<ThemePage getUserData={getUserData} />}
+              />
             </>
           </Routes>
         </Suspense>

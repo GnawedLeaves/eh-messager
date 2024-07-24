@@ -99,9 +99,6 @@ const HomePage = (props) => {
     });
     setAllUsers(allUsers);
   };
-  useEffect(() => {
-    console.log("allUsers", allUsers.length);
-  }, [allUsers]);
 
   const combineMessages = () => {
     const mapA = new Map(

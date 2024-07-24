@@ -40,7 +40,6 @@ const SearchBar = (props) => {
   }, [searchBarInput]);
 
   useEffect(() => {
-    console.log(props.allUsers);
     if (props.allUsers) {
       setAllUsers(props.allUsers);
     }
@@ -65,7 +64,6 @@ const SearchBar = (props) => {
             value={searchBarInput}
             onChange={(e) => {
               setSearchBarInput(e.target.value);
-              console.log(e.target.value);
             }}
           />
           {searchBarInput !== "" ? (

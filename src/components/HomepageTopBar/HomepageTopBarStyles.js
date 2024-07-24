@@ -15,7 +15,7 @@ export const HomePageTopBarContainer = styled.div`
 
 export const HomePageTopBarHamburgerAndTitle = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 18px;
   margin-bottom: 1rem;
 `;
