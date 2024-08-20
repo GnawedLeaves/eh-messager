@@ -10,6 +10,7 @@ export const MessagingContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  // background: red;
 `;
 export const MessagingDisplayContainer = styled.div`
   width: 100%;

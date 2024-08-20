@@ -279,12 +279,12 @@ const ProfilePage = () => {
                   width="60"
                   color={
                     user?.themeMode === "light"
-                      ? lightTheme.primary
+                      ? lightTheme().primary
                       : darktheme.primary
                   }
                   secondaryColor={
                     user?.themeMode === "light"
-                      ? lightTheme.primary
+                      ? lightTheme().primary
                       : darktheme.primary
                   }
                   ariaLabel="oval-loading"
@@ -325,7 +325,7 @@ const ProfilePage = () => {
             modalType="action"
             actionButtonText="Delete"
             actionButtonColor={
-              user?.themeMode === "light" ? lightTheme.error : darktheme.error
+              user?.themeMode === "light" ? lightTheme().error : darktheme.error
             }
             actionButtonClick={() => {
               handleDeleteProfilePicture();
@@ -347,7 +347,7 @@ const ProfilePage = () => {
             theme={user?.themeMode === "light" ? lightTheme : darktheme}
             show={showErrorModal}
             actionButtonColor={
-              user?.themeMode === "light" ? lightTheme.error : darktheme.error
+              user?.themeMode === "light" ? lightTheme().error : darktheme.error
             }
           />
 
@@ -398,7 +398,7 @@ const ProfilePage = () => {
                   }}
                   color={
                     user?.themeMode === "light"
-                      ? lightTheme.white
+                      ? lightTheme().white
                       : darktheme.white
                   }
                   size={"25px"}
@@ -413,7 +413,7 @@ const ProfilePage = () => {
                 style={{ cursor: "pointer" }}
                 color={
                   user?.themeMode === "light"
-                    ? lightTheme.white
+                    ? lightTheme().white
                     : darktheme.white
                 }
                 size={"25px"}
@@ -432,10 +432,10 @@ const ProfilePage = () => {
                   }}
                 />
                 <IoAddOutline
-                  size={"34px"}
+                  size={"40px"}
                   color={
                     user?.themeMode === "light"
-                      ? lightTheme.white
+                      ? lightTheme().white
                       : darktheme.white
                   }
                 />
@@ -467,7 +467,7 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme.text
+                          ? lightTheme().text
                           : darktheme.text
                       }
                       onClick={() => {
@@ -480,7 +480,7 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme.text
+                          ? lightTheme().text
                           : darktheme.text
                       }
                       style={{ cursor: "pointer" }}
@@ -503,10 +503,10 @@ const ProfilePage = () => {
                       color={
                         usernameCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? lightTheme.error
+                            ? lightTheme().error
                             : darktheme.error
                           : user?.themeMode === "light"
-                          ? lightTheme.grey
+                          ? lightTheme().grey
                           : darktheme.grey
                       }
                     >
@@ -542,7 +542,7 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme.text
+                          ? lightTheme().text
                           : darktheme.text
                       }
                       onClick={() => {
@@ -555,7 +555,7 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme.text
+                          ? lightTheme().text
                           : darktheme.text
                       }
                       style={{ cursor: "pointer" }}
@@ -578,10 +578,10 @@ const ProfilePage = () => {
                       color={
                         bioCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? lightTheme.error
+                            ? lightTheme().error
                             : darktheme.error
                           : user?.themeMode === "light"
-                          ? lightTheme.grey
+                          ? lightTheme().grey
                           : darktheme.grey
                       }
                     >

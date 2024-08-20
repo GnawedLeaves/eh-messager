@@ -1,4 +1,42 @@
-export const lightTheme = {
+export const lightTheme = () => {
+  const themeNumber = 1;
+
+  if (themeNumber === 1) {
+    return {
+      primary: "#F8865C",
+      primaryDark: "#CF6C47",
+      primaryLight: "#FF966E",
+      text: "#333333",
+      background: "#F7F3E6",
+      innerBackground: "#FEFBF1",
+      grey: "#747886",
+      lightGrey: "#C0C0C0",
+      white: "#FEFBF1",
+      borderGrey: "#D1D1D1",
+      boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
+      error: "#FF565D",
+      font: "Poppins, sans-serif",
+    };
+  } else {
+    return {
+      primary: "#F8865C",
+      primaryDark: "#CF6C47",
+      primaryLight: "#FF966E",
+      text: "#333333",
+      background: "#F7F3E6",
+      innerBackground: "#FEFBF1",
+      grey: "#747886",
+      lightGrey: "#C0C0C0",
+      white: "#FEFBF1",
+      borderGrey: "#D1D1D1",
+      boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
+      error: "#FF565D",
+      font: "Poppins, sans-serif",
+    };
+  }
+};
+
+export const lightTheme2 = {
   primary: "#F8865C",
   primaryDark: "#CF6C47",
   primaryLight: "#FF966E",

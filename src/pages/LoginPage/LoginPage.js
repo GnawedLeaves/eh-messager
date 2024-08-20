@@ -116,6 +116,7 @@ const LoginPage = (props) => {
           otherUserTextBackgroundColor: "#ff787f",
           otherUserTextColor: "#FEFBF1",
         },
+        themes: ["defaultTheme"],
       });
       console.log("user added", userDocRef);
     } catch (e) {

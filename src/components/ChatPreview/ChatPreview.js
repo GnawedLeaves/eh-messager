@@ -39,9 +39,9 @@ const ChatPreview = (props) => {
           opacity={props.tempMessageType === "recieved" ? "0%" : "100%"}
         >
           {props.isRead ? (
-            <IoCheckmarkDoneOutline size={"20px"} color={lightTheme.grey} />
+            <IoCheckmarkDoneOutline size={"20px"} color={lightTheme().grey} />
           ) : (
-            <IoCheckmark size={"20px"} color={lightTheme.grey} />
+            <IoCheckmark size={"20px"} color={lightTheme().grey} />
           )}
         </ChatPreviewReadContainer>
 

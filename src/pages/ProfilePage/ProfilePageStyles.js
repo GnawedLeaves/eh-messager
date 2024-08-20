@@ -6,15 +6,6 @@ const sizes = {
   phone: 576,
 };
 
-const media = Object.keys(sizes).reduce((acc, label) => {
-  acc[label] = (...args) => css`
-    @media (max-width: ${sizes[label]}px) {
-      ${css(...args)}
-    }
-  `;
-  return acc;
-}, {});
-
 export const ProfilePageContainer = styled.div`
   // height: 100vh;
   min-height: 932px;
@@ -100,8 +91,8 @@ export const ProfilePageProfilePictureBackIcon = styled.div`
 
 export const ProfilePageProfilePictureButton = styled.div`
   background: ${(props) => props.theme.primary};
-  width: 68px;
-  height: 68px;
+  width: 58px;
+  height: 58px;
   flex-shrink: 0;
   position: absolute;
   border-radius: 50%;
@@ -109,7 +100,7 @@ export const ProfilePageProfilePictureButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  bottom: -34px;
+  bottom: -29px;
   right: 30px;
 `;
 

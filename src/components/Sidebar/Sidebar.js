@@ -78,6 +78,7 @@ const Sidebar = (props) => {
         console.log("Error when signing out: ", error);
       });
   };
+
   return (
     <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
       <SidebarBigContainer showSidebar={props.showSidebar ? "0%" : "-150%"}>
@@ -95,7 +96,7 @@ const Sidebar = (props) => {
                 <IoMoon
                   style={{ cursor: "pointer" }}
                   size={"24px"}
-                  color={lightTheme.white}
+                  color={lightTheme().white}
                   onClick={() => {
                     props.handleThemeModeChange("dark");
                   }}

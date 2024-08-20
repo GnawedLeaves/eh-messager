@@ -150,10 +150,10 @@ const SentMessage = ({
               {is_read ? (
                 <IoCheckmarkDoneOutline
                   size={"16px"}
-                  color={lightTheme.white}
+                  color={lightTheme().white}
                 />
               ) : (
-                <IoCheckmark size={"16px"} color={lightTheme.white} />
+                <IoCheckmark size={"16px"} color={lightTheme().white} />
               )}
             </SentMessageTickContainer>
           </SentMessageBodyAndTick>

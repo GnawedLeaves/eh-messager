@@ -66,7 +66,6 @@ const ChatPage = () => {
         <>
           <HomePageContainer>
             <Chatbox2 userId={user?.userId} otherPersonId={params.chatId} />
-            {/* <Chatbox2 userId={params.chatId} otherPersonId={user?.userId} /> */}
           </HomePageContainer>
         </>
       ) : (
