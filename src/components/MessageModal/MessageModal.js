@@ -1,5 +1,5 @@
 import { ThemeProvider } from "styled-components";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import {
   MessageModalBlocker,
   MessageModalContainer,
@@ -10,7 +10,7 @@ import { useState } from "react";
 
 const MessageModal = (props) => {
   return (
-    <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={props.themeMode === "light" ? LightTheme : darktheme}>
       <MessageModalBlocker
         show={props.show}
         onClick={() => {

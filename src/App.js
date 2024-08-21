@@ -50,9 +50,17 @@ function App() {
     );
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
-    // getAllThemeData();
-    setUserData({ userId: doc.id, ...userData });
-    console.log("user data:", { userId: doc.id, ...userData });
+    const selectedThemeData = await getUserTheme(userData.themes[0]);
+    setUserData({
+      userId: doc.id,
+      ...userData,
+      selectedThemeData: selectedThemeData,
+    });
+    console.log("user data:", {
+      userId: doc.id,
+      ...userData,
+      selectedThemeData: selectedThemeData,
+    });
   };
 
   const getAllThemeData = async () => {
@@ -60,14 +68,22 @@ function App() {
       const querySnapshot = await getDocs(collection(db, "themes"));
       const allThemesData = [];
       querySnapshot.forEach((doc) => {
-        allThemesData.push(doc.data()); // Push each document's data into the array
+        allThemesData.push({ themeId: doc.id, ...doc.data() });
       });
       setAllThemesData(allThemesData);
-      // console.log("All theme data:", allThemesData);
-      return;
+      console.log("All theme data:", allThemesData);
+      return allThemesData;
     } catch (error) {
       console.error("Error fetching theme data:", error);
     }
+  };
+
+  const getUserTheme = async (themeId) => {
+    const allThemes = await getAllThemeData();
+    const selectedThemeData = allThemes.filter((theme) => {
+      return theme.themeId === themeId;
+    });
+    return selectedThemeData[0];
   };
   return (
     <UserContext.Provider value={userData}>

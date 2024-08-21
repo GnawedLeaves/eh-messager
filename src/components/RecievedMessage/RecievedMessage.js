@@ -7,7 +7,7 @@ import {
   RecievedMessageReplyContainer,
   RecievedMessageReplyUsername,
 } from "./RecievedMessageStyles";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { useEffect } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../database/firebase";
@@ -137,7 +137,7 @@ const RecievedMessage = ({
   };
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}

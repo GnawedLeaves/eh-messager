@@ -3,7 +3,7 @@ import {
   HomePageTopBarContainer,
   HomePageTopBarHamburgerAndTitle,
 } from "./HomepageTopBarStyles";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -11,7 +11,7 @@ import SearchBar from "../SearchBar/SearchBar";
 
 const HomepageTopBar = (props) => {
   return (
-    <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={props.themeMode === "light" ? LightTheme : darktheme}>
       <HomePageTopBarContainer>
         <HomePageTopBarHamburgerAndTitle>
           <RxHamburgerMenu

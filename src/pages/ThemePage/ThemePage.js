@@ -1,9 +1,9 @@
 import { ThemeProvider } from "styled-components";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { UserContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../../components/Sidebar/Sidebar";
@@ -49,8 +49,26 @@ const ThemePage = (props) => {
     return () => unsubscribe();
   }, [navigate]);
 
+  //Add theme function
+
+  const addTheme = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "themes"), {
+        backgroundImg: "",
+        primary: "#F8865C",
+        recievedBubbleColor: "#ff787f",
+        recievedTextColor: "#FEFBF1",
+        sentBubbleColor: "#F8865C",
+        sentTextColor: "#FEFBF1",
+      });
+
+      console.log("Successfully added theme!");
+    } catch (e) {
+      console.log("Error adding theme: ", e);
+    }
+  };
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <ThemePageContainer>
         <Sidebar
           showSidebar={openSideBar}
@@ -72,6 +90,13 @@ const ThemePage = (props) => {
           />
           Theme
         </ThemePageTopBar>
+        <button
+          onClick={() => {
+            addTheme();
+          }}
+        >
+          Press to add theme
+        </button>
       </ThemePageContainer>
     </ThemeProvider>
   );

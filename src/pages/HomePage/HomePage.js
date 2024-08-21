@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import ChatPreview from "../../components/ChatPreview/ChatPreview";
 import { ChatPreviewsContainer, HomePageContainer } from "./HomePageStyles";
 import { ThemeProvider } from "styled-components";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { useContext, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
@@ -288,12 +288,12 @@ const HomePage = (props) => {
   }, [allCombinedMessages]);
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       {allUsers.length > 0 ? (
         <></>
       ) : (
         <LoadingScreen
-          theme={user?.themeMode === "light" ? lightTheme : darktheme}
+          theme={user?.themeMode === "light" ? LightTheme : darktheme}
           text="Loading Chats"
         />
       )}

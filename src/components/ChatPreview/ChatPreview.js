@@ -11,7 +11,7 @@ import {
   ChatPreviewProfilePicture,
   ChatPreviewReadContainer,
 } from "./ChatPreviewStyles";
-import { darktheme, lightTheme, theme } from "../../theme";
+import { darktheme, LightTheme, theme } from "../../theme";
 import { IoCheckmark } from "react-icons/io5";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { LuClock4 } from "react-icons/lu";
@@ -21,7 +21,7 @@ const ChatPreview = (props) => {
   const 他妈的 = "hello";
   const navigate = useNavigate();
   return (
-    <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={props.themeMode === "light" ? LightTheme : darktheme}>
       <ChatPreviewContainer
         onClick={() => {
           navigate(`/chat/${props.otherPersonId}`);
@@ -39,9 +39,9 @@ const ChatPreview = (props) => {
           opacity={props.tempMessageType === "recieved" ? "0%" : "100%"}
         >
           {props.isRead ? (
-            <IoCheckmarkDoneOutline size={"20px"} color={lightTheme().grey} />
+            <IoCheckmarkDoneOutline size={"20px"} color={LightTheme().grey} />
           ) : (
-            <IoCheckmark size={"20px"} color={lightTheme().grey} />
+            <IoCheckmark size={"20px"} color={LightTheme().grey} />
           )}
         </ChatPreviewReadContainer>
 

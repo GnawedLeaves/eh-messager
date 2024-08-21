@@ -43,7 +43,7 @@ import {
   where,
 } from "firebase/firestore";
 
-import { darktheme, lightTheme, theme } from "../../theme";
+import { darktheme, LightTheme, theme } from "../../theme";
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
@@ -319,7 +319,7 @@ const Chatbox2 = (props) => {
   };
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <MessagingContainer>
         <ChatboxHeader>
           <IoArrowBackOutline

@@ -1,5 +1,5 @@
 import { ThemeProvider } from "styled-components";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import {
   ProfilePageButton,
   ProfilePageButtonContainer,
@@ -257,11 +257,11 @@ const ProfilePage = () => {
   };
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       {user ? (
         <ProfilePageContainer>
           <Modal
-            theme={user?.themeMode === "light" ? lightTheme : darktheme}
+            theme={user?.themeMode === "light" ? LightTheme : darktheme}
             modalType="empty"
             show={showAddPicModal}
             handleModalClose={() => {
@@ -279,12 +279,12 @@ const ProfilePage = () => {
                   width="60"
                   color={
                     user?.themeMode === "light"
-                      ? lightTheme().primary
+                      ? LightTheme().primary
                       : darktheme.primary
                   }
                   secondaryColor={
                     user?.themeMode === "light"
-                      ? lightTheme().primary
+                      ? LightTheme().primary
                       : darktheme.primary
                   }
                   ariaLabel="oval-loading"
@@ -325,7 +325,7 @@ const ProfilePage = () => {
             modalType="action"
             actionButtonText="Delete"
             actionButtonColor={
-              user?.themeMode === "light" ? lightTheme().error : darktheme.error
+              user?.themeMode === "light" ? LightTheme().error : darktheme.error
             }
             actionButtonClick={() => {
               handleDeleteProfilePicture();
@@ -333,7 +333,7 @@ const ProfilePage = () => {
             show={showDeleteProfilePicModal}
             modalTitle="Delete Picture?"
             modalContent=""
-            theme={user?.themeMode === "light" ? lightTheme : darktheme}
+            theme={user?.themeMode === "light" ? LightTheme : darktheme}
           />
 
           <Modal
@@ -344,10 +344,10 @@ const ProfilePage = () => {
               setErrorModalMessage("");
               setShowErrorModal(false);
             }}
-            theme={user?.themeMode === "light" ? lightTheme : darktheme}
+            theme={user?.themeMode === "light" ? LightTheme : darktheme}
             show={showErrorModal}
             actionButtonColor={
-              user?.themeMode === "light" ? lightTheme().error : darktheme.error
+              user?.themeMode === "light" ? LightTheme().error : darktheme.error
             }
           />
 
@@ -398,7 +398,7 @@ const ProfilePage = () => {
                   }}
                   color={
                     user?.themeMode === "light"
-                      ? lightTheme().white
+                      ? LightTheme().white
                       : darktheme.white
                   }
                   size={"25px"}
@@ -413,7 +413,7 @@ const ProfilePage = () => {
                 style={{ cursor: "pointer" }}
                 color={
                   user?.themeMode === "light"
-                    ? lightTheme().white
+                    ? LightTheme().white
                     : darktheme.white
                 }
                 size={"25px"}
@@ -435,7 +435,7 @@ const ProfilePage = () => {
                   size={"40px"}
                   color={
                     user?.themeMode === "light"
-                      ? lightTheme().white
+                      ? LightTheme().white
                       : darktheme.white
                   }
                 />
@@ -467,7 +467,7 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme().text
+                          ? LightTheme().text
                           : darktheme.text
                       }
                       onClick={() => {
@@ -480,7 +480,7 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme().text
+                          ? LightTheme().text
                           : darktheme.text
                       }
                       style={{ cursor: "pointer" }}
@@ -503,10 +503,10 @@ const ProfilePage = () => {
                       color={
                         usernameCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? lightTheme().error
+                            ? LightTheme().error
                             : darktheme.error
                           : user?.themeMode === "light"
-                          ? lightTheme().grey
+                          ? LightTheme().grey
                           : darktheme.grey
                       }
                     >
@@ -542,7 +542,7 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme().text
+                          ? LightTheme().text
                           : darktheme.text
                       }
                       onClick={() => {
@@ -555,7 +555,7 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? lightTheme().text
+                          ? LightTheme().text
                           : darktheme.text
                       }
                       style={{ cursor: "pointer" }}
@@ -578,10 +578,10 @@ const ProfilePage = () => {
                       color={
                         bioCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? lightTheme().error
+                            ? LightTheme().error
                             : darktheme.error
                           : user?.themeMode === "light"
-                          ? lightTheme().grey
+                          ? LightTheme().grey
                           : darktheme.grey
                       }
                     >
@@ -626,7 +626,7 @@ const ProfilePage = () => {
         </ProfilePageContainer>
       ) : (
         <LoadingScreen
-          theme={user?.themeMode === "light" ? lightTheme : darktheme}
+          theme={user?.themeMode === "light" ? LightTheme : darktheme}
           text="Loading Profile..."
         />
       )}

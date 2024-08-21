@@ -9,7 +9,7 @@ import {
   SentMessageReplyUsername,
   SentMessageTickContainer,
 } from "./SentMessageStyles";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { IoCheckmark } from "react-icons/io5";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
@@ -92,7 +92,7 @@ const SentMessage = ({
     setCreatorData(creatorData[0]);
   };
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}
@@ -150,10 +150,10 @@ const SentMessage = ({
               {is_read ? (
                 <IoCheckmarkDoneOutline
                   size={"16px"}
-                  color={lightTheme().white}
+                  color={LightTheme().white}
                 />
               ) : (
-                <IoCheckmark size={"16px"} color={lightTheme().white} />
+                <IoCheckmark size={"16px"} color={LightTheme().white} />
               )}
             </SentMessageTickContainer>
           </SentMessageBodyAndTick>

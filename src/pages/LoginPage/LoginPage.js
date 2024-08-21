@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal/Modal";
-import { lightTheme, theme, theme2 } from "../../theme";
+import { LightTheme, theme, theme2 } from "../../theme";
 import { ThemeProvider } from "styled-components";
 import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { db } from "../../database/firebase";
@@ -118,9 +118,9 @@ const LoginPage = (props) => {
   //--------------------------------------------------------------------------------------------
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={LightTheme}>
       <Modal
-        theme={lightTheme}
+        theme={LightTheme}
         handleModalClose={() => {
           setShowLogInFailureModal(false);
           setLoginFailureMessage("");

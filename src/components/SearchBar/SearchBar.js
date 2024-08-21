@@ -8,7 +8,7 @@ import {
   SearchBarResultProfilePicture,
   SearchBarResultsContainer,
 } from "./SearchBarStyles";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { IoSearch } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { useState } from "react";
@@ -55,7 +55,7 @@ const SearchBar = (props) => {
   };
 
   return (
-    <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={props.themeMode === "light" ? LightTheme : darktheme}>
       <SearchBarContainer>
         <SearchBarHorizontalContainer>
           <IoSearch />

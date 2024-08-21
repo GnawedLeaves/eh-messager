@@ -1,5 +1,5 @@
 import { ThemeProvider } from "styled-components";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import {
   LoginFieldContainer,
   LoginFieldInput,
@@ -8,7 +8,7 @@ import {
 
 const LoginField = (props) => {
   return (
-    <ThemeProvider theme={props.theme === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={props.theme === "light" ? LightTheme : darktheme}>
       <LoginFieldContainer>
         <LoginFieldLabel>{props.placeholder}</LoginFieldLabel>
         <LoginFieldInput

@@ -10,7 +10,7 @@ import {
   SidebarThemeModeContainer,
   SidebarUsername,
 } from "./SidebarStyles";
-import { darktheme, lightTheme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { IoHomeSharp } from "react-icons/io5";
@@ -80,7 +80,7 @@ const Sidebar = (props) => {
   };
 
   return (
-    <ThemeProvider theme={props.themeMode === "light" ? lightTheme : darktheme}>
+    <ThemeProvider theme={props.themeMode === "light" ? LightTheme : darktheme}>
       <SidebarBigContainer showSidebar={props.showSidebar ? "0%" : "-150%"}>
         <SideBarContainer>
           <SidebarProfileBox>
@@ -96,7 +96,7 @@ const Sidebar = (props) => {
                 <IoMoon
                   style={{ cursor: "pointer" }}
                   size={"24px"}
-                  color={lightTheme().white}
+                  color={LightTheme().white}
                   onClick={() => {
                     props.handleThemeModeChange("dark");
                   }}

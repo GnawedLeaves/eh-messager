@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { UserContext } from "./App";
+import { useEffect } from "react";
 
-export const lightTheme = () => {
+export const LightTheme = () => {
   //the optimal way is just to edit this file dynamically, by calling the function to get the theme then just changing the colours
-
+  // const user = useContext(UserContext);
   const themeNumber = 1;
 
   if (themeNumber === 1) {
