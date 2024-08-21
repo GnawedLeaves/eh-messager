@@ -19,6 +19,8 @@ export const UserContext = createContext();
 function App() {
   const [userData, setUserData] = useState(null);
   const [allUserData, setAllUserData] = useState([]);
+  const [allThemesData, setAllThemesData] = useState([]);
+
   // {
   //   id: "test id",
   //   username: "testusername",
@@ -33,6 +35,7 @@ function App() {
         // getAllUserData();
         // getUserFromAllUserData(authId)
         getUserData(authId);
+        getAllThemeData();
       } else {
         console.log("No user ");
         setUserData(null);
@@ -47,20 +50,21 @@ function App() {
     );
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
-    getAllThemeData();
+    // getAllThemeData();
     setUserData({ userId: doc.id, ...userData });
     console.log("user data:", { userId: doc.id, ...userData });
   };
 
   const getAllThemeData = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "users"));
+      const querySnapshot = await getDocs(collection(db, "themes"));
       const allThemesData = [];
       querySnapshot.forEach((doc) => {
         allThemesData.push(doc.data()); // Push each document's data into the array
       });
-
-      console.log("All theme data:", allThemesData);
+      setAllThemesData(allThemesData);
+      // console.log("All theme data:", allThemesData);
+      return;
     } catch (error) {
       console.error("Error fetching theme data:", error);
     }
@@ -81,7 +85,13 @@ function App() {
               <Route path="/profile/:userId" element={<ProfilePage />} />
               <Route
                 path="/theme"
-                element={<ThemePage getUserData={getUserData} />}
+                element={
+                  <ThemePage
+                    getUserData={getUserData}
+                    getAllThemeData={getAllThemeData}
+                    allThemesData={allThemesData}
+                  />
+                }
               />
             </>
           </Routes>

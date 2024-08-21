@@ -13,10 +13,15 @@ import { RxHamburgerMenu } from "react-icons/rx";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
+  const allThemesData = props?.allThemesData;
   const [allUsers, setAllUsers] = useState([]);
 
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
+
+  useEffect(() => {
+    console.log("allThemesData", allThemesData);
+  }, []);
 
   const handleThemeModeChange = async (newThemeMode) => {
     if (user?.userId) {

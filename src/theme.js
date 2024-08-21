@@ -1,11 +1,15 @@
+import { useContext } from "react";
+import { UserContext } from "./App";
+
 export const lightTheme = () => {
+  //the optimal way is just to edit this file dynamically, by calling the function to get the theme then just changing the colours
+  const user = useContext(UserContext);
+
   const themeNumber = 1;
 
   if (themeNumber === 1) {
     return {
       primary: "#F8865C",
-      primaryDark: "#CF6C47",
-      primaryLight: "#FF966E",
       text: "#333333",
       background: "#F7F3E6",
       innerBackground: "#FEFBF1",
@@ -16,12 +20,11 @@ export const lightTheme = () => {
       boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
       error: "#FF565D",
       font: "Poppins, sans-serif",
+      recievedTextBackground: "#ff787f",
     };
   } else {
     return {
       primary: "#F8865C",
-      primaryDark: "#CF6C47",
-      primaryLight: "#FF966E",
       text: "#333333",
       background: "#F7F3E6",
       innerBackground: "#FEFBF1",
@@ -38,8 +41,7 @@ export const lightTheme = () => {
 
 export const lightTheme2 = {
   primary: "#F8865C",
-  primaryDark: "#CF6C47",
-  primaryLight: "#FF966E",
+
   text: "#333333",
   background: "#F7F3E6",
   innerBackground: "#FEFBF1",
@@ -54,8 +56,6 @@ export const lightTheme2 = {
 
 export const darktheme = {
   primary: "#F8865C",
-  primaryDark: "#CF6C47",
-  primaryLight: "#FF966E",
   text: "#FEFBF1",
   background: "#1B1B1B",
   innerBackground: "#292929",

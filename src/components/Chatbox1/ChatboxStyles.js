@@ -56,7 +56,7 @@ export const MessageInput = styled.textarea`
   border: none;
   padding: 1rem;
   font-size: 1rem;
-  font-family: "Inter", sans-serif;
+  font-family: ${(props) => props.theme.font};
   word-wrap: break-word;
   resize: none;
 

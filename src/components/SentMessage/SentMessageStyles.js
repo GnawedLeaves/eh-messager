@@ -41,7 +41,7 @@ export const SentMessageMedia = styled.video`
 `;
 
 export const SentMessageReplyContainer = styled.div`
-  background: ${(props) => props.theme.primaryLight};
+  background: ${(props) => props.theme.primary};
   padding: 8px 8px;
   border-radius: 8px;
   margin: 4px 0;
