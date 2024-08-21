@@ -3,7 +3,6 @@ import { UserContext } from "./App";
 
 export const lightTheme = () => {
   //the optimal way is just to edit this file dynamically, by calling the function to get the theme then just changing the colours
-  const user = useContext(UserContext);
 
   const themeNumber = 1;
 
