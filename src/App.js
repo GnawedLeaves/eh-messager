@@ -8,23 +8,26 @@ import { useState, createContext, useContext } from "react";
 
 import { useEffect } from "react";
 import { db } from "./database/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  Timestamp,
+  where,
+} from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import ChatPage from "./pages/ChatPage/ChatPage";
 import HomePage from "./pages/HomePage/HomePage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ThemePage from "./pages/ThemePage/ThemePage";
+import { handleFirebaseDate } from "./database/handleFirebaseDate";
 export const UserContext = createContext();
 
 function App() {
   const [userData, setUserData] = useState(null);
   const [allUserData, setAllUserData] = useState([]);
   const [allThemesData, setAllThemesData] = useState([]);
-
-  // {
-  //   id: "test id",
-  //   username: "testusername",
-  // }
+  const [allUsers, setAllUsers] = useState([]);
 
   //handles when user signs in or signs up
   const auth = getAuth();
@@ -34,6 +37,7 @@ function App() {
         const authId = user.uid;
         // getAllUserData();
         // getUserFromAllUserData(authId)
+        getAllUsers();
         getUserData(authId);
         getAllThemeData();
       } else {
@@ -42,6 +46,16 @@ function App() {
       }
     });
   }, []);
+
+  const getAllUsers = async () => {
+    let allUsers = [];
+    const querySnapshot = await getDocs(collection(db, "users"));
+    querySnapshot.forEach((doc) => {
+      const docData = doc.data();
+      allUsers = [...allUsers, { userId: doc.id, ...docData }];
+    });
+    setAllUsers(allUsers);
+  };
 
   const getUserData = async (authId) => {
     const userRef = collection(db, "users");
@@ -70,6 +84,33 @@ function App() {
       querySnapshot.forEach((doc) => {
         allThemesData.push({ themeId: doc.id, ...doc.data() });
       });
+
+      //clean up date here
+      const timestamp = Timestamp.fromDate(new Date());
+      const cleanedAllThemesData = allThemesData.map((theme) => {
+        //clean up date
+        console.log("theme.dateAdded", theme.dateAdded);
+        console.log("theme.dateEdited", theme.dateEdited);
+
+        const cleanedDateAdded = theme.dateAdded
+          ? handleFirebaseDate(theme.dateAdded).substring(5)
+          : timestamp;
+        const cleanedDateEdited = theme.dateEdited
+          ? handleFirebaseDate(theme.dateEdited).substring(5)
+          : timestamp;
+
+        const creatorUsername = allUserData.filter((user) => {
+          return theme.userId === user.userId;
+        });
+        return {
+          creatorUsername:
+            creatorUsername.length > 0 ? creatorUsername[0] : null,
+          ...theme,
+          dateAdded: cleanedDateAdded,
+          dateEdited: cleanedDateEdited,
+        };
+      });
+      console.log("cleanedAllThemesData", cleanedAllThemesData);
       setAllThemesData(allThemesData);
       console.log("All theme data:", allThemesData);
       return allThemesData;
@@ -80,10 +121,19 @@ function App() {
 
   const getUserTheme = async (themeId) => {
     const allThemes = await getAllThemeData();
+    const defaultThemeData = allThemes.filter((theme) => {
+      return theme.themeId === "defaultTheme";
+    });
     const selectedThemeData = allThemes.filter((theme) => {
       return theme.themeId === themeId;
     });
-    return selectedThemeData[0];
+
+    // return default theme if cannot find theme
+    if (selectedThemeData[0] === null) {
+      return defaultThemeData[0];
+    } else {
+      return selectedThemeData[0];
+    }
   };
   return (
     <UserContext.Provider value={userData}>

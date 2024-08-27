@@ -3,7 +3,7 @@ import { UserContext } from "./App";
 import { useEffect } from "react";
 
 export const LightTheme = () => {
-  //the optimal way is just to edit this file dynamically, by calling the function to get the theme then just changing the colours
+  //the optimal way is just to edit this file dynamically, by calling the function to get the theme then just changing the colours but there seems to be errors like no mother father can fathom when i use usecontext in this file i dont understand why i think i have to manually edit everything and put the theme into the user context and just pull from there alr then i just pull from user context each time that theme provider is used bah no choice alr
   // const user = useContext(UserContext);
   const themeNumber = 1;
 

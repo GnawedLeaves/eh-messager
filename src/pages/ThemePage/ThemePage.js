@@ -3,25 +3,42 @@ import { darktheme, LightTheme } from "../../theme";
 import { UserContext } from "../../App";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { auth, db } from "../../database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import { ThemePageContainer, ThemePageTopBar } from "./ThemePageStyles";
+import {
+  PublicThemesContainer,
+  ThemePageContainer,
+  ThemePageTopBar,
+} from "./ThemePageStyles";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
-  const allThemesData = props?.allThemesData;
   const [allUsers, setAllUsers] = useState([]);
+  const [allThemesData, setAllThemesData] = useState([]);
 
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
 
   useEffect(() => {
+    if (allThemesData !== null) {
+      setAllThemesData(props?.allThemesData);
+    }
+  }, [props]);
+
+  //todo: remove this
+  useEffect(() => {
     console.log("allThemesData", allThemesData);
-  }, []);
+  }, [allThemesData]);
 
   const handleThemeModeChange = async (newThemeMode) => {
     if (user?.userId) {
@@ -52,6 +69,7 @@ const ThemePage = (props) => {
   //Add theme function
 
   const addTheme = async () => {
+    const timestamp = Timestamp.fromDate(new Date());
     try {
       const docRef = await addDoc(collection(db, "themes"), {
         backgroundImg: "",
@@ -60,13 +78,20 @@ const ThemePage = (props) => {
         recievedTextColor: "#FEFBF1",
         sentBubbleColor: "#F8865C",
         sentTextColor: "#FEFBF1",
+        creatorId: user?.userId,
+        dateAdded: timestamp,
+        dateEdited: timestamp,
       });
 
       console.log("Successfully added theme!");
+      props.getAllThemeData();
     } catch (e) {
       console.log("Error adding theme: ", e);
     }
   };
+
+  //Convert and clean data
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <ThemePageContainer>
@@ -97,6 +122,7 @@ const ThemePage = (props) => {
         >
           Press to add theme
         </button>
+        <PublicThemesContainer></PublicThemesContainer>
       </ThemePageContainer>
     </ThemeProvider>
   );

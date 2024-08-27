@@ -189,7 +189,6 @@ const HomePage = (props) => {
         }
         dateStringFinal = handledDate.substring(4, 11);
       } else {
-        // console.log(" more than 24h dateStringFinal", handledDate.slice(-5));
         dateStringFinal = handledDate.slice(-5);
       }
 
@@ -273,10 +272,12 @@ const HomePage = (props) => {
   };
 
   useEffect(() => {
-    getAllRecievedMessages();
-    getAllMessages();
-    getAllUsers();
-  }, []);
+    if (user !== null) {
+      getAllRecievedMessages();
+      getAllMessages();
+      getAllUsers();
+    }
+  }, [user]);
 
   useEffect(() => {
     combineMessages();
@@ -289,7 +290,7 @@ const HomePage = (props) => {
 
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
-      {allUsers.length > 0 ? (
+      {allUsers.length > 0 && user !== null ? (
         <></>
       ) : (
         <LoadingScreen

@@ -22,3 +22,9 @@ export const ThemePageTopBar = styled.div`
   font-weight: 700;
   line-height: normal;
 `;
+
+export const PublicThemesContainer = styled.div`
+  background: red;
+  width: 100%;
+  display: flex;
+`;
