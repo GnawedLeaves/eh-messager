@@ -7,6 +7,7 @@ import {
   addDoc,
   collection,
   doc,
+  setDoc,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
@@ -61,8 +62,6 @@ const ThemePage = (props) => {
         navigate("/login");
       }
     });
-
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [navigate]);
 
@@ -71,6 +70,17 @@ const ThemePage = (props) => {
   const addTheme = async () => {
     const timestamp = Timestamp.fromDate(new Date());
     try {
+      // await setDoc(doc(db, "themes", "defaultTheme"), {
+      //   backgroundImg: "",
+      //   primary: "#F8865C",
+      //   recievedBubbleColor: "#ff787f",
+      //   recievedTextColor: "#FEFBF1",
+      //   sentBubbleColor: "#F8865C",
+      //   sentTextColor: "#FEFBF1",
+      //   creatorId: user?.userId,
+      //   dateAdded: timestamp,
+      //   dateEdited: timestamp,
+      // });
       const docRef = await addDoc(collection(db, "themes"), {
         backgroundImg: "",
         primary: "#F8865C",

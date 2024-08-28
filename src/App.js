@@ -25,7 +25,6 @@ export const UserContext = createContext();
 
 function App() {
   const [userData, setUserData] = useState(null);
-  const [allUserData, setAllUserData] = useState([]);
   const [allThemesData, setAllThemesData] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
@@ -37,15 +36,25 @@ function App() {
         const authId = user.uid;
         // getAllUserData();
         // getUserFromAllUserData(authId)
-        getAllUsers();
-        getUserData(authId);
-        getAllThemeData();
+        if (allUsers.length === 0) {
+          getAllUsers();
+        }
+        if (userData === null) {
+          getUserData(authId);
+        }
       } else {
         console.log("No user ");
         setUserData(null);
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (allUsers.length > 0) {
+      console.log("allUsers", allUsers);
+      getAllThemeData();
+    }
+  }, [allUsers]);
 
   const getAllUsers = async () => {
     let allUsers = [];
@@ -65,6 +74,8 @@ function App() {
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
     const selectedThemeData = await getUserTheme(userData.themes[0]);
+
+    // need to construct the whole light and dark theme and store it in here
     setUserData({
       userId: doc.id,
       ...userData,
@@ -89,8 +100,6 @@ function App() {
       const timestamp = Timestamp.fromDate(new Date());
       const cleanedAllThemesData = allThemesData.map((theme) => {
         //clean up date
-        console.log("theme.dateAdded", theme.dateAdded);
-        console.log("theme.dateEdited", theme.dateEdited);
 
         const cleanedDateAdded = theme.dateAdded
           ? handleFirebaseDate(theme.dateAdded).substring(5)
@@ -99,20 +108,25 @@ function App() {
           ? handleFirebaseDate(theme.dateEdited).substring(5)
           : timestamp;
 
-        const creatorUsername = allUserData.filter((user) => {
-          return theme.userId === user.userId;
-        });
+        //getting the username of the creator
+        console.log("theme.creatorId", theme.creatorId);
+        console.log("allUserData", allUsers);
+        const creatorUser = allUsers.find(
+          (user) => user.userId === theme.creatorId
+        );
+
+        const creatorUsername = creatorUser ? creatorUser.username : null;
+
         return {
-          creatorUsername:
-            creatorUsername.length > 0 ? creatorUsername[0] : null,
+          creatorUsername,
           ...theme,
           dateAdded: cleanedDateAdded,
           dateEdited: cleanedDateEdited,
         };
       });
       console.log("cleanedAllThemesData", cleanedAllThemesData);
-      setAllThemesData(allThemesData);
-      console.log("All theme data:", allThemesData);
+      setAllThemesData(cleanedAllThemesData);
+
       return allThemesData;
     } catch (error) {
       console.error("Error fetching theme data:", error);
