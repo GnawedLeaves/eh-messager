@@ -55,6 +55,8 @@ const ThemePage = (props) => {
     }
   };
 
+  console.log()
+
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
