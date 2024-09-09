@@ -55,7 +55,9 @@ const ThemePage = (props) => {
     }
   };
 
-  console.log()
+  useEffect(()=>{
+    console.log()
+  },[])
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
