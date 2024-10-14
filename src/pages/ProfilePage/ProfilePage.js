@@ -256,12 +256,27 @@ const ProfilePage = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("user", user);
+    console.log("selectedThemeData", user.selectedThemeData);
+  }, []);
+
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       {user ? (
         <ProfilePageContainer>
           <Modal
-            theme={user?.themeMode === "light" ? LightTheme : darktheme}
+            theme={
+              user?.themeMode === "light"
+                ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+                : user?.selectedThemeData?.selectedThemeDark || darktheme
+            }
             modalType="empty"
             show={showAddPicModal}
             handleModalClose={() => {
@@ -279,13 +294,17 @@ const ProfilePage = () => {
                   width="60"
                   color={
                     user?.themeMode === "light"
-                      ? LightTheme().primary
-                      : darktheme.primary
+                      ? user?.selectedThemeData?.selectedThemeLight.primary ||
+                        LightTheme.primary
+                      : user?.selectedThemeData?.selectedThemeDark.primary ||
+                        darktheme.primary
                   }
                   secondaryColor={
                     user?.themeMode === "light"
-                      ? LightTheme().primary
-                      : darktheme.primary
+                      ? user?.selectedThemeData?.selectedThemeLight.primary ||
+                        LightTheme.primary
+                      : user?.selectedThemeData?.selectedThemeDark.primary ||
+                        darktheme.primary
                   }
                   ariaLabel="oval-loading"
                   wrapperStyle={{}}
@@ -325,7 +344,11 @@ const ProfilePage = () => {
             modalType="action"
             actionButtonText="Delete"
             actionButtonColor={
-              user?.themeMode === "light" ? LightTheme().error : darktheme.error
+              user?.themeMode === "light"
+                ? user?.selectedThemeData?.selectedThemeLight.error ||
+                  LightTheme.error
+                : user?.selectedThemeData?.selectedThemeDark.error ||
+                  darktheme.error
             }
             actionButtonClick={() => {
               handleDeleteProfilePicture();
@@ -333,7 +356,11 @@ const ProfilePage = () => {
             show={showDeleteProfilePicModal}
             modalTitle="Delete Picture?"
             modalContent=""
-            theme={user?.themeMode === "light" ? LightTheme : darktheme}
+            theme={
+              user?.themeMode === "light"
+                ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+                : user?.selectedThemeData?.selectedThemeDark || darktheme
+            }
           />
 
           <Modal
@@ -344,10 +371,18 @@ const ProfilePage = () => {
               setErrorModalMessage("");
               setShowErrorModal(false);
             }}
-            theme={user?.themeMode === "light" ? LightTheme : darktheme}
+            theme={
+              user?.themeMode === "light"
+                ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+                : user?.selectedThemeData?.selectedThemeDark || darktheme
+            }
             show={showErrorModal}
             actionButtonColor={
-              user?.themeMode === "light" ? LightTheme().error : darktheme.error
+              user?.themeMode === "light"
+                ? user?.selectedThemeData?.selectedThemeLight.error ||
+                  LightTheme.error
+                : user?.selectedThemeData?.selectedThemeDark.error ||
+                  darktheme.error
             }
           />
 
@@ -398,8 +433,10 @@ const ProfilePage = () => {
                   }}
                   color={
                     user?.themeMode === "light"
-                      ? LightTheme().white
-                      : darktheme.white
+                      ? user?.selectedThemeData?.selectedThemeLight.white ||
+                        LightTheme.white
+                      : user?.selectedThemeData?.selectedThemeDark.white ||
+                        darktheme.white
                   }
                   size={"25px"}
                 />
@@ -413,8 +450,10 @@ const ProfilePage = () => {
                 style={{ cursor: "pointer" }}
                 color={
                   user?.themeMode === "light"
-                    ? LightTheme().white
-                    : darktheme.white
+                    ? user?.selectedThemeData?.selectedThemeLight.white ||
+                      LightTheme.white
+                    : user?.selectedThemeData?.selectedThemeDark.white ||
+                      darktheme.white
                 }
                 size={"25px"}
               />
@@ -435,8 +474,10 @@ const ProfilePage = () => {
                   size={"40px"}
                   color={
                     user?.themeMode === "light"
-                      ? LightTheme().white
-                      : darktheme.white
+                      ? user?.selectedThemeData?.selectedThemeLight.white ||
+                        LightTheme.white
+                      : user?.selectedThemeData?.selectedThemeDark.white ||
+                        darktheme.white
                   }
                 />
               </ProfilePageProfilePictureButton>
@@ -467,8 +508,10 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? LightTheme().text
-                          : darktheme.text
+                          ? user?.selectedThemeData?.selectedThemeLight.text ||
+                            LightTheme.text
+                          : user?.selectedThemeData?.selectedThemeDark.text ||
+                            darktheme.text
                       }
                       onClick={() => {
                         setEditingNewUsername(false);
@@ -480,8 +523,10 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? LightTheme().text
-                          : darktheme.text
+                          ? user?.selectedThemeData?.selectedThemeLight.text ||
+                          LightTheme.text
+                        : user?.selectedThemeData?.selectedThemeDark.text ||
+                          darktheme.text
                       }
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -503,11 +548,11 @@ const ProfilePage = () => {
                       color={
                         usernameCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? LightTheme().error
-                            : darktheme.error
+                            ? user?.selectedThemeData?.selectedThemeLight.error
+                            : user?.selectedThemeData?.selectedThemeDark.error
                           : user?.themeMode === "light"
-                          ? LightTheme().grey
-                          : darktheme.grey
+                          ? user?.selectedThemeData?.selectedThemeLight.grey
+                          : user?.selectedThemeData?.selectedThemeDark.grey
                       }
                     >
                       Number of characters left: {usernameCharRemaining}
@@ -542,8 +587,8 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? LightTheme().text
-                          : darktheme.text
+                          ? user?.selectedThemeData?.selectedThemeLight.text
+                          : user?.selectedThemeData?.selectedThemeDark.text
                       }
                       onClick={() => {
                         setEditingNewBio(false);
@@ -555,8 +600,8 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? LightTheme().text
-                          : darktheme.text
+                          ? user?.selectedThemeData?.selectedThemeLight.text
+                          : user?.selectedThemeData?.selectedThemeDark.text
                       }
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -578,11 +623,11 @@ const ProfilePage = () => {
                       color={
                         bioCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? LightTheme().error
-                            : darktheme.error
+                            ? user?.selectedThemeData?.selectedThemeLight.error
+                            : user?.selectedThemeData?.selectedThemeDark.error
                           : user?.themeMode === "light"
-                          ? LightTheme().grey
-                          : darktheme.grey
+                          ? user?.selectedThemeData?.selectedThemeLight.grey
+                          : user?.selectedThemeData?.selectedThemeDark.grey
                       }
                     >
                       Number of characters left: {bioCharRemaining}
@@ -626,7 +671,11 @@ const ProfilePage = () => {
         </ProfilePageContainer>
       ) : (
         <LoadingScreen
-          theme={user?.themeMode === "light" ? LightTheme : darktheme}
+          theme={
+            user?.themeMode === "light"
+              ? LightTheme
+              : user?.selectedThemeData?.selectedThemeDark
+          }
           text="Loading Profile..."
         />
       )}
