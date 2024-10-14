@@ -289,22 +289,24 @@ const HomePage = (props) => {
   }, [allCombinedMessages]);
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
+
       {allUsers.length > 0 && user !== null ? (
         <></>
       ) : (
         <LoadingScreen
-          theme={user?.themeMode === "light" ? LightTheme : darktheme}
+        theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }
           text="Loading Chats"
         />
       )}
 
       <HomePageContainer>
-        <Sidebar
+      <Sidebar
           showSidebar={openSideBar}
           username={user?.username}
           userId={user?.userId}
           themeMode={user?.themeMode}
+          theme={user?.selectedThemeData}
           profilePicture={user?.profilePicture[0]}
           handleCloseSidebar={() => {
             setOpenSideBar(false);

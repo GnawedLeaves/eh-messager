@@ -76,15 +76,48 @@ function App() {
     const selectedThemeData = await getUserTheme(userData?.selectedTheme);
 
     // need to construct the whole light and dark theme and store it in here
+    const selectedThemeLight = {
+      ...selectedThemeData,
+      text: "#333333",
+      background: "#F7F3E6",
+      innerBackground: "#FEFBF1",
+      grey: "#747886",
+      lightGrey: "#C0C0C0",
+      white: "#FEFBF1",
+      borderGrey: "#D1D1D1",
+      boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
+      error: "#FF565D",
+      font: "Poppins, sans-serif",
+    };
+    const selectedThemeDark = {
+      ...selectedThemeData,
+      text: "#FEFBF1",
+      background: "#1B1B1B",
+      innerBackground: "#292929",
+      grey: "#747886",
+      lightGrey: "#C0C0C0",
+      white: "#FEFBF1",
+      borderGrey: "#464646",
+      boxShadow: "",
+      error: "#FF565D",
+      font: "Poppins, sans-serif",
+    };
+
     setUserData({
       userId: doc.id,
       ...userData,
-      selectedThemeData: selectedThemeData,
+      selectedThemeData: {
+        selectedThemeLight: selectedThemeLight,
+        selectedThemeDark: selectedThemeDark,
+      },
     });
     console.log("user data:", {
       userId: doc.id,
       ...userData,
-      selectedThemeData: selectedThemeData,
+      selectedThemeData: {
+        selectedThemeLight: selectedThemeLight,
+        selectedThemeDark: selectedThemeDark,
+      },
     });
   };
 

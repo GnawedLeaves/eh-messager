@@ -9,7 +9,6 @@ export const LightTheme = () => {
 
   if (themeNumber === 1) {
     return {
-      primary: "#F8865C",
       text: "#333333",
       background: "#F7F3E6",
       innerBackground: "#FEFBF1",
@@ -21,6 +20,7 @@ export const LightTheme = () => {
       error: "#FF565D",
       font: "Poppins, sans-serif",
       recievedTextBackground: "#ff787f",
+      primary: "#F8865C",
     };
   } else {
     return {
@@ -55,7 +55,7 @@ export const lightTheme2 = {
 };
 
 export const darktheme = {
-  primary: "#F8865C",
+
   text: "#FEFBF1",
   background: "#1B1B1B",
   innerBackground: "#292929",
@@ -66,6 +66,9 @@ export const darktheme = {
   boxShadow: "",
   error: "#FF565D",
   font: "Poppins, sans-serif",
+
+  
+  primary: "#F8865C",
 };
 
 export const theme = {

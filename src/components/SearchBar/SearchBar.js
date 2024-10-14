@@ -60,7 +60,7 @@ const SearchBar = (props) => {
         <SearchBarHorizontalContainer>
           <IoSearch />
           <SearchBarInput
-            placeholder="Search friends..."
+            placeholder="Search all users..."
             value={searchBarInput}
             onChange={(e) => {
               setSearchBarInput(e.target.value);

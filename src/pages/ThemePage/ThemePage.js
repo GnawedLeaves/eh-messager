@@ -167,7 +167,7 @@ const ThemePage = (props) => {
           Theme
         </ThemePageTopBar>
 
-        <div>Selected Theme: {user?.selectedTheme}</div>
+        <div >Selected Theme: {user?.selectedTheme}</div>
 
         <ColourWheelContainer>
           <Wheel

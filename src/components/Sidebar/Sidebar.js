@@ -22,10 +22,12 @@ import { IoMoon } from "react-icons/io5";
 import { signOut } from "firebase/auth";
 import { auth } from "../../database/firebase";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useEffect } from "react";
+import { UserContext } from "../../App";
 
 const Sidebar = (props) => {
+  const user = useContext(UserContext);
   const navigate = useNavigate();
   const [profileNavigationString, setProfileNavigationString] = useState("");
   useEffect(() => {
@@ -80,7 +82,13 @@ const Sidebar = (props) => {
   };
 
   return (
-    <ThemeProvider theme={props.themeMode === "light" ? LightTheme : darktheme}>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       <SidebarBigContainer showSidebar={props.showSidebar ? "0%" : "-150%"}>
         <SideBarContainer>
           <SidebarProfileBox>

@@ -321,6 +321,7 @@ const Chatbox2 = (props) => {
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <MessagingContainer>
+        
         <ChatboxHeader>
           <IoArrowBackOutline
             style={{ cursor: "pointer" }}
