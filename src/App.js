@@ -73,7 +73,7 @@ function App() {
     );
     const doc = querySnapshot.docs[0];
     const userData = doc?.data();
-    const selectedThemeData = await getUserTheme(userData.selectedTheme);
+    const selectedThemeData = await getUserTheme(userData?.selectedTheme);
 
     // need to construct the whole light and dark theme and store it in here
     setUserData({

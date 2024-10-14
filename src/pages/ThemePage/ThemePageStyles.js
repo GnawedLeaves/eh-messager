@@ -5,6 +5,7 @@ export const ThemePageContainer = styled.div`
   background: ${(props) => props.theme.background};
   min-height: 100vh;
   position: relative;
+  color: white;
 `;
 
 export const ThemePageTopBar = styled.div`
@@ -28,3 +29,8 @@ export const PublicThemesContainer = styled.div`
   width: 100%;
   display: flex;
 `;
+
+
+export const ColourWheelContainer = styled.div`
+z-index: 1;
+`

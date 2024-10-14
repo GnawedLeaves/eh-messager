@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   setDoc,
   Timestamp,
@@ -15,6 +16,7 @@ import { auth, db } from "../../database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import {
+  ColourWheelContainer,
   PublicThemesContainer,
   ThemePageContainer,
   ThemePageTopBar,
@@ -91,26 +93,29 @@ const ThemePage = (props) => {
 
       console.log("Successfully added theme!");
       props.getAllThemeData();
+      resetAllInputs();
     } catch (e) {
       console.log("Error adding theme: ", e);
     }
   };
 
-  //Convert and clean data
+  const resetAllInputs = () => {
+    setNewThemeName("");
+    setHsva({ h: 214, s: 43, v: 90, a: 1 });
+  };
 
   const changeSelectedTheme = async (theme) => {
     console.log("changing theme to ", theme.themeId);
+    const userRef = doc(db, "users", user?.userId);
     try {
-      await setDoc(doc(db, "users", user.id), {
-        selectedTheme: theme.themeId
+      await updateDoc(userRef, {
+        selectedTheme: theme.themeId,
       });
-
-      console.log("theme has been changed to: ", theme.themeId)
+      props.getUserData(user?.authId);
+      console.log("theme has been changed to: ", theme.themeId);
     } catch (e) {
       console.warn("Could not change theme: ", e);
     }
-
-    
   };
 
   const handleThemeModeChange = async (newThemeMode) => {
@@ -124,6 +129,17 @@ const ThemePage = (props) => {
       } catch (e) {
         console.log("Error updating user theme mode: ", e);
       }
+    }
+  };
+
+  const deleteTheme = async (theme) => {
+    console.log("Deleting", theme.themeId);
+    try {
+      await deleteDoc(doc(db, "themes", theme.themeId));
+      console.log("theme successfully deleted");
+      props.getAllThemeData();
+    } catch (e) {
+      console.warn("Unable to delete theme: ", e);
     }
   };
 
@@ -150,25 +166,31 @@ const ThemePage = (props) => {
           />
           Theme
         </ThemePageTopBar>
-        <Wheel
-          color={hsva}
-          onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
-        />
-        <div
-          style={{
-            width: "100%",
-            height: 34,
-            marginTop: 20,
-            background: hexColor,
-          }}
-        ></div>
-        <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
 
-        <div>Theme Name</div>
+        <div>Selected Theme: {user?.selectedTheme}</div>
+
+        <ColourWheelContainer>
+          <Wheel
+            color={hsva}
+            onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+            style={{zIndex: "1"}}
+          />
+          <div
+            style={{
+              width: "100%",
+              height: 34,
+              marginTop: 20,
+              background: hexColor,
+            }}
+          ></div>
+          <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
+        </ColourWheelContainer>
+
+        <div>New Theme Name</div>
         <input
+          value={newThemeName}
           type="text"
           onChange={(e) => {
-            console.log(e.target.value)
             setNewThemeName(e.target.value);
           }}
         />
@@ -193,12 +215,19 @@ const ThemePage = (props) => {
                 {theme.dateAdded}
                 <br />
                 <button
-                style={{background: theme.primary}}
+                  style={{ background: theme.primary }}
                   onClick={() => {
                     changeSelectedTheme(theme);
                   }}
                 >
                   Change to this theme
+                </button>
+                <button
+                  onClick={() => {
+                    deleteTheme(theme);
+                  }}
+                >
+                  Delete this theme
                 </button>
                 <br /> <br />
               </div>
