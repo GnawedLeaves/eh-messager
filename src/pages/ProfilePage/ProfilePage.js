@@ -99,10 +99,12 @@ const ProfilePage = () => {
     const fileURL = URL.createObjectURL(file); // Create a URL for the file
     setMessageFileForDisplay(fileURL);
   };
+
   const handleAddPicture = () => {
     setInputProfilePic(null);
     fileInputRef.current.click();
   };
+
   useEffect(() => {
     if (inputProfilePic) {
       //show upload modal
@@ -121,6 +123,7 @@ const ProfilePage = () => {
     // Get a reference to the storage location and the path where the file is saved
     const fileRef = ref(storage, `profilePictures/${attachmentName}`);
     // Upload the file to Firebase Storage
+    
     try {
       await uploadBytes(fileRef, inputProfilePic);
       // Get the download URL of the uploaded file
@@ -128,7 +131,7 @@ const ProfilePage = () => {
       console.log("File uploaded successfully!", fileRef, attachmentUrl);
       const userRef = doc(db, "users", user.userId);
 
-      //update the user array about new profile pic
+      //update the user array about new sprofile pic
       await updateDoc(userRef, {
         profilePicture: [attachmentUrl, ...user.profilePicture],
       });
@@ -548,11 +551,11 @@ const ProfilePage = () => {
                       color={
                         usernameCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? user?.selectedThemeData?.selectedThemeLight.error
-                            : user?.selectedThemeData?.selectedThemeDark.error
+                            ? user?.selectedThemeData?.selectedThemeLight.error || LightTheme.error
+                            : user?.selectedThemeData?.selectedThemeDark.error || darktheme.error
                           : user?.themeMode === "light"
-                          ? user?.selectedThemeData?.selectedThemeLight.grey
-                          : user?.selectedThemeData?.selectedThemeDark.grey
+                          ? user?.selectedThemeData?.selectedThemeLight.grey || LightTheme.grey
+                          : user?.selectedThemeData?.selectedThemeDark.grey || darktheme.grey
                       }
                     >
                       Number of characters left: {usernameCharRemaining}
@@ -587,8 +590,10 @@ const ProfilePage = () => {
                       size={"1.4rem"}
                       color={
                         user?.themeMode === "light"
-                          ? user?.selectedThemeData?.selectedThemeLight.text
-                          : user?.selectedThemeData?.selectedThemeDark.text
+                          ? user?.selectedThemeData?.selectedThemeLight.text ||
+                          LightTheme.text
+                        : user?.selectedThemeData?.selectedThemeDark.text ||
+                          darktheme.text
                       }
                       onClick={() => {
                         setEditingNewBio(false);
@@ -600,8 +605,10 @@ const ProfilePage = () => {
                       size="1.4rem"
                       color={
                         user?.themeMode === "light"
-                          ? user?.selectedThemeData?.selectedThemeLight.text
-                          : user?.selectedThemeData?.selectedThemeDark.text
+                          ? user?.selectedThemeData?.selectedThemeLight.text ||
+                          LightTheme.text
+                        : user?.selectedThemeData?.selectedThemeDark.text ||
+                          darktheme.text
                       }
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -623,11 +630,15 @@ const ProfilePage = () => {
                       color={
                         bioCharRemaining <= 0
                           ? user?.themeMode === "light"
-                            ? user?.selectedThemeData?.selectedThemeLight.error
-                            : user?.selectedThemeData?.selectedThemeDark.error
+                            ? user?.selectedThemeData?.selectedThemeLight.error ||
+                            LightTheme.error
+                          : user?.selectedThemeData?.selectedThemeDark.error ||
+                            darktheme.error
                           : user?.themeMode === "light"
-                          ? user?.selectedThemeData?.selectedThemeLight.grey
-                          : user?.selectedThemeData?.selectedThemeDark.grey
+                          ? user?.selectedThemeData?.selectedThemeLight.grey ||
+                          LightTheme.grey
+                        : user?.selectedThemeData?.selectedThemeDark.grey ||
+                          darktheme.grey
                       }
                     >
                       Number of characters left: {bioCharRemaining}
@@ -673,8 +684,10 @@ const ProfilePage = () => {
         <LoadingScreen
           theme={
             user?.themeMode === "light"
-              ? LightTheme
-              : user?.selectedThemeData?.selectedThemeDark
+              ? user?.selectedThemeData?.selectedThemeLight||
+              LightTheme
+            : user?.selectedThemeData?.selectedThemeDark ||
+              darktheme
           }
           text="Loading Profile..."
         />
