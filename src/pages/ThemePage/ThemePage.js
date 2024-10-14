@@ -21,12 +21,17 @@ import {
 } from "./ThemePageStyles";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
+import Wheel from "@uiw/react-color-wheel";
+import { hsvaToHex } from "@uiw/color-convert";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
   const [allUsers, setAllUsers] = useState([]);
   const [allThemesData, setAllThemesData] = useState([]);
-
+  const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
+  const hexColor = hsvaToHex(hsva);
+  const [newThemeName, setNewThemeName] = useState("");
+  const [newThemePrimary, setNewThemePrimary] = useState("");
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
 
@@ -41,23 +46,9 @@ const ThemePage = (props) => {
     console.log("allThemesData", allThemesData);
   }, [allThemesData]);
 
-  const handleThemeModeChange = async (newThemeMode) => {
-    if (user?.userId) {
-      const userRef = doc(db, "users", user?.userId);
-      try {
-        await updateDoc(userRef, {
-          themeMode: newThemeMode,
-        });
-        props.getUserData(user?.authId);
-      } catch (e) {
-        console.log("Error updating user theme mode: ", e);
-      }
-    }
-  };
-
-  useEffect(()=>{
-    console.log()
-  },[])
+  useEffect(() => {
+    console.log();
+  }, []);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -87,7 +78,7 @@ const ThemePage = (props) => {
       // });
       const docRef = await addDoc(collection(db, "themes"), {
         backgroundImg: "",
-        primary: "#F8865C",
+        primary: hexColor,
         recievedBubbleColor: "#ff787f",
         recievedTextColor: "#FEFBF1",
         sentBubbleColor: "#F8865C",
@@ -95,6 +86,7 @@ const ThemePage = (props) => {
         creatorId: user?.userId,
         dateAdded: timestamp,
         dateEdited: timestamp,
+        name: newThemeName,
       });
 
       console.log("Successfully added theme!");
@@ -105,6 +97,35 @@ const ThemePage = (props) => {
   };
 
   //Convert and clean data
+
+  const changeSelectedTheme = async (theme) => {
+    console.log("changing theme to ", theme.themeId);
+    try {
+      await setDoc(doc(db, "users", user.id), {
+        selectedTheme: theme.themeId
+      });
+
+      console.log("theme has been changed to: ", theme.themeId)
+    } catch (e) {
+      console.warn("Could not change theme: ", e);
+    }
+
+    
+  };
+
+  const handleThemeModeChange = async (newThemeMode) => {
+    if (user?.userId) {
+      const userRef = doc(db, "users", user?.userId);
+      try {
+        await updateDoc(userRef, {
+          themeMode: newThemeMode,
+        });
+        props.getUserData(user?.authId);
+      } catch (e) {
+        console.log("Error updating user theme mode: ", e);
+      }
+    }
+  };
 
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
@@ -129,6 +150,28 @@ const ThemePage = (props) => {
           />
           Theme
         </ThemePageTopBar>
+        <Wheel
+          color={hsva}
+          onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+        />
+        <div
+          style={{
+            width: "100%",
+            height: 34,
+            marginTop: 20,
+            background: hexColor,
+          }}
+        ></div>
+        <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
+
+        <div>Theme Name</div>
+        <input
+          type="text"
+          onChange={(e) => {
+            console.log(e.target.value)
+            setNewThemeName(e.target.value);
+          }}
+        />
         <button
           onClick={() => {
             addTheme();
@@ -136,6 +179,33 @@ const ThemePage = (props) => {
         >
           Press to add theme
         </button>
+
+        <div>
+          {allThemesData.map((theme) => {
+            return (
+              <div style={{ color: "white" }}>
+                {theme.themeId}
+                <br />
+                {theme.name}
+                <br />
+                {theme.primary}
+                <br />
+                {theme.dateAdded}
+                <br />
+                <button
+                style={{background: theme.primary}}
+                  onClick={() => {
+                    changeSelectedTheme(theme);
+                  }}
+                >
+                  Change to this theme
+                </button>
+                <br /> <br />
+              </div>
+            );
+          })}
+        </div>
+
         <PublicThemesContainer></PublicThemesContainer>
       </ThemePageContainer>
     </ThemeProvider>
