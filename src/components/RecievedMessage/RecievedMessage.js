@@ -71,7 +71,6 @@ const RecievedMessage = ({
   };
 
   const handleOpenMessageModal = (e) => {
-    console.log("e inside open modal function", e.clientX);
     setOpenMessageModal(true);
     setMessageModalX(e.clientX);
     setMessageModalY(e.clientY);
@@ -137,7 +136,7 @@ const RecievedMessage = ({
   };
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}

@@ -24,6 +24,7 @@ import {
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Wheel from "@uiw/react-color-wheel";
+import { HexColorPicker } from "react-colorful";
 import { hsvaToHex } from "@uiw/color-convert";
 
 const ThemePage = (props) => {
@@ -31,12 +32,11 @@ const ThemePage = (props) => {
   const [allUsers, setAllUsers] = useState([]);
   const [allThemesData, setAllThemesData] = useState([]);
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const hexColor = hsvaToHex(hsva);
   const [newThemeName, setNewThemeName] = useState("");
   const [newThemePrimary, setNewThemePrimary] = useState("");
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
-
+  const [hexColor, setHexColor] = useState("#aabbcc");
   useEffect(() => {
     if (allThemesData !== null) {
       setAllThemesData(props?.allThemesData);
@@ -143,6 +143,28 @@ const ThemePage = (props) => {
     }
   };
 
+
+  const addDefaultTheme = async () => {
+    const timestamp = Timestamp.fromDate(new Date());
+    try {
+      await setDoc(doc(db, "themes", "defaultTheme"), {
+        backgroundImg: "",
+        primary: "#F8865C",
+        recievedBubbleColor: "#ff787f",
+        recievedTextColor: "#FEFBF1",
+        sentBubbleColor: "#F8865C",
+        sentTextColor: "#FEFBF1",
+        creatorId: user?.userId,
+        dateAdded: timestamp,
+        dateEdited: timestamp,
+      });
+      console.log("default theme added")
+    }
+   
+    catch (e){
+      console.log("Unable to add default theme: ", e)
+    }
+  }
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <ThemePageContainer>
@@ -167,15 +189,15 @@ const ThemePage = (props) => {
           Theme
         </ThemePageTopBar>
 
-        <div >Selected Theme: {user?.selectedTheme}</div>
+        <button
+          onClick={() => {
+            addDefaultTheme();
+          }}
+        >Add default theme</button>
+        <div>Selected Theme: {user?.selectedTheme}</div>
 
-        <ColourWheelContainer>
-          <Wheel
-            color={hsva}
-            onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
-            style={{zIndex: "1"}}
-          />
-          <div
+        <HexColorPicker color={hexColor} onChange={setHexColor}/>
+        <div
             style={{
               width: "100%",
               height: 34,
@@ -184,7 +206,7 @@ const ThemePage = (props) => {
             }}
           ></div>
           <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
-        </ColourWheelContainer>
+       
 
         <div>New Theme Name</div>
         <input

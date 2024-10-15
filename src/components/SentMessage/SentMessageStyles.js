@@ -16,7 +16,7 @@ export const SentMessageBubble = styled.div`
   padding: 0.5rem 12px;
   border-radius: 1rem;
   background: ${(props) => props.theme.primary};
-  color: ${(props) => props.theme.white};
+  color: ${(props) => props.theme.sentTextColor};
   box-sizing: border-box;
 `;
 

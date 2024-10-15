@@ -19,7 +19,7 @@ export const LightTheme = () => {
       boxShadow: "2px 2px 5px #B6B6B6, -5px -5px 10px #ffffff",
       error: "#FF565D",
       font: "Poppins, sans-serif",
-      recievedTextBackground: "#ff787f",
+      recievedBubbleColor: "#ff787f",
       primary: "#F8865C",
     };
   } else {

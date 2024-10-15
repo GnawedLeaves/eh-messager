@@ -92,7 +92,7 @@ const SentMessage = ({
     setCreatorData(creatorData[0]);
   };
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
+    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}
