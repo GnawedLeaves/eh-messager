@@ -16,7 +16,7 @@ export const RecievedMessageBubble = styled.div`
   max-width: 70%;
   width: fit-content;
   padding: 0.5rem 0.8rem;
-  background: ${(props) => props.theme.recievedBubbleColor};
+  background: ${(props) => props.theme.recievedBubbleColor || props.themePageBackground};
   color: ${(props) => props.theme.recievedTextColor};
   border-radius: 1rem;
 `;

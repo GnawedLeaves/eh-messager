@@ -8,6 +8,7 @@ export const SidebarBigContainer = styled.div`
   display: flex;
   transform: translateX(${(props) => props.showSidebar});
   transition: 0.3s;
+  z-index: 9;
 `;
 
 export const SidebarBlocker = styled.div`

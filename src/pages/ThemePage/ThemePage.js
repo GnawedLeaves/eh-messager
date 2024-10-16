@@ -17,15 +17,29 @@ import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import {
   ColourWheelContainer,
+  ColourWheelHexInput,
+  MessagePreviewContainer,
+  PublicThemeContainer,
+  PublicThemeContainerTitle,
   PublicThemesContainer,
   ThemePageContainer,
+  ThemePageRecentColoursContainer,
   ThemePageTopBar,
+  ThemePreviewContainer,
 } from "./ThemePageStyles";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Wheel from "@uiw/react-color-wheel";
 import { HexColorPicker } from "react-colorful";
 import { hsvaToHex } from "@uiw/color-convert";
+import {
+  SentMessageBubble,
+  SentMessageContainer,
+} from "../../components/SentMessage/SentMessageStyles";
+import {
+  RecievedMessageBubble,
+  RecievedMessageContainer,
+} from "../../components/RecievedMessage/RecievedMessageStyles";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
@@ -37,6 +51,16 @@ const ThemePage = (props) => {
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
   const [hexColor, setHexColor] = useState("#aabbcc");
+  const [newRecievedTextBackground, setNewRecievedTextBackground] =
+    useState("");
+  const [newRecievedTextColor, setNewRecievedTextColor] = useState("");
+  const [newSentTextBackground, setNewSentTextBackground] = useState("");
+  const [newSentTextColor, setNewSentTextColor] = useState("");
+  const [newPrimaryColor, setNewPrimaryColor] = useState("");
+  const [editingRecievedColor, setEditingRecievedColor] = useState("");
+  const [editingSentColor, setEditingSentColor] = useState("");
+  const [publicThemes, setPublicThemes] = useState();
+  const [ownedThemes, setOwnedThemes] = useState();
   useEffect(() => {
     if (allThemesData !== null) {
       setAllThemesData(props?.allThemesData);
@@ -46,11 +70,8 @@ const ThemePage = (props) => {
   //todo: remove this
   useEffect(() => {
     console.log("allThemesData", allThemesData);
+    getAllPublicThemes();
   }, [allThemesData]);
-
-  useEffect(() => {
-    console.log();
-  }, []);
 
   //Check if there is a user logged in, if not then log them out
   useEffect(() => {
@@ -62,22 +83,9 @@ const ThemePage = (props) => {
     return () => unsubscribe();
   }, [navigate]);
 
-  //Add theme function
-
   const addTheme = async () => {
     const timestamp = Timestamp.fromDate(new Date());
     try {
-      // await setDoc(doc(db, "themes", "defaultTheme"), {
-      //   backgroundImg: "",
-      //   primary: "#F8865C",
-      //   recievedBubbleColor: "#ff787f",
-      //   recievedTextColor: "#FEFBF1",
-      //   sentBubbleColor: "#F8865C",
-      //   sentTextColor: "#FEFBF1",
-      //   creatorId: user?.userId,
-      //   dateAdded: timestamp,
-      //   dateEdited: timestamp,
-      // });
       const docRef = await addDoc(collection(db, "themes"), {
         backgroundImg: "",
         primary: hexColor,
@@ -143,6 +151,35 @@ const ThemePage = (props) => {
     }
   };
 
+  const getLuminance = (hexColor) => {
+    // Convert hex color to RGB
+    let r = parseInt(hexColor.slice(1, 3), 16);
+    let g = parseInt(hexColor.slice(3, 5), 16);
+    let b = parseInt(hexColor.slice(5, 7), 16);
+
+    // Normalize RGB values to [0, 1]
+    r = r / 255;
+    g = g / 255;
+    b = b / 255;
+
+    // Apply gamma correction (sRGB luminance)
+    r = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+    g = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+    b = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+    // Calculate luminance
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+
+  const getBestTextColor = (hexColor) => {
+    const luminance = getLuminance(hexColor);
+    return luminance > 0.5 ? "#333333" : "#FEFBF1"; // Black for light bg, White for dark bg
+  };
+
+  useEffect(() => {
+    setNewRecievedTextColor(getBestTextColor(newRecievedTextBackground));
+    setNewSentTextColor(getBestTextColor(newSentTextBackground));
+  }, [newRecievedTextBackground, newSentTextBackground]);
 
   const addDefaultTheme = async () => {
     const timestamp = Timestamp.fromDate(new Date());
@@ -158,13 +195,33 @@ const ThemePage = (props) => {
         dateAdded: timestamp,
         dateEdited: timestamp,
       });
-      console.log("default theme added")
+      console.log("default theme added");
+    } catch (e) {
+      console.log("Unable to add default theme: ", e);
     }
-   
-    catch (e){
-      console.log("Unable to add default theme: ", e)
-    }
-  }
+  };
+
+  const handleRecievedMessageClick = () => {
+    setEditingRecievedColor(true);
+    console.log("editing recieved..");
+  };
+
+  const handleSentMessageClick = () => {
+    setEditingSentColor(true);
+    console.log("editing sent..");
+  };
+
+  const getAllPublicThemes = () => {
+    const ownedThemes = allThemesData.filter((theme) => {
+      return theme.creatorId === user.userId;
+    });
+    const publicThemes = allThemesData.filter((theme) => {
+      return theme.creatorId !== user.userId;
+    });
+    setPublicThemes(publicThemes);
+    setOwnedThemes(ownedThemes);
+  };
+  const getAllOwnedThemes = () => {};
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <ThemePageContainer>
@@ -188,26 +245,89 @@ const ThemePage = (props) => {
           />
           Theme
         </ThemePageTopBar>
-
+        <ThemePreviewContainer>
+          <MessagePreviewContainer>
+            <RecievedMessageContainer
+              onClick={() => {
+                handleRecievedMessageClick();
+              }}
+            >
+              <RecievedMessageBubble themePageBackground={"red"}>
+                recieved message
+              </RecievedMessageBubble>
+            </RecievedMessageContainer>
+          </MessagePreviewContainer>
+          <MessagePreviewContainer>
+            <RecievedMessageContainer
+              onClick={() => {
+                handleRecievedMessageClick();
+              }}
+            >
+              <RecievedMessageBubble themePageBackground={"red"}>
+                recieved message
+              </RecievedMessageBubble>
+            </RecievedMessageContainer>
+          </MessagePreviewContainer>
+          <MessagePreviewContainer>
+            <SentMessageContainer
+              onClick={() => {
+                handleSentMessageClick();
+              }}
+            >
+              <SentMessageBubble themePageBackground={"green"}>
+                sent message salmon
+              </SentMessageBubble>
+            </SentMessageContainer>
+          </MessagePreviewContainer>
+        </ThemePreviewContainer>
+        <PublicThemesContainer>
+          <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
+          {publicThemes ? (
+            publicThemes.map((theme, index) => {
+              return (
+                <PublicThemeContainer key={index}>
+                  {index + 1}
+                </PublicThemeContainer>
+              );
+            })
+          ) : (
+            <></>
+          )}
+        </PublicThemesContainer>
+        Click to edit colour
+        <ColourWheelContainer>
+          <HexColorPicker color={hexColor} onChange={setHexColor} />
+          <ColourWheelHexInput
+            maxLength={7}
+            onChange={(e) => {
+              let value = e.target.value;
+              if (!value.startsWith("#")) {
+                value = `#${value}`;
+              }
+              setHexColor(value);
+            }}
+            value={hexColor}
+            placeholder="Colour Hex Code"
+          />
+        </ColourWheelContainer>
+        <ThemePageRecentColoursContainer></ThemePageRecentColoursContainer>
         <button
           onClick={() => {
             addDefaultTheme();
           }}
-        >Add default theme</button>
+        >
+          Add default theme
+        </button>
         <div>Selected Theme: {user?.selectedTheme}</div>
-
-        <HexColorPicker color={hexColor} onChange={setHexColor}/>
         <div
-            style={{
-              width: "100%",
-              height: 34,
-              marginTop: 20,
-              background: hexColor,
-            }}
-          ></div>
-          <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
-       
-
+          style={{
+            width: "100%",
+            height: 34,
+            marginTop: 20,
+            background: hexColor,
+          }}
+        ></div>
+        <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
         <div>New Theme Name</div>
         <input
           value={newThemeName}
@@ -223,7 +343,6 @@ const ThemePage = (props) => {
         >
           Press to add theme
         </button>
-
         <div>
           {allThemesData.map((theme) => {
             return (
@@ -256,8 +375,6 @@ const ThemePage = (props) => {
             );
           })}
         </div>
-
-        <PublicThemesContainer></PublicThemesContainer>
       </ThemePageContainer>
     </ThemeProvider>
   );
