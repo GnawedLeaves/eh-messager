@@ -51,12 +51,15 @@ export const PublicThemesContainer = styled.div`
   width: 100%;
   display: flex;
   padding: 1rem 30px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const PublicThemeContainerTitle = styled.div``;
 
 export const PublicThemeContainer = styled.div`
-  width: 50px;
+  width: 150px;
   height: 100px;
   border: 1px solid ${(props) => props.theme.innerBackground};
   border-radius: 1rem;

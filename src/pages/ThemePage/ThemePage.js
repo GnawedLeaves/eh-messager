@@ -65,6 +65,11 @@ const ThemePage = (props) => {
     if (allThemesData !== null) {
       setAllThemesData(props?.allThemesData);
     }
+    //clean up function, will run when props changes
+    return () => {
+      console.log("Cleanup: Clearing themes data");
+      setAllThemesData(null);
+    };
   }, [props]);
 
   //todo: remove this
@@ -222,6 +227,12 @@ const ThemePage = (props) => {
     setOwnedThemes(ownedThemes);
   };
   const getAllOwnedThemes = () => {};
+
+  //todo: remove this
+  useEffect(() => {
+    setNewRecievedTextBackground(hexColor);
+  }, [hexColor]);
+
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <ThemePageContainer>
@@ -280,13 +291,13 @@ const ThemePage = (props) => {
             </SentMessageContainer>
           </MessagePreviewContainer>
         </ThemePreviewContainer>
+        <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
         <PublicThemesContainer>
-          <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
-          {publicThemes ? (
-            publicThemes.map((theme, index) => {
+          {ownedThemes ? (
+            ownedThemes.map((theme, index) => {
               return (
                 <PublicThemeContainer key={index}>
-                  {index + 1}
+                  {theme.name ? theme.name : "Untitled"}
                 </PublicThemeContainer>
               );
             })
@@ -325,8 +336,11 @@ const ThemePage = (props) => {
             height: 34,
             marginTop: 20,
             background: hexColor,
+            color: newRecievedTextColor,
           }}
-        ></div>
+        >
+          Text in the div
+        </div>
         <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
         <div>New Theme Name</div>
         <input
