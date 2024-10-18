@@ -25,11 +25,14 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { UserContext } from "../../App";
+import { getBestTextColor } from "../../functions/getBestTextColor";
 
 const Sidebar = (props) => {
   const user = useContext(UserContext);
   const navigate = useNavigate();
   const [profileNavigationString, setProfileNavigationString] = useState("");
+
+  const [siderBarTextColor, setSideBarTextColor] = useState("");
   useEffect(() => {
     setProfileNavigationString("/profile/" + props.userId);
   }, [props.userId]);
@@ -81,6 +84,16 @@ const Sidebar = (props) => {
       });
   };
 
+  useEffect(() => {
+    if (user !== null) {
+      setSideBarTextColor(
+        getBestTextColor(user?.selectedThemeData?.selectedThemeLight.primary)
+      );
+    } else {
+      setSideBarTextColor(getBestTextColor(LightTheme.primary));
+    }
+  }, [user]);
+
   return (
     <ThemeProvider
       theme={
@@ -98,7 +111,9 @@ const Sidebar = (props) => {
                 navigate(profileNavigationString);
               }}
             />
-            <SidebarUsername>{props.username}</SidebarUsername>
+            <SidebarUsername color={siderBarTextColor}>
+              {props.username}
+            </SidebarUsername>
             <SidebarThemeModeContainer>
               {props.themeMode === "light" ? (
                 <IoMoon

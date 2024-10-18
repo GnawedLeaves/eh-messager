@@ -47,7 +47,7 @@ export const SidebarProfilePicture = styled.img`
 `;
 
 export const SidebarUsername = styled.div`
-  color: ${(props) => props.theme.white};
+  color: ${(props) => (props.color ? props.color : props.theme.white)};
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
