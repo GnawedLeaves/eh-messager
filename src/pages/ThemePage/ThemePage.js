@@ -21,7 +21,14 @@ import {
   MessagePreviewContainer,
   PublicThemeContainer,
   PublicThemeContainerTitle,
+  PublicThemePreviewContainer,
+  PublicThemePreviewRecieved,
+  PublicThemePreviewSent,
+  PublicThemePreviewText,
   PublicThemesContainer,
+  ThemeCarousell,
+  ThemeCarousellContainer,
+  ThemeCarousellViewingBox,
   ThemePageContainer,
   ThemePageRecentColoursContainer,
   ThemePageTopBar,
@@ -40,6 +47,7 @@ import {
   RecievedMessageBubble,
   RecievedMessageContainer,
 } from "../../components/RecievedMessage/RecievedMessageStyles";
+import { dummyThemeData } from "./array";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
@@ -61,6 +69,8 @@ const ThemePage = (props) => {
   const [editingSentColor, setEditingSentColor] = useState("");
   const [publicThemes, setPublicThemes] = useState();
   const [ownedThemes, setOwnedThemes] = useState();
+  const [selectedThemeId, setSelectedThemeId] = useState("");
+
   useEffect(() => {
     if (allThemesData !== null) {
       setAllThemesData(props?.allThemesData);
@@ -71,6 +81,12 @@ const ThemePage = (props) => {
       setAllThemesData(null);
     };
   }, [props]);
+
+  useEffect(() => {
+    if (user?.selectedThemeData?.selectedThemeLight.themeId !== null) {
+      setSelectedThemeId(user.selectedThemeData.selectedThemeLight.themeId);
+    }
+  }, [user]);
 
   //todo: remove this
   useEffect(() => {
@@ -234,7 +250,13 @@ const ThemePage = (props) => {
   }, [hexColor]);
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       <ThemePageContainer>
         <Sidebar
           showSidebar={openSideBar}
@@ -292,6 +314,45 @@ const ThemePage = (props) => {
           </MessagePreviewContainer>
         </ThemePreviewContainer>
         <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
+        <ThemeCarousellContainer>
+          <ThemeCarousellViewingBox>
+            <ThemeCarousell>
+              {dummyThemeData ? (
+                dummyThemeData.map((theme, index) => {
+                  return (
+                    <PublicThemeContainer
+                      key={index}
+                      selected={theme.themeId === selectedThemeId}
+                      onClick={() => {
+                        setSelectedThemeId(theme.themeId);
+                      }}
+                    >
+                      <PublicThemePreviewContainer>
+                        <PublicThemePreviewRecieved
+                          background={theme.recievedBubbleColor}
+                        >
+                          <PublicThemePreviewText
+                            background={theme.recievedTextColor}
+                          />
+                        </PublicThemePreviewRecieved>
+                        <PublicThemePreviewSent
+                          background={theme.sentBubbleColor}
+                        >
+                          <PublicThemePreviewText
+                            background={theme.sentTextColor}
+                          />
+                        </PublicThemePreviewSent>
+                      </PublicThemePreviewContainer>
+                      {theme.name ? theme.name : "Untitled"}
+                    </PublicThemeContainer>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </ThemeCarousell>
+          </ThemeCarousellViewingBox>
+        </ThemeCarousellContainer>
         <PublicThemesContainer>
           {ownedThemes ? (
             ownedThemes.map((theme, index) => {

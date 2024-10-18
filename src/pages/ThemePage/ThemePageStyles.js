@@ -51,7 +51,6 @@ export const PublicThemesContainer = styled.div`
   width: 100%;
   display: flex;
   padding: 1rem 30px;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 `;
@@ -59,10 +58,63 @@ export const PublicThemesContainer = styled.div`
 export const PublicThemeContainerTitle = styled.div``;
 
 export const PublicThemeContainer = styled.div`
-  width: 150px;
-  height: 100px;
-  border: 1px solid ${(props) => props.theme.innerBackground};
+  width: 180px;
+  height: 200px;
+  border: 2px solid
+    ${(props) =>
+      props.selected ? props.theme.primary : props.theme.innerBackground};
   border-radius: 1rem;
+  padding: 1rem 0.5rem;
+  overflow: hidden;
+`;
+
+export const PublicThemePreviewContainer = styled.div`
+  width: 100%;
+  height: 80%;
+  position: relative;
+`;
+export const PublicThemePreviewRecieved = styled.div`
+  width: 100px;
+  height: 30px;
+  border-radius: 1rem;
+  background: ${(props) => props.background};
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+export const PublicThemePreviewSent = styled(PublicThemePreviewRecieved)`
+  left: unset;
+  right: 0;
+  top: 40px;
+`;
+
+export const PublicThemePreviewText = styled.div`
+  width: 60%;
+  height: 5px;
+  border-radius: 1rem;
+  background: ${(props) => props.background};
 `;
 
 export const PublicThemeName = styled.div``;
+
+export const ThemeCarousellContainer = styled.div`
+  width: 100%;
+  padding: 1rem 2rem;
+`;
+
+export const ThemeCarousellViewingBox = styled.div`
+  overflow: auto;
+  width: 100%;
+  position: relative;
+  padding-bottom: 4rem;
+`;
+
+export const ThemeCarousell = styled.div`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 1rem;
+`;
