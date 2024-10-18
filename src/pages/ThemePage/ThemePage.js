@@ -83,7 +83,7 @@ const ThemePage = (props) => {
   }, [props]);
 
   useEffect(() => {
-    if (user?.selectedThemeData?.selectedThemeLight.themeId !== null) {
+    if (user !== null) {
       setSelectedThemeId(user.selectedThemeData.selectedThemeLight.themeId);
     }
   }, [user]);
@@ -233,12 +233,20 @@ const ThemePage = (props) => {
   };
 
   const getAllPublicThemes = () => {
-    const ownedThemes = allThemesData.filter((theme) => {
-      return theme.creatorId === user.userId;
+    const ownedThemes = [];
+    const publicThemes = [];
+
+    allThemesData.forEach((theme) => {
+      const isOwned = theme.creatorId === user.userId;
+      const isSelected = theme.themeId === selectedThemeId;
+
+      if (isOwned) {
+        isSelected ? ownedThemes.unshift(theme) : ownedThemes.push(theme);
+      } else {
+        isSelected ? publicThemes.unshift(theme) : publicThemes.push(theme);
+      }
     });
-    const publicThemes = allThemesData.filter((theme) => {
-      return theme.creatorId !== user.userId;
-    });
+
     setPublicThemes(publicThemes);
     setOwnedThemes(ownedThemes);
   };
@@ -317,8 +325,8 @@ const ThemePage = (props) => {
         <ThemeCarousellContainer>
           <ThemeCarousellViewingBox>
             <ThemeCarousell>
-              {dummyThemeData ? (
-                dummyThemeData.map((theme, index) => {
+              {publicThemes ? (
+                publicThemes.map((theme, index) => {
                   return (
                     <PublicThemeContainer
                       key={index}
@@ -353,19 +361,46 @@ const ThemePage = (props) => {
             </ThemeCarousell>
           </ThemeCarousellViewingBox>
         </ThemeCarousellContainer>
-        <PublicThemesContainer>
-          {ownedThemes ? (
-            ownedThemes.map((theme, index) => {
-              return (
-                <PublicThemeContainer key={index}>
-                  {theme.name ? theme.name : "Untitled"}
-                </PublicThemeContainer>
-              );
-            })
-          ) : (
-            <></>
-          )}
-        </PublicThemesContainer>
+        <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
+        <ThemeCarousellContainer>
+          <ThemeCarousellViewingBox>
+            <ThemeCarousell>
+              {ownedThemes ? (
+                ownedThemes.map((theme, index) => {
+                  return (
+                    <PublicThemeContainer
+                      key={index}
+                      selected={theme.themeId === selectedThemeId}
+                      onClick={() => {
+                        setSelectedThemeId(theme.themeId);
+                      }}
+                    >
+                      <PublicThemePreviewContainer>
+                        <PublicThemePreviewRecieved
+                          background={theme.recievedBubbleColor}
+                        >
+                          <PublicThemePreviewText
+                            background={theme.recievedTextColor}
+                          />
+                        </PublicThemePreviewRecieved>
+                        <PublicThemePreviewSent
+                          background={theme.sentBubbleColor}
+                        >
+                          <PublicThemePreviewText
+                            background={theme.sentTextColor}
+                          />
+                        </PublicThemePreviewSent>
+                      </PublicThemePreviewContainer>
+                      {theme.name ? theme.name : "Untitled"}
+                    </PublicThemeContainer>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </ThemeCarousell>
+          </ThemeCarousellViewingBox>
+        </ThemeCarousellContainer>
         Click to edit colour
         <ColourWheelContainer>
           <HexColorPicker color={hexColor} onChange={setHexColor} />

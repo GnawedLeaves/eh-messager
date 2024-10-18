@@ -66,6 +66,10 @@ export const PublicThemeContainer = styled.div`
   border-radius: 1rem;
   padding: 1rem 0.5rem;
   overflow: hidden;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  
 `;
 
 export const PublicThemePreviewContainer = styled.div`
