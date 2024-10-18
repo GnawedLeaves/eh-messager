@@ -19,8 +19,11 @@ import {
   ColourWheelContainer,
   ColourWheelHexInput,
   MessagePreviewContainer,
+  MessagePreviewModeContainer,
   PublicThemeContainer,
   PublicThemeContainerTitle,
+  PublicThemeCreatorUsername,
+  PublicThemeName,
   PublicThemePreviewContainer,
   PublicThemePreviewRecieved,
   PublicThemePreviewSent,
@@ -48,6 +51,7 @@ import {
   RecievedMessageContainer,
 } from "../../components/RecievedMessage/RecievedMessageStyles";
 import { dummyThemeData } from "./array";
+import { IoMoon, IoSunnyOutline } from "react-icons/io5";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
@@ -70,6 +74,8 @@ const ThemePage = (props) => {
   const [publicThemes, setPublicThemes] = useState();
   const [ownedThemes, setOwnedThemes] = useState();
   const [selectedThemeId, setSelectedThemeId] = useState("");
+  const [selectedThemeData, setSelectedThemeData] = useState({});
+  const [previewLightMode, setPreviewLightMode] = useState(true);
 
   useEffect(() => {
     if (allThemesData !== null) {
@@ -85,6 +91,9 @@ const ThemePage = (props) => {
   useEffect(() => {
     if (user !== null) {
       setSelectedThemeId(user.selectedThemeData.selectedThemeLight.themeId);
+      setSelectedThemeData(
+        constructSelectedTheme(user.selectedThemeData.selectedThemeLight)
+      );
     }
   }, [user]);
 
@@ -250,12 +259,27 @@ const ThemePage = (props) => {
     setPublicThemes(publicThemes);
     setOwnedThemes(ownedThemes);
   };
-  const getAllOwnedThemes = () => {};
 
-  //todo: remove this
   useEffect(() => {
     setNewRecievedTextBackground(hexColor);
   }, [hexColor]);
+
+  const constructSelectedTheme = (theme) => {
+    return {
+      backgroundImg: theme.backgroundImg,
+      creatorId: theme.creatorId,
+      creatorUsername: theme.creatorUsername,
+      dateAdded: theme.dateAdded,
+      dateEdited: theme.dateEdited,
+      name: theme.name,
+      primary: theme.primary,
+      recievedBubbleColor: theme.recievedBubbleColor,
+      recievedTextColor: theme.recievedTextColor,
+      sentBubbleColor: theme.sentBubbleColor,
+      sentTextColor: theme.sentTextColor,
+      themeId: theme.themeId,
+    };
+  };
 
   return (
     <ThemeProvider
@@ -286,37 +310,68 @@ const ThemePage = (props) => {
           />
           Theme
         </ThemePageTopBar>
-        <ThemePreviewContainer>
+        <ThemePreviewContainer
+          background={
+            previewLightMode ? LightTheme().background : darktheme.background
+          }
+        >
           <MessagePreviewContainer>
-            <RecievedMessageContainer
-              onClick={() => {
-                handleRecievedMessageClick();
-              }}
-            >
-              <RecievedMessageBubble themePageBackground={"red"}>
-                recieved message
+            <MessagePreviewModeContainer>
+              {previewLightMode ? (
+                <IoMoon
+                  style={{ cursor: "pointer" }}
+                  size={"24px"}
+                  color={LightTheme().color}
+                  onClick={() => {
+                    setPreviewLightMode(!previewLightMode);
+                  }}
+                />
+              ) : (
+                <IoSunnyOutline
+                  style={{ cursor: "pointer" }}
+                  size={"24px"}
+                  color={darktheme.white}
+                  onClick={() => {
+                    setPreviewLightMode(!previewLightMode);
+                  }}
+                />
+              )}
+            </MessagePreviewModeContainer>
+            <RecievedMessageContainer>
+              <RecievedMessageBubble
+                themePageBackground={selectedThemeData.recievedBubbleColor}
+                themePageColor={selectedThemeData.recievedTextColor}
+                onClick={() => {
+                  handleRecievedMessageClick();
+                }}
+              >
+                hey
               </RecievedMessageBubble>
             </RecievedMessageContainer>
           </MessagePreviewContainer>
           <MessagePreviewContainer>
-            <RecievedMessageContainer
-              onClick={() => {
-                handleRecievedMessageClick();
-              }}
-            >
-              <RecievedMessageBubble themePageBackground={"red"}>
-                recieved message
+            <RecievedMessageContainer>
+              <RecievedMessageBubble
+                themePageBackground={selectedThemeData.recievedBubbleColor}
+                themePageColor={selectedThemeData.recievedTextColor}
+                onClick={() => {
+                  handleRecievedMessageClick();
+                }}
+              >
+                how are you doing?
               </RecievedMessageBubble>
             </RecievedMessageContainer>
           </MessagePreviewContainer>
           <MessagePreviewContainer>
-            <SentMessageContainer
-              onClick={() => {
-                handleSentMessageClick();
-              }}
-            >
-              <SentMessageBubble themePageBackground={"green"}>
-                sent message salmon
+            <SentMessageContainer>
+              <SentMessageBubble
+                themePageBackground={selectedThemeData.sentBubbleColor}
+                themePageColor={selectedThemeData.sentTextColor}
+                onClick={() => {
+                  handleSentMessageClick();
+                }}
+              >
+                I'm fine thank you
               </SentMessageBubble>
             </SentMessageContainer>
           </MessagePreviewContainer>
@@ -331,8 +386,10 @@ const ThemePage = (props) => {
                     <PublicThemeContainer
                       key={index}
                       selected={theme.themeId === selectedThemeId}
+                      selectedColor={theme.primary}
                       onClick={() => {
                         setSelectedThemeId(theme.themeId);
+                        setSelectedThemeData(theme);
                       }}
                     >
                       <PublicThemePreviewContainer>
@@ -351,7 +408,17 @@ const ThemePage = (props) => {
                           />
                         </PublicThemePreviewSent>
                       </PublicThemePreviewContainer>
-                      {theme.name ? theme.name : "Untitled"}
+                      <PublicThemeName>
+                        {theme.name && theme.name.length > 15
+                          ? theme.name.slice(0, 10) + "..."
+                          : theme.name || "Untitled"}
+                      </PublicThemeName>
+                      <PublicThemeCreatorUsername>
+                        {theme.creatorUsername &&
+                        theme.creatorUsername.length > 15
+                          ? theme.creatorUsername.slice(0, 15) + "..."
+                          : theme.creatorUsername}
+                      </PublicThemeCreatorUsername>
                     </PublicThemeContainer>
                   );
                 })
@@ -361,7 +428,7 @@ const ThemePage = (props) => {
             </ThemeCarousell>
           </ThemeCarousellViewingBox>
         </ThemeCarousellContainer>
-        <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
+        <PublicThemeContainerTitle>My Themes</PublicThemeContainerTitle>
         <ThemeCarousellContainer>
           <ThemeCarousellViewingBox>
             <ThemeCarousell>
@@ -371,8 +438,10 @@ const ThemePage = (props) => {
                     <PublicThemeContainer
                       key={index}
                       selected={theme.themeId === selectedThemeId}
+                      selectedColor={theme.primary}
                       onClick={() => {
                         setSelectedThemeId(theme.themeId);
+                        setSelectedThemeData(theme);
                       }}
                     >
                       <PublicThemePreviewContainer>
@@ -391,7 +460,15 @@ const ThemePage = (props) => {
                           />
                         </PublicThemePreviewSent>
                       </PublicThemePreviewContainer>
-                      {theme.name ? theme.name : "Untitled"}
+                      <PublicThemeName>
+                        {theme.name ? theme.name : "Untitled"}
+                      </PublicThemeName>
+                      <PublicThemeCreatorUsername>
+                        {theme.creatorUsername &&
+                        theme.creatorUsername.length > 15
+                          ? theme.creatorUsername.slice(0, 15) + "..."
+                          : theme.creatorUsername}
+                      </PublicThemeCreatorUsername>
                     </PublicThemeContainer>
                   );
                 })
@@ -453,38 +530,6 @@ const ThemePage = (props) => {
         >
           Press to add theme
         </button>
-        <div>
-          {allThemesData.map((theme) => {
-            return (
-              <div style={{ color: "white" }}>
-                {theme.themeId}
-                <br />
-                {theme.name}
-                <br />
-                {theme.primary}
-                <br />
-                {theme.dateAdded}
-                <br />
-                <button
-                  style={{ background: theme.primary }}
-                  onClick={() => {
-                    changeSelectedTheme(theme);
-                  }}
-                >
-                  Change to this theme
-                </button>
-                <button
-                  onClick={() => {
-                    deleteTheme(theme);
-                  }}
-                >
-                  Delete this theme
-                </button>
-                <br /> <br />
-              </div>
-            );
-          })}
-        </div>
       </ThemePageContainer>
     </ThemeProvider>
   );

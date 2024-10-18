@@ -15,9 +15,14 @@ export const SentMessageBubble = styled.div`
   width: fit-content;
   padding: 0.5rem 12px;
   border-radius: 1rem;
-  background: ${(props) => props.theme.sentBubbleColor || props.themePageBackground};
-  color: ${(props) => props.theme.sentTextColor};
+  background: ${(props) =>
+    props.themePageBackground
+      ? props.themePageBackground
+      : props.theme.sentBubbleColor};
+  color: ${(props) =>
+    props.themePageColor ? props.themePageColor : props.theme.sentTextColor};
   box-sizing: border-box;
+  transition: 0.3s;
 `;
 
 export const SentMessageTickContainer = styled.div`

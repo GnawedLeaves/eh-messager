@@ -5,7 +5,7 @@ export const ThemePageContainer = styled.div`
   background: ${(props) => props.theme.background};
   min-height: 100vh;
   position: relative;
-  color: white;
+  color: ${(props) => props.theme.text};
 `;
 
 export const ThemePageTopBar = styled.div`
@@ -35,10 +35,23 @@ export const ColourWheelHexInput = styled.input`
 export const ThemePreviewContainer = styled.div`
   width: 100%;
   padding: 1.2rem 0.2rem;
-  background: #292929;
+  background: ${(props) => props.background};
+  border: 2px solid ${(props) => props.theme.lightGrey};
+  border-left: none;
+  border-right: none;
+  transition: 0.3s;
 `;
 
-export const MessagePreviewContainer = styled.div``;
+export const MessagePreviewContainer = styled.div`
+  position: relative;
+`;
+
+export const MessagePreviewModeContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 2rem;
+  z-index: 9;
+`;
 
 export const ThemePageSentMessageBubble = styled.div``;
 
@@ -47,7 +60,6 @@ export const ThemePageRecentColoursContainer = styled.div`
 `;
 
 export const PublicThemesContainer = styled.div`
-  border: 1px solid red;
   width: 100%;
   display: flex;
   padding: 1rem 30px;
@@ -61,15 +73,14 @@ export const PublicThemeContainer = styled.div`
   width: 180px;
   height: 200px;
   border: 2px solid
-    ${(props) =>
-      props.selected ? props.theme.primary : props.theme.innerBackground};
+    ${(props) => (props.selected ? props.selectedColor : props.theme.lightGrey)};
   border-radius: 1rem;
   padding: 1rem 0.5rem;
   overflow: hidden;
   transition: 0.3s;
   display: flex;
   flex-direction: column;
-  
+  align-items: center;
 `;
 
 export const PublicThemePreviewContainer = styled.div`
@@ -102,7 +113,14 @@ export const PublicThemePreviewText = styled.div`
   background: ${(props) => props.background};
 `;
 
-export const PublicThemeName = styled.div``;
+export const PublicThemeName = styled.span`
+  text-align: center;
+  font-size: 1.2rem;
+`;
+export const PublicThemeCreatorUsername = styled.span`
+  text-align: center;
+  color: ${(props) => props.theme.lightGrey};
+`;
 
 export const ThemeCarousellContainer = styled.div`
   width: 100%;

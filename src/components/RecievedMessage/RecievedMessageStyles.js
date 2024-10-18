@@ -16,9 +16,16 @@ export const RecievedMessageBubble = styled.div`
   max-width: 70%;
   width: fit-content;
   padding: 0.5rem 0.8rem;
-  background: ${(props) => props.theme.recievedBubbleColor || props.themePageBackground};
-  color: ${(props) => props.theme.recievedTextColor};
+  background: ${(props) =>
+    props.themePageBackground
+      ? props.themePageBackground
+      : props.theme.recievedBubbleColor};
+  color: ${(props) =>
+    props.themePageColor
+      ? props.themePageColor
+      : props.theme.recievedTextColor};
   border-radius: 1rem;
+  transition: 0.3s;
 `;
 
 export const RecievedMessageMedia = styled.video`
