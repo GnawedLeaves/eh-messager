@@ -16,10 +16,14 @@ import { auth, db } from "../../database/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import {
+  AddNewThemeButton,
   ColourWheelContainer,
   ColourWheelHexInput,
   MessagePreviewContainer,
   MessagePreviewModeContainer,
+  OwnedThemeButton,
+  OwnedThemeButtonsContainer,
+  PublicThemeBigContainer,
   PublicThemeContainer,
   PublicThemeContainerTitle,
   PublicThemeCreatorUsername,
@@ -36,6 +40,7 @@ import {
   ThemePageRecentColoursContainer,
   ThemePageTopBar,
   ThemePreviewContainer,
+  ThemesTopBar,
 } from "./ThemePageStyles";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -51,7 +56,8 @@ import {
   RecievedMessageContainer,
 } from "../../components/RecievedMessage/RecievedMessageStyles";
 import { dummyThemeData } from "./array";
-import { IoMoon, IoSunnyOutline } from "react-icons/io5";
+import { IoMoon, IoSunnyOutline, IoTrashOutline } from "react-icons/io5";
+import { BiPencil } from "react-icons/bi";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
@@ -94,6 +100,9 @@ const ThemePage = (props) => {
       setSelectedThemeData(
         constructSelectedTheme(user.selectedThemeData.selectedThemeLight)
       );
+      user.themeMode === "light"
+        ? setPreviewLightMode(true)
+        : setPreviewLightMode(false);
     }
   }, [user]);
 
@@ -181,7 +190,7 @@ const ThemePage = (props) => {
     }
   };
 
-  const getLuminance = (hexColor) => {
+  const getBestTextColor = (hexColor) => {
     // Convert hex color to RGB
     let r = parseInt(hexColor.slice(1, 3), 16);
     let g = parseInt(hexColor.slice(3, 5), 16);
@@ -198,12 +207,8 @@ const ThemePage = (props) => {
     b = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
 
     // Calculate luminance
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  };
-
-  const getBestTextColor = (hexColor) => {
-    const luminance = getLuminance(hexColor);
-    return luminance > 0.5 ? "#333333" : "#FEFBF1"; // Black for light bg, White for dark bg
+    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    return luminance > 0.5 ? "#333333" : "#FEFBF1";
   };
 
   useEffect(() => {
@@ -249,12 +254,15 @@ const ThemePage = (props) => {
       const isOwned = theme.creatorId === user.userId;
       const isSelected = theme.themeId === selectedThemeId;
 
-      if (isOwned) {
+      if (isOwned || theme.name === "Default Theme") {
         isSelected ? ownedThemes.unshift(theme) : ownedThemes.push(theme);
       } else {
         isSelected ? publicThemes.unshift(theme) : publicThemes.push(theme);
       }
     });
+
+    ownedThemes.sort((a, b) => a.name.localeCompare(b.name));
+    publicThemes.sort((a, b) => a.name.localeCompare(b.name));
 
     setPublicThemes(publicThemes);
     setOwnedThemes(ownedThemes);
@@ -281,6 +289,11 @@ const ThemePage = (props) => {
     };
   };
 
+  const handleOnThemeClick = (theme) => {
+    setSelectedThemeId(theme.themeId);
+    setSelectedThemeData(theme);
+    // changeSelectedTheme(theme);
+  };
   return (
     <ThemeProvider
       theme={
@@ -321,7 +334,7 @@ const ThemePage = (props) => {
                 <IoMoon
                   style={{ cursor: "pointer" }}
                   size={"24px"}
-                  color={LightTheme().color}
+                  color={darktheme.background}
                   onClick={() => {
                     setPreviewLightMode(!previewLightMode);
                   }}
@@ -330,7 +343,7 @@ const ThemePage = (props) => {
                 <IoSunnyOutline
                   style={{ cursor: "pointer" }}
                   size={"24px"}
-                  color={darktheme.white}
+                  color={LightTheme().background}
                   onClick={() => {
                     setPreviewLightMode(!previewLightMode);
                   }}
@@ -388,8 +401,7 @@ const ThemePage = (props) => {
                       selected={theme.themeId === selectedThemeId}
                       selectedColor={theme.primary}
                       onClick={() => {
-                        setSelectedThemeId(theme.themeId);
-                        setSelectedThemeData(theme);
+                        handleOnThemeClick(theme);
                       }}
                     >
                       <PublicThemePreviewContainer>
@@ -410,7 +422,7 @@ const ThemePage = (props) => {
                       </PublicThemePreviewContainer>
                       <PublicThemeName>
                         {theme.name && theme.name.length > 15
-                          ? theme.name.slice(0, 10) + "..."
+                          ? theme.name.slice(0, 15) + "..."
                           : theme.name || "Untitled"}
                       </PublicThemeName>
                       <PublicThemeCreatorUsername>
@@ -428,48 +440,81 @@ const ThemePage = (props) => {
             </ThemeCarousell>
           </ThemeCarousellViewingBox>
         </ThemeCarousellContainer>
-        <PublicThemeContainerTitle>My Themes</PublicThemeContainerTitle>
+        <ThemesTopBar>
+          <PublicThemeContainerTitle>My Themes</PublicThemeContainerTitle>
+          <AddNewThemeButton
+            background={selectedThemeData.primary}
+            color={getBestTextColor(selectedThemeData.primary)}
+          >
+            New Theme
+          </AddNewThemeButton>
+        </ThemesTopBar>
         <ThemeCarousellContainer>
           <ThemeCarousellViewingBox>
             <ThemeCarousell>
               {ownedThemes ? (
                 ownedThemes.map((theme, index) => {
                   return (
-                    <PublicThemeContainer
-                      key={index}
-                      selected={theme.themeId === selectedThemeId}
-                      selectedColor={theme.primary}
-                      onClick={() => {
-                        setSelectedThemeId(theme.themeId);
-                        setSelectedThemeData(theme);
-                      }}
-                    >
-                      <PublicThemePreviewContainer>
-                        <PublicThemePreviewRecieved
-                          background={theme.recievedBubbleColor}
-                        >
-                          <PublicThemePreviewText
-                            background={theme.recievedTextColor}
-                          />
-                        </PublicThemePreviewRecieved>
-                        <PublicThemePreviewSent
-                          background={theme.sentBubbleColor}
-                        >
-                          <PublicThemePreviewText
-                            background={theme.sentTextColor}
-                          />
-                        </PublicThemePreviewSent>
-                      </PublicThemePreviewContainer>
-                      <PublicThemeName>
-                        {theme.name ? theme.name : "Untitled"}
-                      </PublicThemeName>
-                      <PublicThemeCreatorUsername>
-                        {theme.creatorUsername &&
-                        theme.creatorUsername.length > 15
-                          ? theme.creatorUsername.slice(0, 15) + "..."
-                          : theme.creatorUsername}
-                      </PublicThemeCreatorUsername>
-                    </PublicThemeContainer>
+                    <PublicThemeBigContainer>
+                      <PublicThemeContainer
+                        key={index}
+                        selected={theme.themeId === selectedThemeId}
+                        selectedColor={theme.primary}
+                        onClick={() => {
+                          handleOnThemeClick(theme);
+                        }}
+                      >
+                        <PublicThemePreviewContainer>
+                          <PublicThemePreviewRecieved
+                            background={theme.recievedBubbleColor}
+                          >
+                            <PublicThemePreviewText
+                              background={theme.recievedTextColor}
+                            />
+                          </PublicThemePreviewRecieved>
+                          <PublicThemePreviewSent
+                            background={theme.sentBubbleColor}
+                          >
+                            <PublicThemePreviewText
+                              background={theme.sentTextColor}
+                            />
+                          </PublicThemePreviewSent>
+                        </PublicThemePreviewContainer>
+                        <PublicThemeName>
+                          {theme.name && theme.name.length > 13
+                            ? theme.name.slice(0, 13) + "..."
+                            : theme.name || "Untitled"}
+                        </PublicThemeName>
+                        <PublicThemeCreatorUsername>
+                          {theme.creatorUsername &&
+                          theme.creatorUsername.length > 15
+                            ? theme.creatorUsername.slice(0, 15) + "..."
+                            : theme.creatorUsername}
+                        </PublicThemeCreatorUsername>
+                      </PublicThemeContainer>
+                      {theme.name !== "Default Theme" ? (
+                        <OwnedThemeButtonsContainer>
+                          <OwnedThemeButton
+                            selected={theme.themeId === selectedThemeId}
+                            selectedColor={theme.primary}
+                            onClick={() => {}}
+                          >
+                            <BiPencil size={"1.2rem"} />
+                          </OwnedThemeButton>
+                          <OwnedThemeButton
+                            selected={theme.themeId === selectedThemeId}
+                            selectedColor={theme.primary}
+                            onClick={() => {
+                              // deleteTheme();
+                            }}
+                          >
+                            <IoTrashOutline size={"1.2rem"} />
+                          </OwnedThemeButton>
+                        </OwnedThemeButtonsContainer>
+                      ) : (
+                        <></>
+                      )}
+                    </PublicThemeBigContainer>
                   );
                 })
               ) : (

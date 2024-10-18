@@ -67,10 +67,18 @@ export const PublicThemesContainer = styled.div`
   justify-content: center;
 `;
 
-export const PublicThemeContainerTitle = styled.div``;
+export const PublicThemeContainerTitle = styled.div`
+  font-size: 1.5rem;
+`;
 
+export const PublicThemeBigContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+`;
 export const PublicThemeContainer = styled.div`
-  width: 180px;
+  width: 160px;
   height: 200px;
   border: 2px solid
     ${(props) => (props.selected ? props.selectedColor : props.theme.lightGrey)};
@@ -122,6 +130,20 @@ export const PublicThemeCreatorUsername = styled.span`
   color: ${(props) => props.theme.lightGrey};
 `;
 
+export const OwnedThemeButton = styled.div`
+  padding: 0.7rem;
+  border-radius: 100%;
+  border: 1px solid
+    ${(props) => (props.selected ? props.selectedColor : props.theme.text)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+export const OwnedThemeButtonsContainer = styled.div`
+  display: flex;
+  gap: 0.8rem;
+`;
+
 export const ThemeCarousellContainer = styled.div`
   width: 100%;
   padding: 1rem 2rem;
@@ -139,4 +161,21 @@ export const ThemeCarousell = styled.div`
   align-items: center;
   width: fit-content;
   gap: 1rem;
+  align-items: flex-start;
+`;
+
+export const ThemesTopBar = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 0 1rem;
+  justify-content: space-between;
+  align-items: center;
+`;
+export const AddNewThemeButton = styled.button`
+  border: 1px solid ${(props) => props.background};
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  background: ${(props) => props.background};
+  color: ${(props) => props.color};
 `;
