@@ -308,15 +308,11 @@ const ThemePage = (props) => {
   const getAllPublicThemes = () => {
     const ownedThemes = [];
     const publicThemes = [];
-    let selectedTheme = null;
 
     allThemesData.forEach((theme) => {
       const isOwned = theme.creatorId === user.userId;
-      const isSelected = theme.themeId === selectedThemeId;
 
-      if (isSelected) {
-        selectedTheme = theme; // Store the selected theme
-      } else if (isOwned || theme.name === "Default Theme") {
+      if (isOwned || theme.name === "Default Theme") {
         ownedThemes.push(theme);
       } else {
         publicThemes.push(theme);
@@ -326,9 +322,6 @@ const ThemePage = (props) => {
     // Sort themes alphabetically by theme.name
     ownedThemes.sort((a, b) => a.name.localeCompare(b.name));
     publicThemes.sort((a, b) => a.name.localeCompare(b.name));
-
-    // Move the selected theme to the front of the ownedThemes array
-    if (selectedTheme) ownedThemes.unshift(selectedTheme);
 
     setPublicThemes(publicThemes);
     setOwnedThemes(ownedThemes);
