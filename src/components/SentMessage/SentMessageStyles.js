@@ -11,7 +11,7 @@ export const SentMessageContainer = styled.div`
 `;
 
 export const SentMessageBubble = styled.div`
-  max-width: 70%;
+  max-width: ${(props) => (props.highlighted ? "" : "70%")};
   width: fit-content;
   padding: 0.5rem 12px;
   border-radius: 1rem;

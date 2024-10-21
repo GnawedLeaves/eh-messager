@@ -119,7 +119,7 @@ const Sidebar = (props) => {
                 <IoMoon
                   style={{ cursor: "pointer" }}
                   size={"24px"}
-                  color={LightTheme().white}
+                  color={siderBarTextColor}
                   onClick={() => {
                     props.handleThemeModeChange("dark");
                   }}
@@ -128,7 +128,7 @@ const Sidebar = (props) => {
                 <IoSunnyOutline
                   style={{ cursor: "pointer" }}
                   size={"24px"}
-                  color={darktheme.white}
+                  color={siderBarTextColor}
                   onClick={() => {
                     props.handleThemeModeChange("light");
                   }}

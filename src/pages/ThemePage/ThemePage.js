@@ -18,9 +18,20 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import {
   AddNewThemeButton,
   AddNewThemeContainer,
+  AddThemeButton,
+  AddThemeButtonBar,
+  AddThemeDetailsSubtitle,
+  AddThemeInput,
+  AddThemeInputContainer,
+  AddThemeSubtitle,
+  AddThemeTitle,
+  AddThemeTopBar,
+  ChatPreviewTitle,
   ColourWheelContainer,
   ColourWheelHexInput,
+  HighLightContainerSent,
   HightLightContainer,
+  HightLightContainerPrimary,
   MessagePreviewContainer,
   MessagePreviewModeContainer,
   MessagePreviewPrimary,
@@ -43,8 +54,10 @@ import {
   ThemePageContainer,
   ThemePageRecentColoursContainer,
   ThemePageTopBar,
+  ThemePreviewBigContainer,
   ThemePreviewContainer,
   ThemesTopBar,
+  ThemeTopBarAndCarousellContainer,
 } from "./ThemePageStyles";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -64,14 +77,18 @@ import { IoMoon, IoSunnyOutline, IoTrashOutline } from "react-icons/io5";
 import { BiPencil } from "react-icons/bi";
 import { getBestTextColor } from "../../functions/getBestTextColor";
 import Modal from "../../components/Modal/Modal";
+import {
+  ProfilePageDetailsSubtitle,
+  ProfilePageDetailsSubtitleAndTitleGroup,
+} from "../ProfilePage/ProfilePageStyles";
+import Button from "../../components/Button/Button";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
   const [allUsers, setAllUsers] = useState([]);
   const [allThemesData, setAllThemesData] = useState([]);
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const [newThemeName, setNewThemeName] = useState("");
-  const [newThemePrimary, setNewThemePrimary] = useState("");
+  const [newThemeName, setNewThemeName] = useState("New Theme");
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
   const [hexColor, setHexColor] = useState("");
@@ -222,6 +239,8 @@ const ThemePage = (props) => {
   };
 
   useEffect(() => {
+    console.log("newRecievedTextBackground", newRecievedTextBackground);
+
     if (newRecievedTextBackground !== "") {
       setNewRecievedTextColor(getBestTextColor(newRecievedTextBackground));
     }
@@ -255,26 +274,35 @@ const ThemePage = (props) => {
 
   const handleRecievedMessageClick = () => {
     setEditingSentColor(false);
-    setEditingRecievedColor(true);
+    setEditingRecievedColor(!editingRecievedColor);
     setEditingPrimaryColor(false);
-    setHexColor(selectedThemeData.recievedBubbleColor);
-    console.log("editing recieved..");
+    if (newRecievedTextBackground !== "") {
+      setHexColor(newRecievedTextBackground);
+    } else {
+      setHexColor(selectedThemeData.recievedBubbleColor);
+    }
   };
 
   const handleSentMessageClick = () => {
     setEditingRecievedColor(false);
-    setEditingSentColor(true);
+    setEditingSentColor(!editingSentColor);
     setEditingPrimaryColor(false);
-    setHexColor(selectedThemeData.sentBubbleColor);
-
-    console.log("editing sent..");
+    if (newSentTextBackground !== "") {
+      setHexColor(newSentTextBackground);
+    } else {
+      setHexColor(selectedThemeData.sentBubbleColor);
+    }
   };
 
   const handlePrimaryButtonClicked = () => {
     setEditingRecievedColor(false);
     setEditingSentColor(false);
-    setEditingPrimaryColor(true);
-    setHexColor(selectedThemeData.primary);
+    setEditingPrimaryColor(!editingPrimaryColor);
+    if (newPrimaryColor !== "") {
+      setHexColor(newPrimaryColor);
+    } else {
+      setHexColor(selectedThemeData.primary);
+    }
   };
 
   const getAllPublicThemes = () => {
@@ -307,6 +335,7 @@ const ThemePage = (props) => {
   };
 
   useEffect(() => {
+    console.log("hexColor", hexColor);
     if (editingRecievedColor) {
       setNewRecievedTextBackground(hexColor);
     } else if (editingSentColor) {
@@ -336,7 +365,7 @@ const ThemePage = (props) => {
   const handleOnThemeClick = (theme) => {
     setSelectedThemeId(theme.themeId);
     setSelectedThemeData(theme);
-    // changeSelectedTheme(theme);
+    changeSelectedTheme(theme);
   };
 
   const onLeaveAddTheme = () => {
@@ -344,6 +373,7 @@ const ThemePage = (props) => {
     setAddingNewTheme(false);
     setEditingRecievedColor(false);
     setEditingSentColor(false);
+    setNewPrimaryTextColor("");
     setNewPrimaryColor("");
     setNewRecievedTextBackground("");
     setNewRecievedTextColor("");
@@ -406,150 +436,185 @@ const ThemePage = (props) => {
           />
           Theme
         </ThemePageTopBar>
-        <ThemePreviewContainer
-          background={
-            previewLightMode ? LightTheme().background : darktheme.background
-          }
-        >
-          <MessagePreviewContainer>
-            <MessagePreviewModeContainer>
-              {previewLightMode ? (
-                <IoMoon
-                  style={{ cursor: "pointer" }}
-                  size={"24px"}
-                  color={darktheme.background}
-                  onClick={() => {
-                    setPreviewLightMode(!previewLightMode);
-                  }}
-                />
-              ) : (
-                <IoSunnyOutline
-                  style={{ cursor: "pointer" }}
-                  size={"24px"}
-                  color={LightTheme().background}
-                  onClick={() => {
-                    setPreviewLightMode(!previewLightMode);
-                  }}
-                />
-              )}
-            </MessagePreviewModeContainer>
 
-            <HightLightContainer
-              highlighted={editingRecievedColor}
-              borderColor={
-                editingRecievedColor || newRecievedTextBackground !== ""
-                  ? newRecievedTextBackground
-                  : selectedThemeData.recievedBubbleColor
-              }
-            >
-              Recieved Message
-              <RecievedMessageBubble
+        <ThemePreviewBigContainer>
+          {addingNewTheme ? (
+            <>
+              <AddThemeTopBar>
+                <AddThemeTitle> Create New Theme</AddThemeTitle>
+                <AddThemeSubtitle>
+                  Click on the part of the preview you want to edit
+                </AddThemeSubtitle>
+              </AddThemeTopBar>
+            </>
+          ) : (
+            <ChatPreviewTitle>Chat Preview</ChatPreviewTitle>
+          )}
+          <ThemePreviewContainer
+            background={
+              previewLightMode ? LightTheme().background : darktheme.background
+            }
+          >
+            <MessagePreviewContainer>
+              <MessagePreviewModeContainer>
+                {previewLightMode ? (
+                  <IoMoon
+                    style={{ cursor: "pointer" }}
+                    size={"24px"}
+                    color={darktheme.background}
+                    onClick={() => {
+                      setPreviewLightMode(!previewLightMode);
+                    }}
+                  />
+                ) : (
+                  <IoSunnyOutline
+                    style={{ cursor: "pointer" }}
+                    size={"24px"}
+                    color={LightTheme().background}
+                    onClick={() => {
+                      setPreviewLightMode(!previewLightMode);
+                    }}
+                  />
+                )}
+              </MessagePreviewModeContainer>
+
+              <HightLightContainer
                 highlighted={editingRecievedColor}
-                themePageBackground={
+                borderColor={
                   editingRecievedColor || newRecievedTextBackground !== ""
                     ? newRecievedTextBackground
                     : selectedThemeData.recievedBubbleColor
                 }
-                themePageColor={
-                  editingRecievedColor || newRecievedTextColor !== ""
-                    ? newRecievedTextColor
-                    : selectedThemeData.recievedTextColor
-                }
-                onClick={() => {
-                  handleRecievedMessageClick();
-                }}
               >
-                hi
-              </RecievedMessageBubble>
-            </HightLightContainer>
-          </MessagePreviewContainer>
-
-          <MessagePreviewContainer>
-            <HightLightContainer
-              highlighted={editingRecievedColor}
-              borderColor={
-                editingRecievedColor || newRecievedTextBackground !== ""
-                  ? newRecievedTextBackground
-                  : selectedThemeData.recievedBubbleColor
-              }
-            >
-              <RecievedMessageBubble
+                {/* Recieved Message */}
+                <RecievedMessageBubble
+                  highlighted={editingRecievedColor}
+                  themePageBackground={
+                    editingRecievedColor || newRecievedTextBackground !== ""
+                      ? newRecievedTextBackground
+                      : selectedThemeData.recievedBubbleColor
+                  }
+                  themePageColor={
+                    editingRecievedColor || newRecievedTextColor !== ""
+                      ? newRecievedTextColor
+                      : selectedThemeData.recievedTextColor
+                  }
+                  onClick={() => {
+                    if (addingNewTheme) {
+                      handleRecievedMessageClick();
+                    }
+                  }}
+                >
+                  hi
+                </RecievedMessageBubble>
+              </HightLightContainer>
+            </MessagePreviewContainer>
+            <MessagePreviewContainer>
+              <HightLightContainer
                 highlighted={editingRecievedColor}
-                themePageBackground={
+                borderColor={
                   editingRecievedColor || newRecievedTextBackground !== ""
                     ? newRecievedTextBackground
                     : selectedThemeData.recievedBubbleColor
                 }
-                themePageColor={
-                  editingRecievedColor || newRecievedTextColor !== ""
-                    ? newRecievedTextColor
-                    : selectedThemeData.recievedTextColor
-                }
-                onClick={() => {
-                  handleRecievedMessageClick();
-                }}
               >
-                how are you doing?
-              </RecievedMessageBubble>
-            </HightLightContainer>
-          </MessagePreviewContainer>
-          <MessagePreviewContainer>
-            <SentMessageContainer>
-              Sent Message
-              <SentMessageBubble
-                themePageBackground={
-                  editingSentColor || newSentTextBackground !== ""
-                    ? newSentTextBackground
-                    : selectedThemeData.sentBubbleColor
-                }
-                themePageColor={
-                  editingSentColor || newSentTextColor !== ""
-                    ? newSentTextColor
-                    : selectedThemeData.sentTextColor
-                }
-                onClick={() => {
-                  handleSentMessageClick();
-                }}
-              >
-                I'm fine thank you
-              </SentMessageBubble>
-            </SentMessageContainer>
-            <MessagePreviewPrimaryContainer>
-              <MessagePreviewPrimary
-                background={
-                  editingPrimaryColor || newPrimaryColor !== ""
-                    ? newPrimaryColor
-                    : selectedThemeData.primary
-                }
-                color={
-                  editingPrimaryColor || newPrimaryTextColor !== ""
-                    ? newPrimaryTextColor
-                    : getBestTextColor(selectedThemeData.primary)
-                }
-                onClick={() => {
-                  handlePrimaryButtonClicked();
-                }}
-              >
-                Primary Colour
-              </MessagePreviewPrimary>
-            </MessagePreviewPrimaryContainer>
-          </MessagePreviewContainer>
-        </ThemePreviewContainer>
+                <RecievedMessageBubble
+                  highlighted={editingRecievedColor}
+                  themePageBackground={
+                    editingRecievedColor || newRecievedTextBackground !== ""
+                      ? newRecievedTextBackground
+                      : selectedThemeData.recievedBubbleColor
+                  }
+                  themePageColor={
+                    editingRecievedColor || newRecievedTextColor !== ""
+                      ? newRecievedTextColor
+                      : selectedThemeData.recievedTextColor
+                  }
+                  onClick={() => {
+                    if (addingNewTheme) {
+                      handleRecievedMessageClick();
+                    }
+                  }}
+                >
+                  how are you doing?
+                </RecievedMessageBubble>
+              </HightLightContainer>
+            </MessagePreviewContainer>
+            <MessagePreviewContainer>
+              <SentMessageContainer>
+                <HighLightContainerSent
+                  style={{ alignItems: "flex-end" }}
+                  highlighted={editingSentColor}
+                  borderColor={
+                    editingSentColor || newSentTextBackground !== ""
+                      ? newSentTextBackground
+                      : selectedThemeData.sentBubbleColor
+                  }
+                >
+                  <SentMessageBubble
+                    highlighted={editingSentColor}
+                    themePageBackground={
+                      editingSentColor || newSentTextBackground !== ""
+                        ? newSentTextBackground
+                        : selectedThemeData.sentBubbleColor
+                    }
+                    themePageColor={
+                      editingSentColor || newSentTextColor !== ""
+                        ? newSentTextColor
+                        : selectedThemeData.sentTextColor
+                    }
+                    onClick={() => {
+                      if (addingNewTheme) {
+                        handleSentMessageClick();
+                      }
+                    }}
+                  >
+                    I'm fine thank you
+                  </SentMessageBubble>
+                </HighLightContainerSent>
+              </SentMessageContainer>
+              <MessagePreviewPrimaryContainer>
+                <HightLightContainerPrimary
+                  highlighted={editingPrimaryColor}
+                  borderColor={
+                    editingPrimaryColor || newPrimaryColor !== ""
+                      ? newPrimaryColor
+                      : selectedThemeData.primary
+                  }
+                >
+                  <MessagePreviewPrimary
+                    background={
+                      editingPrimaryColor || newPrimaryColor !== ""
+                        ? newPrimaryColor
+                        : selectedThemeData.primary
+                    }
+                    color={
+                      editingPrimaryColor || newPrimaryTextColor !== ""
+                        ? newPrimaryTextColor
+                        : getBestTextColor(selectedThemeData.primary)
+                    }
+                    onClick={() => {
+                      if (addingNewTheme) {
+                        handlePrimaryButtonClicked();
+                      }
+                    }}
+                  >
+                    Primary Colour
+                  </MessagePreviewPrimary>
+                </HightLightContainerPrimary>
+              </MessagePreviewPrimaryContainer>
+            </MessagePreviewContainer>
+          </ThemePreviewContainer>
+        </ThemePreviewBigContainer>
         {addingNewTheme ? (
           <AddNewThemeContainer>
-            <button
-              onClick={() => {
-                onLeaveAddTheme();
-              }}
-            >
-              Back
-            </button>
-            Click message to edit
-            <h1>Adding new theme</h1>
             {editingRecievedColor || editingPrimaryColor || editingSentColor ? (
               <>
                 <ColourWheelContainer>
-                  <HexColorPicker color={hexColor} onChange={setHexColor} />
+                  <HexColorPicker
+                    color={hexColor}
+                    onChange={setHexColor}
+                  ></HexColorPicker>
                   <ColourWheelHexInput
                     maxLength={7}
                     onChange={(e) => {
@@ -568,44 +633,40 @@ const ThemePage = (props) => {
             ) : (
               <></>
             )}
-            <button
-              onClick={() => {
-                addDefaultTheme();
-              }}
-            >
-              Add default theme
-            </button>
-            <div>Selected Theme: {user?.selectedTheme}</div>
-            <div
-              style={{
-                width: "100%",
-                height: 34,
-                marginTop: 20,
-                background: hexColor,
-                color: newRecievedTextColor,
-              }}
-            >
-              Text in the div
-            </div>
-            <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
-            <div>New Theme Name</div>
-            <input
-              value={newThemeName}
-              type="text"
-              onChange={(e) => {
-                setNewThemeName(e.target.value);
-              }}
-            />
-            <button
-              onClick={() => {
-                addTheme();
-              }}
-            >
-              Press to add theme
-            </button>
+
+            <AddThemeInputContainer>
+              <AddThemeDetailsSubtitle>Theme Name</AddThemeDetailsSubtitle>
+              <AddThemeInput
+                onChange={(e) => {
+                  setNewThemeName(e.target.value);
+                }}
+                value={newThemeName}
+                type="text"
+              />
+            </AddThemeInputContainer>
+
+            <AddThemeButtonBar>
+              <AddThemeButton
+                borderColor={selectedThemeData.primary}
+                background={selectedThemeData.primary}
+                color={getBestTextColor(selectedThemeData.primary)}
+                onClick={() => {
+                  addTheme();
+                }}
+              >
+                Create Theme
+              </AddThemeButton>
+              <AddThemeButton
+                onClick={() => {
+                  onLeaveAddTheme();
+                }}
+              >
+                Back
+              </AddThemeButton>
+            </AddThemeButtonBar>
           </AddNewThemeContainer>
         ) : (
-          <>
+          <ThemeTopBarAndCarousellContainer>
             <ThemesTopBar>
               <PublicThemeContainerTitle>My Themes</PublicThemeContainerTitle>
               <AddNewThemeButton
@@ -615,7 +676,7 @@ const ThemePage = (props) => {
                   setAddingNewTheme(true);
                 }}
               >
-                New Theme
+                Create Theme
               </AddNewThemeButton>
             </ThemesTopBar>
             <ThemeCarousellContainer>
@@ -747,7 +808,7 @@ const ThemePage = (props) => {
                 </ThemeCarousell>
               </ThemeCarousellViewingBox>
             </ThemeCarousellContainer>
-          </>
+          </ThemeTopBarAndCarousellContainer>
         )}
       </ThemePageContainer>
     </ThemeProvider>

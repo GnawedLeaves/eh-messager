@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { getBestTextColor } from "../../functions/getBestTextColor";
 
 const sizes = {
   desktop: 1024,
@@ -224,7 +225,7 @@ export const ProfilePageCharacterLeft = styled.span`
 export const ProfilePageSaveButton = styled(ProfilePageButton)`
   border: 2px solid ${(props) => props.theme.primary};
   background: ${(props) => props.theme.primary};
-  color: ${(props) => props.theme.white};
+  color: ${(props) => getBestTextColor(props.theme.primary)};
 `;
 
 export const ProfilePageTextArea = styled.textarea`
