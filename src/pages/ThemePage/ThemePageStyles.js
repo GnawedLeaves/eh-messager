@@ -40,6 +40,7 @@ export const ThemePreviewContainer = styled.div`
   border-left: none;
   border-right: none;
   transition: 0.3s;
+  margin-bottom: 2rem;
 `;
 
 export const MessagePreviewContainer = styled.div`
@@ -178,4 +179,36 @@ export const AddNewThemeButton = styled.button`
   font-size: 1rem;
   background: ${(props) => props.background};
   color: ${(props) => props.color};
+`;
+
+export const AddNewThemeContainer = styled.div``;
+
+export const MessagePreviewPrimary = styled.div`
+  width: 40%;
+  height: 50px;
+  border-radius: 1rem;
+  transition: 0.3s;
+  background: ${(props) => props.background};
+  color: ${(props) => props.color};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const MessagePreviewPrimaryContainer = styled.div`
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const HightLightContainer = styled.div`
+  padding: ${(props) => (props.highlighted ? "0.2rem" : " 0.3rem 1rem")};
+  border-radius: 1.2rem;
+  border: 2px solid green;
+  display: inline-flex;
+  width: ${(props) => (props.highlighted ? "fit-content" : "100%")};
+
+  transition: 0.3s;
 `;

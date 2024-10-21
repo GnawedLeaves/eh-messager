@@ -17,10 +17,14 @@ import { onAuthStateChanged } from "firebase/auth";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import {
   AddNewThemeButton,
+  AddNewThemeContainer,
   ColourWheelContainer,
   ColourWheelHexInput,
+  HightLightContainer,
   MessagePreviewContainer,
   MessagePreviewModeContainer,
+  MessagePreviewPrimary,
+  MessagePreviewPrimaryContainer,
   OwnedThemeButton,
   OwnedThemeButtonsContainer,
   PublicThemeBigContainer,
@@ -59,6 +63,7 @@ import { dummyThemeData } from "./array";
 import { IoMoon, IoSunnyOutline, IoTrashOutline } from "react-icons/io5";
 import { BiPencil } from "react-icons/bi";
 import { getBestTextColor } from "../../functions/getBestTextColor";
+import Modal from "../../components/Modal/Modal";
 
 const ThemePage = (props) => {
   const user = useContext(UserContext);
@@ -69,20 +74,25 @@ const ThemePage = (props) => {
   const [newThemePrimary, setNewThemePrimary] = useState("");
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
-  const [hexColor, setHexColor] = useState("#aabbcc");
+  const [hexColor, setHexColor] = useState("");
   const [newRecievedTextBackground, setNewRecievedTextBackground] =
     useState("");
   const [newRecievedTextColor, setNewRecievedTextColor] = useState("");
   const [newSentTextBackground, setNewSentTextBackground] = useState("");
   const [newSentTextColor, setNewSentTextColor] = useState("");
   const [newPrimaryColor, setNewPrimaryColor] = useState("");
-  const [editingRecievedColor, setEditingRecievedColor] = useState("");
-  const [editingSentColor, setEditingSentColor] = useState("");
+  const [editingRecievedColor, setEditingRecievedColor] = useState(false);
+  const [editingSentColor, setEditingSentColor] = useState(false);
+  const [editingPrimaryColor, setEditingPrimaryColor] = useState(false);
   const [publicThemes, setPublicThemes] = useState();
   const [ownedThemes, setOwnedThemes] = useState();
   const [selectedThemeId, setSelectedThemeId] = useState("");
   const [selectedThemeData, setSelectedThemeData] = useState({});
   const [previewLightMode, setPreviewLightMode] = useState(true);
+  const [addingNewTheme, setAddingNewTheme] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingThemeObject, setDeleteingThemeObject] = useState({});
+  const [newPrimaryTextColor, setNewPrimaryTextColor] = useState("");
 
   useEffect(() => {
     if (allThemesData !== null) {
@@ -99,6 +109,10 @@ const ThemePage = (props) => {
     if (user !== null) {
       setSelectedThemeId(user.selectedThemeData.selectedThemeLight.themeId);
       setSelectedThemeData(
+        constructSelectedTheme(user.selectedThemeData.selectedThemeLight)
+      );
+      console.log(
+        "selected theme data",
         constructSelectedTheme(user.selectedThemeData.selectedThemeLight)
       );
       user.themeMode === "light"
@@ -125,25 +139,40 @@ const ThemePage = (props) => {
 
   const addTheme = async () => {
     const timestamp = Timestamp.fromDate(new Date());
-    try {
-      const docRef = await addDoc(collection(db, "themes"), {
-        backgroundImg: "",
-        primary: hexColor,
-        recievedBubbleColor: "#ff787f",
-        recievedTextColor: "#FEFBF1",
-        sentBubbleColor: "#F8865C",
-        sentTextColor: "#FEFBF1",
-        creatorId: user?.userId,
-        dateAdded: timestamp,
-        dateEdited: timestamp,
-        name: newThemeName,
-      });
+    const requiredFields = [
+      newPrimaryColor,
+      newRecievedTextBackground,
+      newRecievedTextColor,
+      newSentTextBackground,
+      newSentTextColor,
+      newThemeName,
+    ];
 
-      console.log("Successfully added theme!");
-      props.getAllThemeData();
-      resetAllInputs();
-    } catch (e) {
-      console.log("Error adding theme: ", e);
+    if (requiredFields.every((field) => field !== "")) {
+      try {
+        const themeData = {
+          backgroundImg: "",
+          primary: newPrimaryColor,
+          recievedBubbleColor: newRecievedTextBackground,
+          recievedTextColor: newRecievedTextColor,
+          sentBubbleColor: newSentTextBackground,
+          sentTextColor: newSentTextColor,
+          creatorId: user?.userId,
+          dateAdded: timestamp,
+          dateEdited: timestamp,
+          name: newThemeName,
+        };
+
+        const docRef = await addDoc(collection(db, "themes"), themeData);
+
+        console.log("Successfully added theme!", docRef);
+        props.getAllThemeData();
+        resetAllInputs();
+      } catch (e) {
+        console.log("Error adding theme: ", e);
+      }
+    } else {
+      console.log("One of the fields is blank");
     }
   };
 
@@ -186,15 +215,23 @@ const ThemePage = (props) => {
       await deleteDoc(doc(db, "themes", theme.themeId));
       console.log("theme successfully deleted");
       props.getAllThemeData();
+      setDeleteingThemeObject({});
     } catch (e) {
       console.warn("Unable to delete theme: ", e);
     }
   };
 
   useEffect(() => {
-    setNewRecievedTextColor(getBestTextColor(newRecievedTextBackground));
-    setNewSentTextColor(getBestTextColor(newSentTextBackground));
-  }, [newRecievedTextBackground, newSentTextBackground]);
+    if (newRecievedTextBackground !== "") {
+      setNewRecievedTextColor(getBestTextColor(newRecievedTextBackground));
+    }
+    if (newSentTextBackground !== "") {
+      setNewSentTextColor(getBestTextColor(newSentTextBackground));
+    }
+    if (newPrimaryColor !== "") {
+      setNewPrimaryTextColor(getBestTextColor(newPrimaryColor));
+    }
+  }, [newRecievedTextBackground, newSentTextBackground, newPrimaryColor]);
 
   const addDefaultTheme = async () => {
     const timestamp = Timestamp.fromDate(new Date());
@@ -217,13 +254,27 @@ const ThemePage = (props) => {
   };
 
   const handleRecievedMessageClick = () => {
+    setEditingSentColor(false);
     setEditingRecievedColor(true);
+    setEditingPrimaryColor(false);
+    setHexColor(selectedThemeData.recievedBubbleColor);
     console.log("editing recieved..");
   };
 
   const handleSentMessageClick = () => {
+    setEditingRecievedColor(false);
     setEditingSentColor(true);
+    setEditingPrimaryColor(false);
+    setHexColor(selectedThemeData.sentBubbleColor);
+
     console.log("editing sent..");
+  };
+
+  const handlePrimaryButtonClicked = () => {
+    setEditingRecievedColor(false);
+    setEditingSentColor(false);
+    setEditingPrimaryColor(true);
+    setHexColor(selectedThemeData.primary);
   };
 
   const getAllPublicThemes = () => {
@@ -256,7 +307,13 @@ const ThemePage = (props) => {
   };
 
   useEffect(() => {
-    setNewRecievedTextBackground(hexColor);
+    if (editingRecievedColor) {
+      setNewRecievedTextBackground(hexColor);
+    } else if (editingSentColor) {
+      setNewSentTextBackground(hexColor);
+    } else if (editingPrimaryColor) {
+      setNewPrimaryColor(hexColor);
+    }
   }, [hexColor]);
 
   const constructSelectedTheme = (theme) => {
@@ -281,6 +338,19 @@ const ThemePage = (props) => {
     setSelectedThemeData(theme);
     // changeSelectedTheme(theme);
   };
+
+  const onLeaveAddTheme = () => {
+    setEditingPrimaryColor(false);
+    setAddingNewTheme(false);
+    setEditingRecievedColor(false);
+    setEditingSentColor(false);
+    setNewPrimaryColor("");
+    setNewRecievedTextBackground("");
+    setNewRecievedTextColor("");
+    setNewSentTextBackground("");
+    setNewSentTextColor("");
+  };
+
   return (
     <ThemeProvider
       theme={
@@ -290,6 +360,32 @@ const ThemePage = (props) => {
       }
     >
       <ThemePageContainer>
+        <Modal
+          handleModalClose={() => {
+            setShowDeleteModal(false);
+          }}
+          modalType="action"
+          actionButtonText="Delete"
+          actionButtonColor={
+            user?.themeMode === "light"
+              ? user?.selectedThemeData?.selectedThemeLight.error ||
+                LightTheme.error
+              : user?.selectedThemeData?.selectedThemeDark.error ||
+                darktheme.error
+          }
+          actionButtonClick={() => {
+            setShowDeleteModal(false);
+            deleteTheme(deletingThemeObject);
+          }}
+          show={showDeleteModal}
+          modalTitle="Delete Theme"
+          modalContent={`Are you sure you want to delete ${deletingThemeObject.name}?`}
+          theme={
+            user?.themeMode === "light"
+              ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+              : user?.selectedThemeData?.selectedThemeDark || darktheme
+          }
+        />
         <Sidebar
           showSidebar={openSideBar}
           username={user?.username}
@@ -338,9 +434,18 @@ const ThemePage = (props) => {
               )}
             </MessagePreviewModeContainer>
             <RecievedMessageContainer>
+              Recieved Message
               <RecievedMessageBubble
-                themePageBackground={selectedThemeData.recievedBubbleColor}
-                themePageColor={selectedThemeData.recievedTextColor}
+                themePageBackground={
+                  editingRecievedColor || newRecievedTextBackground !== ""
+                    ? newRecievedTextBackground
+                    : selectedThemeData.recievedBubbleColor
+                }
+                themePageColor={
+                  editingRecievedColor || newRecievedTextColor !== ""
+                    ? newRecievedTextColor
+                    : selectedThemeData.recievedTextColor
+                }
                 onClick={() => {
                   handleRecievedMessageClick();
                 }}
@@ -349,24 +454,46 @@ const ThemePage = (props) => {
               </RecievedMessageBubble>
             </RecievedMessageContainer>
           </MessagePreviewContainer>
+
           <MessagePreviewContainer>
-            <RecievedMessageContainer>
+            <HightLightContainer hightlighted={false}>
+              {/* <RecievedMessageContainer>
+               
+              </RecievedMessageContainer> */}
               <RecievedMessageBubble
-                themePageBackground={selectedThemeData.recievedBubbleColor}
-                themePageColor={selectedThemeData.recievedTextColor}
+                hightlighted={false}
+                themePageBackground={
+                  editingRecievedColor || newRecievedTextBackground !== ""
+                    ? newRecievedTextBackground
+                    : selectedThemeData.recievedBubbleColor
+                }
+                themePageColor={
+                  editingRecievedColor || newRecievedTextColor !== ""
+                    ? newRecievedTextColor
+                    : selectedThemeData.recievedTextColor
+                }
                 onClick={() => {
                   handleRecievedMessageClick();
                 }}
               >
                 how are you doing?
               </RecievedMessageBubble>
-            </RecievedMessageContainer>
+            </HightLightContainer>
           </MessagePreviewContainer>
           <MessagePreviewContainer>
             <SentMessageContainer>
+              Sent Message
               <SentMessageBubble
-                themePageBackground={selectedThemeData.sentBubbleColor}
-                themePageColor={selectedThemeData.sentTextColor}
+                themePageBackground={
+                  editingSentColor || newSentTextBackground !== ""
+                    ? newSentTextBackground
+                    : selectedThemeData.sentBubbleColor
+                }
+                themePageColor={
+                  editingSentColor || newSentTextColor !== ""
+                    ? newSentTextColor
+                    : selectedThemeData.sentTextColor
+                }
                 onClick={() => {
                   handleSentMessageClick();
                 }}
@@ -374,196 +501,241 @@ const ThemePage = (props) => {
                 I'm fine thank you
               </SentMessageBubble>
             </SentMessageContainer>
+            <MessagePreviewPrimaryContainer>
+              <MessagePreviewPrimary
+                background={
+                  editingPrimaryColor || newPrimaryColor !== ""
+                    ? newPrimaryColor
+                    : selectedThemeData.primary
+                }
+                color={
+                  editingPrimaryColor || newPrimaryTextColor !== ""
+                    ? newPrimaryTextColor
+                    : getBestTextColor(selectedThemeData.primary)
+                }
+                onClick={() => {
+                  handlePrimaryButtonClicked();
+                }}
+              >
+                Primary Colour
+              </MessagePreviewPrimary>
+            </MessagePreviewPrimaryContainer>
           </MessagePreviewContainer>
         </ThemePreviewContainer>
-        <ThemesTopBar>
-          <PublicThemeContainerTitle>Public Themes</PublicThemeContainerTitle>
-        </ThemesTopBar>
-        <ThemeCarousellContainer>
-          <ThemeCarousellViewingBox>
-            <ThemeCarousell>
-              {publicThemes ? (
-                publicThemes.map((theme, index) => {
-                  return (
-                    <PublicThemeContainer
-                      key={index}
-                      selected={theme.themeId === selectedThemeId}
-                      selectedColor={theme.primary}
-                      onClick={() => {
-                        handleOnThemeClick(theme);
-                      }}
-                    >
-                      <PublicThemePreviewContainer>
-                        <PublicThemePreviewRecieved
-                          background={theme.recievedBubbleColor}
-                        >
-                          <PublicThemePreviewText
-                            background={theme.recievedTextColor}
-                          />
-                        </PublicThemePreviewRecieved>
-                        <PublicThemePreviewSent
-                          background={theme.sentBubbleColor}
-                        >
-                          <PublicThemePreviewText
-                            background={theme.sentTextColor}
-                          />
-                        </PublicThemePreviewSent>
-                      </PublicThemePreviewContainer>
-                      <PublicThemeName>
-                        {theme.name && theme.name.length > 15
-                          ? theme.name.slice(0, 15) + "..."
-                          : theme.name || "Untitled"}
-                      </PublicThemeName>
-                      <PublicThemeCreatorUsername>
-                        {theme.creatorUsername &&
-                        theme.creatorUsername.length > 15
-                          ? theme.creatorUsername.slice(0, 15) + "..."
-                          : theme.creatorUsername}
-                      </PublicThemeCreatorUsername>
-                    </PublicThemeContainer>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </ThemeCarousell>
-          </ThemeCarousellViewingBox>
-        </ThemeCarousellContainer>
-        <ThemesTopBar>
-          <PublicThemeContainerTitle>My Themes</PublicThemeContainerTitle>
-          <AddNewThemeButton
-            background={selectedThemeData.primary}
-            color={getBestTextColor(selectedThemeData.primary)}
-          >
-            New Theme
-          </AddNewThemeButton>
-        </ThemesTopBar>
-        <ThemeCarousellContainer>
-          <ThemeCarousellViewingBox>
-            <ThemeCarousell>
-              {ownedThemes ? (
-                ownedThemes.map((theme, index) => {
-                  return (
-                    <PublicThemeBigContainer>
-                      <PublicThemeContainer
-                        key={index}
-                        selected={theme.themeId === selectedThemeId}
-                        selectedColor={theme.primary}
-                        onClick={() => {
-                          handleOnThemeClick(theme);
-                        }}
-                      >
-                        <PublicThemePreviewContainer>
-                          <PublicThemePreviewRecieved
-                            background={theme.recievedBubbleColor}
-                          >
-                            <PublicThemePreviewText
-                              background={theme.recievedTextColor}
-                            />
-                          </PublicThemePreviewRecieved>
-                          <PublicThemePreviewSent
-                            background={theme.sentBubbleColor}
-                          >
-                            <PublicThemePreviewText
-                              background={theme.sentTextColor}
-                            />
-                          </PublicThemePreviewSent>
-                        </PublicThemePreviewContainer>
-                        <PublicThemeName>
-                          {theme.name && theme.name.length > 13
-                            ? theme.name.slice(0, 13) + "..."
-                            : theme.name || "Untitled"}
-                        </PublicThemeName>
-                        <PublicThemeCreatorUsername>
-                          {theme.creatorUsername &&
-                          theme.creatorUsername.length > 15
-                            ? theme.creatorUsername.slice(0, 15) + "..."
-                            : theme.creatorUsername}
-                        </PublicThemeCreatorUsername>
-                      </PublicThemeContainer>
-                      {theme.name !== "Default Theme" ? (
-                        <OwnedThemeButtonsContainer>
-                          <OwnedThemeButton
-                            selected={theme.themeId === selectedThemeId}
-                            selectedColor={theme.primary}
-                            onClick={() => {}}
-                          >
-                            <BiPencil size={"1.2rem"} />
-                          </OwnedThemeButton>
-                          <OwnedThemeButton
+        {addingNewTheme ? (
+          <AddNewThemeContainer>
+            <button
+              onClick={() => {
+                onLeaveAddTheme();
+              }}
+            >
+              Back
+            </button>
+            Click message to edit
+            <h1>Adding new theme</h1>
+            {editingRecievedColor || editingPrimaryColor || editingSentColor ? (
+              <>
+                <ColourWheelContainer>
+                  <HexColorPicker color={hexColor} onChange={setHexColor} />
+                  <ColourWheelHexInput
+                    maxLength={7}
+                    onChange={(e) => {
+                      let value = e.target.value;
+                      if (!value.startsWith("#")) {
+                        value = `#${value}`;
+                      }
+                      setHexColor(value);
+                    }}
+                    value={hexColor}
+                    placeholder="Colour Hex Code"
+                  />
+                </ColourWheelContainer>
+                <ThemePageRecentColoursContainer></ThemePageRecentColoursContainer>
+              </>
+            ) : (
+              <></>
+            )}
+            <button
+              onClick={() => {
+                addDefaultTheme();
+              }}
+            >
+              Add default theme
+            </button>
+            <div>Selected Theme: {user?.selectedTheme}</div>
+            <div
+              style={{
+                width: "100%",
+                height: 34,
+                marginTop: 20,
+                background: hexColor,
+                color: newRecievedTextColor,
+              }}
+            >
+              Text in the div
+            </div>
+            <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
+            <div>New Theme Name</div>
+            <input
+              value={newThemeName}
+              type="text"
+              onChange={(e) => {
+                setNewThemeName(e.target.value);
+              }}
+            />
+            <button
+              onClick={() => {
+                addTheme();
+              }}
+            >
+              Press to add theme
+            </button>
+          </AddNewThemeContainer>
+        ) : (
+          <>
+            <ThemesTopBar>
+              <PublicThemeContainerTitle>My Themes</PublicThemeContainerTitle>
+              <AddNewThemeButton
+                background={selectedThemeData.primary}
+                color={getBestTextColor(selectedThemeData.primary)}
+                onClick={() => {
+                  setAddingNewTheme(true);
+                }}
+              >
+                New Theme
+              </AddNewThemeButton>
+            </ThemesTopBar>
+            <ThemeCarousellContainer>
+              <ThemeCarousellViewingBox>
+                <ThemeCarousell>
+                  {ownedThemes ? (
+                    ownedThemes.map((theme, index) => {
+                      return (
+                        <PublicThemeBigContainer key={index}>
+                          <PublicThemeContainer
                             selected={theme.themeId === selectedThemeId}
                             selectedColor={theme.primary}
                             onClick={() => {
-                              // deleteTheme();
+                              handleOnThemeClick(theme);
                             }}
                           >
-                            <IoTrashOutline size={"1.2rem"} />
-                          </OwnedThemeButton>
-                        </OwnedThemeButtonsContainer>
-                      ) : (
-                        <></>
-                      )}
-                    </PublicThemeBigContainer>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </ThemeCarousell>
-          </ThemeCarousellViewingBox>
-        </ThemeCarousellContainer>
-        Click to edit colour
-        <ColourWheelContainer>
-          <HexColorPicker color={hexColor} onChange={setHexColor} />
-          <ColourWheelHexInput
-            maxLength={7}
-            onChange={(e) => {
-              let value = e.target.value;
-              if (!value.startsWith("#")) {
-                value = `#${value}`;
-              }
-              setHexColor(value);
-            }}
-            value={hexColor}
-            placeholder="Colour Hex Code"
-          />
-        </ColourWheelContainer>
-        <ThemePageRecentColoursContainer></ThemePageRecentColoursContainer>
-        <button
-          onClick={() => {
-            addDefaultTheme();
-          }}
-        >
-          Add default theme
-        </button>
-        <div>Selected Theme: {user?.selectedTheme}</div>
-        <div
-          style={{
-            width: "100%",
-            height: 34,
-            marginTop: 20,
-            background: hexColor,
-            color: newRecievedTextColor,
-          }}
-        >
-          Text in the div
-        </div>
-        <p style={{ marginTop: 10 }}>Hex Color: {hexColor}</p>
-        <div>New Theme Name</div>
-        <input
-          value={newThemeName}
-          type="text"
-          onChange={(e) => {
-            setNewThemeName(e.target.value);
-          }}
-        />
-        <button
-          onClick={() => {
-            addTheme();
-          }}
-        >
-          Press to add theme
-        </button>
+                            <PublicThemePreviewContainer>
+                              <PublicThemePreviewRecieved
+                                background={theme.recievedBubbleColor}
+                              >
+                                <PublicThemePreviewText
+                                  background={theme.recievedTextColor}
+                                />
+                              </PublicThemePreviewRecieved>
+                              <PublicThemePreviewSent
+                                background={theme.sentBubbleColor}
+                              >
+                                <PublicThemePreviewText
+                                  background={theme.sentTextColor}
+                                />
+                              </PublicThemePreviewSent>
+                            </PublicThemePreviewContainer>
+                            <PublicThemeName>
+                              {theme.name && theme.name.length > 13
+                                ? theme.name.slice(0, 13) + "..."
+                                : theme.name || "Untitled"}
+                            </PublicThemeName>
+                            <PublicThemeCreatorUsername>
+                              {theme.creatorUsername &&
+                              theme.creatorUsername.length > 15
+                                ? theme.creatorUsername.slice(0, 15) + "..."
+                                : theme.creatorUsername}
+                            </PublicThemeCreatorUsername>
+                          </PublicThemeContainer>
+                          {theme.name !== "Default Theme" ? (
+                            <OwnedThemeButtonsContainer>
+                              <OwnedThemeButton
+                                selected={theme.themeId === selectedThemeId}
+                                selectedColor={theme.primary}
+                                onClick={() => {}}
+                              >
+                                <BiPencil size={"1.2rem"} />
+                              </OwnedThemeButton>
+                              <OwnedThemeButton
+                                selected={theme.themeId === selectedThemeId}
+                                selectedColor={theme.primary}
+                                onClick={() => {
+                                  setDeleteingThemeObject(theme);
+                                  setShowDeleteModal(true);
+                                }}
+                              >
+                                <IoTrashOutline size={"1.2rem"} />
+                              </OwnedThemeButton>
+                            </OwnedThemeButtonsContainer>
+                          ) : (
+                            <></>
+                          )}
+                        </PublicThemeBigContainer>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </ThemeCarousell>
+              </ThemeCarousellViewingBox>
+            </ThemeCarousellContainer>
+            <ThemesTopBar>
+              <PublicThemeContainerTitle>
+                Public Themes
+              </PublicThemeContainerTitle>
+            </ThemesTopBar>
+            <ThemeCarousellContainer>
+              <ThemeCarousellViewingBox>
+                <ThemeCarousell>
+                  {publicThemes ? (
+                    publicThemes.map((theme, index) => {
+                      return (
+                        <PublicThemeContainer
+                          key={index}
+                          selected={theme.themeId === selectedThemeId}
+                          selectedColor={theme.primary}
+                          onClick={() => {
+                            handleOnThemeClick(theme);
+                          }}
+                        >
+                          <PublicThemePreviewContainer>
+                            <PublicThemePreviewRecieved
+                              background={theme.recievedBubbleColor}
+                            >
+                              <PublicThemePreviewText
+                                background={theme.recievedTextColor}
+                              />
+                            </PublicThemePreviewRecieved>
+                            <PublicThemePreviewSent
+                              background={theme.sentBubbleColor}
+                            >
+                              <PublicThemePreviewText
+                                background={theme.sentTextColor}
+                              />
+                            </PublicThemePreviewSent>
+                          </PublicThemePreviewContainer>
+                          <PublicThemeName>
+                            {theme.name && theme.name.length > 15
+                              ? theme.name.slice(0, 15) + "..."
+                              : theme.name || "Untitled"}
+                          </PublicThemeName>
+                          <PublicThemeCreatorUsername>
+                            {theme.creatorUsername &&
+                            theme.creatorUsername.length > 15
+                              ? theme.creatorUsername.slice(0, 15) + "..."
+                              : theme.creatorUsername}
+                          </PublicThemeCreatorUsername>
+                        </PublicThemeContainer>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </ThemeCarousell>
+              </ThemeCarousellViewingBox>
+            </ThemeCarousellContainer>
+          </>
+        )}
       </ThemePageContainer>
     </ThemeProvider>
   );
