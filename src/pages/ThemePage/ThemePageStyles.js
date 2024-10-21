@@ -41,6 +41,7 @@ export const ThemePreviewContainer = styled.div`
   border-right: none;
   transition: 0.3s;
   margin-bottom: 2rem;
+  height: 20rem;
 `;
 
 export const MessagePreviewContainer = styled.div`
@@ -205,10 +206,13 @@ export const MessagePreviewPrimaryContainer = styled.div`
 
 export const HightLightContainer = styled.div`
   padding: ${(props) => (props.highlighted ? "0.2rem" : " 0.3rem 1rem")};
+  margin-left: ${(props) => (props.highlighted ? "0.8rem" : "")};
   border-radius: 1.2rem;
-  border: 2px solid green;
+  border: ${(props) =>
+    props.highlighted ? `2px solid ${props.borderColor}` : "transparent"};
   display: inline-flex;
   width: ${(props) => (props.highlighted ? "fit-content" : "100%")};
-
   transition: 0.3s;
+  margin-bottom: ${(props) => (props.highlighted ? "0.5rem" : "0")};
+  flex-direction: column;
 `;

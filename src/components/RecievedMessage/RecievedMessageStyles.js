@@ -13,7 +13,7 @@ export const RecievedMessageDate = styled.div`
   padding: 0.1rem 0.5rem;
 `;
 export const RecievedMessageBubble = styled.div`
-  max-width: ${(props) => (props.hightlighted ? "" : "70%")};
+  max-width: ${(props) => (props.highlighted ? "" : "70%")};
   width: fit-content;
   padding: 0.5rem 0.8rem;
   background: ${(props) =>

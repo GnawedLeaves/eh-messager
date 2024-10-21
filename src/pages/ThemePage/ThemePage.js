@@ -433,9 +433,18 @@ const ThemePage = (props) => {
                 />
               )}
             </MessagePreviewModeContainer>
-            <RecievedMessageContainer>
+
+            <HightLightContainer
+              highlighted={editingRecievedColor}
+              borderColor={
+                editingRecievedColor || newRecievedTextBackground !== ""
+                  ? newRecievedTextBackground
+                  : selectedThemeData.recievedBubbleColor
+              }
+            >
               Recieved Message
               <RecievedMessageBubble
+                highlighted={editingRecievedColor}
                 themePageBackground={
                   editingRecievedColor || newRecievedTextBackground !== ""
                     ? newRecievedTextBackground
@@ -450,18 +459,22 @@ const ThemePage = (props) => {
                   handleRecievedMessageClick();
                 }}
               >
-                hey
+                hi
               </RecievedMessageBubble>
-            </RecievedMessageContainer>
+            </HightLightContainer>
           </MessagePreviewContainer>
 
           <MessagePreviewContainer>
-            <HightLightContainer hightlighted={false}>
-              {/* <RecievedMessageContainer>
-               
-              </RecievedMessageContainer> */}
+            <HightLightContainer
+              highlighted={editingRecievedColor}
+              borderColor={
+                editingRecievedColor || newRecievedTextBackground !== ""
+                  ? newRecievedTextBackground
+                  : selectedThemeData.recievedBubbleColor
+              }
+            >
               <RecievedMessageBubble
-                hightlighted={false}
+                highlighted={editingRecievedColor}
                 themePageBackground={
                   editingRecievedColor || newRecievedTextBackground !== ""
                     ? newRecievedTextBackground
