@@ -53,6 +53,7 @@ import { RxCross2 } from "react-icons/rx";
 import { BiPencil } from "react-icons/bi";
 import { Oval } from "react-loader-spinner";
 import { getBestTextColor } from "../../functions/getBestTextColor";
+import defaultProfilePicture from "../../assets/profile-pic.png";
 
 const ProfilePage = () => {
   const params = useParams();
@@ -260,11 +261,6 @@ const ProfilePage = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("user", user);
-    console.log("selectedThemeData", user?.selectedThemeData);
-  }, []);
-
   return (
     <ThemeProvider
       theme={
@@ -393,7 +389,11 @@ const ProfilePage = () => {
           <ProfilePageProfilePictureContainer
             src={
               viewingOwnProfile
-                ? user?.profilePicture[pictureCounter]
+                ? user?.profilePicture.length === 0
+                  ? defaultProfilePicture
+                  : user?.profilePicture[pictureCounter]
+                : otherUserData?.profilePicture.length === 0
+                ? defaultProfilePicture
                 : otherUserData?.profilePicture[pictureCounter]
             }
           >
@@ -425,9 +425,16 @@ const ProfilePage = () => {
               }}
             />
 
-            <ProfilePagePictureCounter viewingOwnProfile={viewingOwnProfile}>
-              {pictureCounter + 1 + "/" + otherUserData?.profilePicture.length}
-            </ProfilePagePictureCounter>
+            {otherUserData?.profilePicture.length === 0 ? (
+              <></>
+            ) : (
+              <ProfilePagePictureCounter viewingOwnProfile={viewingOwnProfile}>
+                {pictureCounter +
+                  1 +
+                  "/" +
+                  otherUserData?.profilePicture.length}
+              </ProfilePagePictureCounter>
+            )}
 
             {viewingOwnProfile && user?.profilePicture.length > 1 ? (
               <ProfilePageProfilePictureIcon>

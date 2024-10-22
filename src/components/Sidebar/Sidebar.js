@@ -26,6 +26,7 @@ import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { UserContext } from "../../App";
 import { getBestTextColor } from "../../functions/getBestTextColor";
+import defaultProfilePicture from "../../assets/profile-pic.png";
 
 const Sidebar = (props) => {
   const user = useContext(UserContext);
@@ -106,7 +107,11 @@ const Sidebar = (props) => {
         <SideBarContainer>
           <SidebarProfileBox>
             <SidebarProfilePicture
-              src={props.profilePicture}
+              src={
+                props.profilePicture
+                  ? props.profilePicture
+                  : defaultProfilePicture
+              }
               onClick={() => {
                 navigate(profileNavigationString);
               }}

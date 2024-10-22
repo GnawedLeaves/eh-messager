@@ -46,6 +46,7 @@ export const ProfilePageProfilePictureContainerSide = styled.div`
   width: 50%;
   height: 100%;
   z-index: 1;
+  cursor: pointer;
 `;
 
 export const ProfilePagePictureCounterAndIconGroup = styled.div`
@@ -80,6 +81,7 @@ export const ProfilePageProfilePictureIcon = styled.div`
   right: 20px;
   top: 22px;
   z-index: 10;
+  cursor: pointer;
 `;
 
 export const ProfilePageProfilePictureBackIcon = styled.div`
@@ -103,6 +105,7 @@ export const ProfilePageProfilePictureButton = styled.div`
   justify-content: center;
   bottom: -29px;
   right: 30px;
+  cursor: pointer;
 `;
 
 export const ProfilePageDetailsContainer = styled.div`
