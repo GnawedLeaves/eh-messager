@@ -148,6 +148,7 @@ export const OwnedThemeButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 export const OwnedThemeButtonsContainer = styled.div`
   display: flex;
@@ -164,6 +165,26 @@ export const ThemeCarousellViewingBox = styled.div`
   width: 100%;
   position: relative;
   padding-bottom: 4rem;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(
+      0,
+      0,
+      0,
+      0.3
+    ); /* Customize the color of the scrollbar thumb */
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* Customize the scrollbar track */
+  }
 `;
 
 export const ThemeCarousell = styled.div`

@@ -111,6 +111,13 @@ const ThemePage = (props) => {
   const [deletingThemeObject, setDeleteingThemeObject] = useState({});
   const [newPrimaryTextColor, setNewPrimaryTextColor] = useState("");
 
+  const [clickCreateThemeModalMessage, setClickCreateThemeModalMessage] =
+    useState("Someting went wrong. Please try again.  ");
+  const [clickCreateThemeModalTitle, setClickCreateThemeModalTitle] =
+    useState("Cannot Add Theme");
+  const [createThemeModalShow, setCreateThemeModalShow] = useState(false);
+  const [addThemeSuccess, setAddThemeSuccess] = useState(false);
+
   useEffect(() => {
     if (allThemesData !== null) {
       setAllThemesData(props?.allThemesData);
@@ -157,15 +164,20 @@ const ThemePage = (props) => {
   const addTheme = async () => {
     const timestamp = Timestamp.fromDate(new Date());
     const requiredFields = [
-      newPrimaryColor,
-      newRecievedTextBackground,
-      newRecievedTextColor,
-      newSentTextBackground,
-      newSentTextColor,
-      newThemeName,
+      { fieldName: "Primary Color", value: newPrimaryColor },
+      {
+        fieldName: "Recieved Text Background",
+        value: newRecievedTextBackground,
+      },
+      { fieldName: "Recieved Text Color", value: newRecievedTextColor },
+      { fieldName: "Sent Text Background", value: newSentTextBackground },
+      { fieldName: "Sent Text Color", value: newSentTextColor },
+      { fieldName: "Theme Name", value: newThemeName },
     ];
 
-    if (requiredFields.every((field) => field !== "")) {
+    const emptyFields = requiredFields.filter((field) => field.value === "");
+
+    if (emptyFields.length === 0) {
       try {
         const themeData = {
           backgroundImg: "",
@@ -181,20 +193,35 @@ const ThemePage = (props) => {
         };
 
         const docRef = await addDoc(collection(db, "themes"), themeData);
-
         console.log("Successfully added theme!", docRef);
+        setCreateThemeModalShow(true);
+        setAddThemeSuccess(true);
+        setClickCreateThemeModalTitle("Theme Created Successfully");
+        setClickCreateThemeModalMessage("");
         props.getAllThemeData();
         resetAllInputs();
+        onLeaveAddTheme();
       } catch (e) {
+        setCreateThemeModalShow(true);
+        setClickCreateThemeModalTitle("Unable To Add Theme");
+        setClickCreateThemeModalMessage(e);
         console.log("Error adding theme: ", e);
       }
     } else {
-      console.log("One of the fields is blank");
+      const emptyFieldNames = emptyFields
+        .map((field) => field.fieldName)
+        .join(", ");
+      setCreateThemeModalShow(true);
+      setClickCreateThemeModalTitle("Unable To Add Theme");
+      setClickCreateThemeModalMessage(
+        `The following fields are blank: ${emptyFieldNames}`
+      );
+      console.log("The following fields are blank:", emptyFieldNames);
     }
   };
 
   const resetAllInputs = () => {
-    setNewThemeName("");
+    setNewThemeName("New Theme");
     setHsva({ h: 214, s: 43, v: 90, a: 1 });
   };
 
@@ -408,6 +435,32 @@ const ThemePage = (props) => {
               ? user?.selectedThemeData?.selectedThemeLight || LightTheme
               : user?.selectedThemeData?.selectedThemeDark || darktheme
           }
+        />
+        <Modal
+          show={createThemeModalShow}
+          modalTitle={clickCreateThemeModalTitle}
+          modalContent={clickCreateThemeModalMessage}
+          theme={
+            user?.themeMode === "light"
+              ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+              : user?.selectedThemeData?.selectedThemeDark || darktheme
+          }
+          actionButtonColor={
+            addThemeSuccess
+              ? user?.themeMode === "light"
+                ? user?.selectedThemeData?.selectedThemeLight.primary ||
+                  LightTheme.primary
+                : user?.selectedThemeData?.selectedThemeDark.primary ||
+                  darktheme.primary
+              : user?.selectedThemeData?.selectedThemeLight.error ||
+                LightTheme.error
+          }
+          handleModalClose={() => {
+            if (addThemeSuccess) {
+              setAddThemeSuccess(false);
+            }
+            setCreateThemeModalShow(false);
+          }}
         />
         <Sidebar
           showSidebar={openSideBar}
@@ -666,6 +719,13 @@ const ThemePage = (props) => {
                 background={selectedThemeData.primary}
                 color={getBestTextColor(selectedThemeData.primary)}
                 onClick={() => {
+                  setNewPrimaryColor(selectedThemeData.primary);
+                  setNewRecievedTextBackground(
+                    selectedThemeData.recievedBubbleColor
+                  );
+                  setNewRecievedTextColor(selectedThemeData.recievedTextColor);
+                  setNewSentTextBackground(selectedThemeData.sentBubbleColor);
+                  setNewSentTextColor(selectedThemeData.sentTextColor);
                   setAddingNewTheme(true);
                 }}
               >
