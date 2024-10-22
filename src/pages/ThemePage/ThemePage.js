@@ -110,13 +110,15 @@ const ThemePage = (props) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingThemeObject, setDeleteingThemeObject] = useState({});
   const [newPrimaryTextColor, setNewPrimaryTextColor] = useState("");
-
   const [clickCreateThemeModalMessage, setClickCreateThemeModalMessage] =
     useState("Someting went wrong. Please try again.  ");
   const [clickCreateThemeModalTitle, setClickCreateThemeModalTitle] =
     useState("Cannot Add Theme");
   const [createThemeModalShow, setCreateThemeModalShow] = useState(false);
   const [addThemeSuccess, setAddThemeSuccess] = useState(false);
+
+  const [editingTheme, setEditingTheme] = useState(false);
+  const [editingThemeObject, setEditingThemeObject] = useState({});
 
   useEffect(() => {
     if (allThemesData !== null) {
@@ -213,6 +215,66 @@ const ThemePage = (props) => {
         .join(", ");
       setCreateThemeModalShow(true);
       setClickCreateThemeModalTitle("Unable To Add Theme");
+      setClickCreateThemeModalMessage(
+        `The following fields are blank: ${emptyFieldNames}`
+      );
+      console.log("The following fields are blank:", emptyFieldNames);
+    }
+  };
+
+  const updateTheme = async (themeId) => {
+    const timestamp = Timestamp.fromDate(new Date());
+    const requiredFields = [
+      { fieldName: "Primary Color", value: newPrimaryColor },
+      {
+        fieldName: "Recieved Text Background",
+        value: newRecievedTextBackground,
+      },
+      { fieldName: "Recieved Text Color", value: newRecievedTextColor },
+      { fieldName: "Sent Text Background", value: newSentTextBackground },
+      { fieldName: "Sent Text Color", value: newSentTextColor },
+      { fieldName: "Theme Name", value: newThemeName },
+    ];
+
+    const emptyFields = requiredFields.filter((field) => field.value === "");
+
+    if (emptyFields.length === 0) {
+      try {
+        const themeData = {
+          backgroundImg: "",
+          primary: newPrimaryColor,
+          recievedBubbleColor: newRecievedTextBackground,
+          recievedTextColor: newRecievedTextColor,
+          sentBubbleColor: newSentTextBackground,
+          sentTextColor: newSentTextColor,
+          dateEdited: timestamp, // Only update the edited date, not the added date
+          name: newThemeName,
+        };
+
+        // Update the existing theme by its themeId
+        const themeRef = doc(db, "themes", themeId); // Reference to the document
+        await updateDoc(themeRef, themeData); // Update the document
+
+        console.log("Successfully updated theme!", themeId);
+        setCreateThemeModalShow(true);
+        setAddThemeSuccess(true);
+        setClickCreateThemeModalTitle("Theme Updated Successfully");
+        setClickCreateThemeModalMessage("");
+        props.getAllThemeData(); // Refresh the theme data after update
+        resetAllInputs();
+        onLeaveAddTheme();
+      } catch (e) {
+        setCreateThemeModalShow(true);
+        setClickCreateThemeModalTitle("Unable To Update Theme");
+        setClickCreateThemeModalMessage(e);
+        console.log("Error updating theme: ", e);
+      }
+    } else {
+      const emptyFieldNames = emptyFields
+        .map((field) => field.fieldName)
+        .join(", ");
+      setCreateThemeModalShow(true);
+      setClickCreateThemeModalTitle("Unable To Update Theme");
       setClickCreateThemeModalMessage(
         `The following fields are blank: ${emptyFieldNames}`
       );
@@ -399,6 +461,7 @@ const ThemePage = (props) => {
     setNewRecievedTextColor("");
     setNewSentTextBackground("");
     setNewSentTextColor("");
+    setEditingTheme(false);
   };
 
   return (
@@ -484,10 +547,14 @@ const ThemePage = (props) => {
         </ThemePageTopBar>
 
         <ThemePreviewBigContainer>
-          {addingNewTheme ? (
+          {addingNewTheme || editingTheme ? (
             <>
               <AddThemeTopBar>
-                <AddThemeTitle> Create New Theme</AddThemeTitle>
+                <AddThemeTitle>
+                  {editingTheme
+                    ? `Edit Theme: ${editingThemeObject.name}`
+                    : "Create New Theme"}{" "}
+                </AddThemeTitle>
                 <AddThemeSubtitle>
                   Click on the part of the preview you want to edit
                 </AddThemeSubtitle>
@@ -546,7 +613,7 @@ const ThemePage = (props) => {
                       : selectedThemeData.recievedTextColor
                   }
                   onClick={() => {
-                    if (addingNewTheme) {
+                    if (addingNewTheme || editingTheme) {
                       handleRecievedMessageClick();
                     }
                   }}
@@ -577,7 +644,7 @@ const ThemePage = (props) => {
                       : selectedThemeData.recievedTextColor
                   }
                   onClick={() => {
-                    if (addingNewTheme) {
+                    if (addingNewTheme || editingTheme) {
                       handleRecievedMessageClick();
                     }
                   }}
@@ -610,7 +677,7 @@ const ThemePage = (props) => {
                         : selectedThemeData.sentTextColor
                     }
                     onClick={() => {
-                      if (addingNewTheme) {
+                      if (addingNewTheme || editingTheme) {
                         handleSentMessageClick();
                       }
                     }}
@@ -640,7 +707,7 @@ const ThemePage = (props) => {
                         : getBestTextColor(selectedThemeData.primary)
                     }
                     onClick={() => {
-                      if (addingNewTheme) {
+                      if (addingNewTheme || editingTheme) {
                         handlePrimaryButtonClicked();
                       }
                     }}
@@ -652,7 +719,7 @@ const ThemePage = (props) => {
             </MessagePreviewContainer>
           </ThemePreviewContainer>
         </ThemePreviewBigContainer>
-        {addingNewTheme ? (
+        {addingNewTheme || editingTheme ? (
           <AddNewThemeContainer>
             {editingRecievedColor || editingPrimaryColor || editingSentColor ? (
               <>
@@ -692,22 +759,35 @@ const ThemePage = (props) => {
             </AddThemeInputContainer>
 
             <AddThemeButtonBar>
-              <AddThemeButton
-                borderColor={selectedThemeData.primary}
-                background={selectedThemeData.primary}
-                color={getBestTextColor(selectedThemeData.primary)}
-                onClick={() => {
-                  addTheme();
-                }}
-              >
-                Create Theme
-              </AddThemeButton>
+              {editingTheme ? (
+                <AddThemeButton
+                  borderColor={selectedThemeData.primary}
+                  background={selectedThemeData.primary}
+                  color={getBestTextColor(selectedThemeData.primary)}
+                  onClick={() => {
+                    updateTheme(editingThemeObject.themeId);
+                  }}
+                >
+                  Update Theme
+                </AddThemeButton>
+              ) : (
+                <AddThemeButton
+                  borderColor={selectedThemeData.primary}
+                  background={selectedThemeData.primary}
+                  color={getBestTextColor(selectedThemeData.primary)}
+                  onClick={() => {
+                    addTheme();
+                  }}
+                >
+                  Create Theme
+                </AddThemeButton>
+              )}
               <AddThemeButton
                 onClick={() => {
                   onLeaveAddTheme();
                 }}
               >
-                Back
+                Cancel
               </AddThemeButton>
             </AddThemeButtonBar>
           </AddNewThemeContainer>
@@ -779,7 +859,22 @@ const ThemePage = (props) => {
                               <OwnedThemeButton
                                 selected={theme.themeId === selectedThemeId}
                                 selectedColor={theme.primary}
-                                onClick={() => {}}
+                                onClick={() => {
+                                  setEditingTheme(true);
+                                  setEditingThemeObject(theme);
+                                  setNewThemeName(theme.name);
+                                  setNewPrimaryColor(theme.primary);
+                                  setNewRecievedTextBackground(
+                                    theme.recievedBubbleColor
+                                  );
+                                  setNewRecievedTextColor(
+                                    theme.recievedTextColor
+                                  );
+                                  setNewSentTextBackground(
+                                    theme.sentBubbleColor
+                                  );
+                                  setNewSentTextColor(theme.sentTextColor);
+                                }}
                               >
                                 <BiPencil size={"1.2rem"} />
                               </OwnedThemeButton>
