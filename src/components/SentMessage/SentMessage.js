@@ -92,7 +92,13 @@ const SentMessage = ({
     setCreatorData(creatorData[0]);
   };
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}
@@ -126,7 +132,9 @@ const SentMessage = ({
               <SentMessageReplyUsername>
                 {parentMessageContent?.creatorData.username}
               </SentMessageReplyUsername>
-              {parentMessageContent?.message.message_body}
+              {parentMessageContent?.message.message_body.length > 30
+                ? parentMessageContent.message.message_body.slice(0, 80) + "..."
+                : parentMessageContent?.message.message_body}
             </SentMessageReplyContainer>
           ) : (
             <></>
@@ -150,10 +158,25 @@ const SentMessage = ({
               {is_read ? (
                 <IoCheckmarkDoneOutline
                   size={"16px"}
-                  color={LightTheme().white}
+                  color={
+                    user?.themeMode === "light"
+                      ? user?.selectedThemeData?.selectedThemeLight
+                          .sentTextColor || LightTheme
+                      : user?.selectedThemeData?.selectedThemeDark
+                          .sentTextColor || darktheme
+                  }
                 />
               ) : (
-                <IoCheckmark size={"16px"} color={LightTheme().white} />
+                <IoCheckmark
+                  size={"16px"}
+                  color={
+                    user?.themeMode === "light"
+                      ? user?.selectedThemeData?.selectedThemeLight
+                          .sentTextColor || LightTheme
+                      : user?.selectedThemeData?.selectedThemeDark
+                          .sentTextColor || darktheme
+                  }
+                />
               )}
             </SentMessageTickContainer>
           </SentMessageBodyAndTick>

@@ -59,7 +59,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../App";
-
+import defaultProfilePicture from "../../assets/profile-pic.png";
 const Chatbox2 = (props) => {
   const [inputFocused, setInputFocused] = useState(false);
   const messageDisplayRef = useRef(null);
@@ -321,7 +321,6 @@ const Chatbox2 = (props) => {
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <MessagingContainer>
-        
         <ChatboxHeader>
           <IoArrowBackOutline
             style={{ cursor: "pointer" }}
@@ -329,7 +328,11 @@ const Chatbox2 = (props) => {
             onClick={handleNavigateBack}
           />
           <ChatboxHeaderProfilePicture
-            src={otherUserData?.profilePicture}
+            src={
+              otherUserData?.profilePicture?.length > 0
+                ? otherUserData?.profilePicture
+                : defaultProfilePicture
+            }
             onClick={() => {
               navigate(`/profile/${otherPersonId}`);
             }}

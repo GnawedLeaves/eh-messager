@@ -136,7 +136,13 @@ const RecievedMessage = ({
   };
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}
@@ -172,7 +178,9 @@ const RecievedMessage = ({
               <RecievedMessageReplyUsername>
                 {parentMessageContent?.creatorData.username}
               </RecievedMessageReplyUsername>
-              {parentMessageContent?.message.message_body}
+              {parentMessageContent?.message.message_body.length > 30
+                ? parentMessageContent.message.message_body.slice(0, 80) + "..."
+                : parentMessageContent?.message.message_body}
             </RecievedMessageReplyContainer>
           ) : (
             <></>

@@ -26,6 +26,8 @@ export const RecievedMessageBubble = styled.div`
       : props.theme.recievedTextColor};
   border-radius: 1rem;
   transition: 0.3s;
+  word-break: break-word;
+  hyphens: auto;
 `;
 
 export const RecievedMessageMedia = styled.video`
@@ -37,12 +39,14 @@ export const RecievedMessageMedia = styled.video`
 `;
 
 export const RecievedMessageReplyContainer = styled.div`
-  background: #ff8b91;
+  background: ${(props) => props.theme.recievedBubbleColor};
+  color: ${(props) => props.theme.recievedTextColor};
   padding: 8px 8px;
   border-radius: 8px;
   margin: 4px 0;
   width: 100%;
-  border-left: 2px solid ${(props) => props.theme.white};
+  border-left: 2px solid ${(props) => props.theme.recievedTextColor};
+  border: 2px solid ${(props) => props.theme.recievedTextColor};
 `;
 export const RecievedMessageReplyUsername = styled.div`
   font-weight: bold;

@@ -55,7 +55,7 @@ export const ChatPreviewMessage = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  width: 200px;
+  width: 180px;
   color: ${(props) => props.theme.grey};
 `;
 
@@ -71,12 +71,13 @@ export const ChatPreviewMessageCount = styled.div`
   flex-shrink: 0;
   display: flex;
   background: ${(props) => props.theme.primary};
-  color: ${(props) => props.theme.white};
+  color: ${(props) => props.color};
   align-items: center;
   justify-content: center;
   border-radius: 20px;
   padding: 0 10px;
   opacity: ${(props) => props.opacity};
+  margin-top: 6px;
 `;
 
 export const ChatPreviewReadContainer = styled.div`

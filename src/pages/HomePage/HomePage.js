@@ -20,7 +20,7 @@ import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { onAuthStateChanged } from "firebase/auth";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
-
+import defaultProfilePicture from "../../assets/profile-pic.png";
 const HomePage = (props) => {
   const user = useContext(UserContext);
   const navigate = useNavigate();
@@ -289,19 +289,28 @@ const HomePage = (props) => {
   }, [allCombinedMessages]);
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
-
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       {allUsers.length > 0 && user !== null ? (
         <></>
       ) : (
         <LoadingScreen
-        theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }
+          theme={
+            user?.themeMode === "light"
+              ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+              : user?.selectedThemeData?.selectedThemeDark || darktheme
+          }
           text="Loading Chats"
         />
       )}
 
       <HomePageContainer>
-      <Sidebar
+        <Sidebar
           showSidebar={openSideBar}
           username={user?.username}
           userId={user?.userId}
@@ -331,13 +340,18 @@ const HomePage = (props) => {
                 profilePicture={
                   chat.otherUserProfilePicture
                     ? chat.otherUserProfilePicture
-                    : "https://firebasestorage.googleapis.com/v0/b/eh-messager.appspot.com/o/profilePictures%2Fphoto_2024-05-19%2015.40.14.jpeg?alt=media&token=13e40b41-8311-4f84-a881-8a70436b2318"
+                    : defaultProfilePicture
                 }
                 unreadMessageCount={chat.unreadMessageCount}
                 isRead={chat.is_read}
                 otherPersonId={chat.otherUserId}
                 themeMode={user?.themeMode}
                 tempMessageType={chat.tempMessageType}
+                theme={
+                  user?.themeMode === "light"
+                    ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+                    : user?.selectedThemeData?.selectedThemeDark || darktheme
+                }
               />
             );
           })}
