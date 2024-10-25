@@ -72,15 +72,30 @@ const SentMessage = ({
     const parentMessage = conversationData.filter((message) => {
       return message.id === parent_message_id;
     });
+
+    if (!parentMessage || parentMessage.length === 0) {
+      setParentMessageContent({
+        message: { message_body: "Message deleted" }, // Fallback message
+        creatorData: { username: "" }, // Fallback username
+      });
+      setParentMessageUsername("");
+      return;
+    }
+
     const parentMessageCreatorUsername = allUserData.filter((user) => {
       return user.userId === parentMessage[0].creator_id;
     });
 
     setParentMessageContent({
-      message: parentMessage[0],
-      creatorData: parentMessageCreatorUsername[0],
+      message: parentMessage[0]?.message_body
+        ? parentMessage[0]
+        : { message_body: "Message deleted" },
+      creatorData: parentMessageCreatorUsername[0] || { username: "Unknown" },
     });
-    setParentMessageUsername(parentMessageCreatorUsername[0].username);
+
+    setParentMessageUsername(
+      parentMessageCreatorUsername[0]?.username || "Unknown"
+    );
   };
 
   const getCreatorData = () => {
