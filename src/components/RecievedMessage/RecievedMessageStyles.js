@@ -45,8 +45,7 @@ export const RecievedMessageReplyContainer = styled.div`
   border-radius: 8px;
   margin: 4px 0;
   width: 100%;
-  border-left: 2px solid ${(props) => props.theme.recievedTextColor};
-  border: 2px solid ${(props) => props.theme.recievedTextColor};
+  border-left: 3px solid ${(props) => props.theme.recievedTextColor};
 `;
 export const RecievedMessageReplyUsername = styled.div`
   font-weight: bold;

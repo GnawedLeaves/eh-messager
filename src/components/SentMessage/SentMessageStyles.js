@@ -58,7 +58,8 @@ export const SentMessageReplyContainer = styled.div`
   border-radius: 8px;
   margin: 4px 0;
   width: 100%;
-  border: 2px solid ${(props) => props.theme.sentTextColor};
+  // border: 2px solid ${(props) => props.theme.sentTextColor};
+  border-left: 3px solid ${(props) => props.theme.sentTextColor};
 `;
 export const SentMessageReplyUsername = styled.div`
   font-weight: bold;
