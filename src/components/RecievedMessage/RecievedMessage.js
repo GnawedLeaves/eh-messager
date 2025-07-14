@@ -16,7 +16,6 @@ import { useContext } from "react";
 import { UserContext } from "../../App";
 import { useState } from "react";
 import MessageModal from "../MessageModal/MessageModal";
-import { useRef } from "react";
 
 const RecievedMessage = ({
   message,
@@ -123,7 +122,6 @@ const RecievedMessage = ({
 
   const handleTouchMove = (e) => {
     setTouchEndX(e.targetTouches[0].clientX);
-    // console.log("Move", e);
   };
 
   const handleTouchEnd = (e) => {
@@ -131,12 +129,17 @@ const RecievedMessage = ({
     if (touchStartX - touchEndX > minSwipeDistance) {
       console.log("Swiped left");
       handleOpenMessageModal(e);
-      // Add your swipe left handling logic here
     }
   };
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}

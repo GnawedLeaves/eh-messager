@@ -58,6 +58,7 @@ import {
   ThemePreviewContainer,
   ThemesTopBar,
   ThemeTopBarAndCarousellContainer,
+  PublicThemeCreatorDate,
 } from "./ThemePageStyles";
 import HomepageTopBar from "../../components/HomepageTopBar/HomepageTopBar";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -124,12 +125,15 @@ const ThemePage = (props) => {
     if (allThemesData !== null) {
       setAllThemesData(props?.allThemesData);
     }
-    //clean up function, will run when props changes
     return () => {
       console.log("Cleanup: Clearing themes data");
       setAllThemesData(null);
     };
   }, [props]);
+
+  useEffect(() => {
+    console.log({ publicThemes });
+  }, [publicThemes]);
 
   useEffect(() => {
     if (user !== null) {
@@ -153,7 +157,6 @@ const ThemePage = (props) => {
     getAllPublicThemes();
   }, [allThemesData]);
 
-  //Check if there is a user logged in, if not then log them out
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
@@ -247,20 +250,19 @@ const ThemePage = (props) => {
           recievedTextColor: newRecievedTextColor,
           sentBubbleColor: newSentTextBackground,
           sentTextColor: newSentTextColor,
-          dateEdited: timestamp, // Only update the edited date, not the added date
+          dateEdited: timestamp,
           name: newThemeName,
         };
 
-        // Update the existing theme by its themeId
-        const themeRef = doc(db, "themes", themeId); // Reference to the document
-        await updateDoc(themeRef, themeData); // Update the document
+        const themeRef = doc(db, "themes", themeId);
+        await updateDoc(themeRef, themeData);
 
         console.log("Successfully updated theme!", themeId);
         setCreateThemeModalShow(true);
         setAddThemeSuccess(true);
         setClickCreateThemeModalTitle("Theme Updated Successfully");
         setClickCreateThemeModalMessage("");
-        props.getAllThemeData(); // Refresh the theme data after update
+        props.getAllThemeData();
         resetAllInputs();
         onLeaveAddTheme();
       } catch (e) {
@@ -408,12 +410,15 @@ const ThemePage = (props) => {
       }
     });
 
-    // Sort themes alphabetically by theme.name
-    ownedThemes.sort((a, b) => a.name.localeCompare(b.name));
-    publicThemes.sort((a, b) => a.name.localeCompare(b.name));
+    const sortedOwnThemes = ownedThemes.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    const sortedPublicThemes = publicThemes.sort((a, b) => {
+      return new Date(b.dateEdited) - new Date(a.dateEdited);
+    });
 
-    setPublicThemes(publicThemes);
-    setOwnedThemes(ownedThemes);
+    setPublicThemes(sortedPublicThemes);
+    setOwnedThemes(sortedOwnThemes);
   };
 
   useEffect(() => {
@@ -911,44 +916,50 @@ const ThemePage = (props) => {
                 <ThemeCarousell>
                   {publicThemes ? (
                     publicThemes.map((theme, index) => {
-                      return (
-                        <PublicThemeContainer
-                          key={index}
-                          selected={theme.themeId === selectedThemeId}
-                          selectedColor={theme.primary}
-                          onClick={() => {
-                            handleOnThemeClick(theme);
-                          }}
-                        >
-                          <PublicThemePreviewContainer>
-                            <PublicThemePreviewRecieved
-                              background={theme.recievedBubbleColor}
-                            >
-                              <PublicThemePreviewText
-                                background={theme.recievedTextColor}
-                              />
-                            </PublicThemePreviewRecieved>
-                            <PublicThemePreviewSent
-                              background={theme.sentBubbleColor}
-                            >
-                              <PublicThemePreviewText
-                                background={theme.sentTextColor}
-                              />
-                            </PublicThemePreviewSent>
-                          </PublicThemePreviewContainer>
-                          <PublicThemeName>
-                            {theme.name && theme.name.length > 15
-                              ? theme.name.slice(0, 15) + "..."
-                              : theme.name || "Untitled"}
-                          </PublicThemeName>
-                          <PublicThemeCreatorUsername>
-                            {theme.creatorUsername &&
-                            theme.creatorUsername.length > 15
-                              ? theme.creatorUsername.slice(0, 15) + "..."
-                              : theme.creatorUsername}
-                          </PublicThemeCreatorUsername>
-                        </PublicThemeContainer>
-                      );
+                      if (index <= 20)
+                        return (
+                          <PublicThemeContainer
+                            key={index}
+                            selected={theme.themeId === selectedThemeId}
+                            selectedColor={theme.primary}
+                            onClick={() => {
+                              handleOnThemeClick(theme);
+                            }}
+                          >
+                            <PublicThemePreviewContainer>
+                              <PublicThemePreviewRecieved
+                                background={theme.recievedBubbleColor}
+                              >
+                                <PublicThemePreviewText
+                                  background={theme.recievedTextColor}
+                                />
+                              </PublicThemePreviewRecieved>
+                              <PublicThemePreviewSent
+                                background={theme.sentBubbleColor}
+                              >
+                                <PublicThemePreviewText
+                                  background={theme.sentTextColor}
+                                />
+                              </PublicThemePreviewSent>
+                            </PublicThemePreviewContainer>
+                            <PublicThemeName>
+                              {theme.name && theme.name.length > 15
+                                ? theme.name.slice(0, 15) + "..."
+                                : theme.name || "Untitled"}
+                            </PublicThemeName>
+                            <PublicThemeCreatorUsername>
+                              {theme.creatorUsername &&
+                              theme.creatorUsername.length > 15
+                                ? theme.creatorUsername.slice(0, 15) + "..."
+                                : theme.creatorUsername}
+                            </PublicThemeCreatorUsername>
+                            <PublicThemeCreatorDate>
+                              {theme.dateEdited
+                                ? theme.dateEdited.slice(0, -5)
+                                : ""}
+                            </PublicThemeCreatorDate>
+                          </PublicThemeContainer>
+                        );
                     })
                   ) : (
                     <></>

@@ -88,7 +88,7 @@ export const PublicThemeBigContainer = styled.div`
 `;
 export const PublicThemeContainer = styled.div`
   width: 160px;
-  height: 200px;
+  height: 250px;
   border: 2px solid
     ${(props) => (props.selected ? props.selectedColor : props.theme.lightGrey)};
   border-radius: 1rem;
@@ -133,11 +133,17 @@ export const PublicThemePreviewText = styled.div`
 
 export const PublicThemeName = styled.span`
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 `;
 export const PublicThemeCreatorUsername = styled.span`
   text-align: center;
+  // color: ${(props) => props.theme.lightGrey};
+  font-size: 0.9rem;
+`;
+
+export const PublicThemeCreatorDate = styled.span`
   color: ${(props) => props.theme.lightGrey};
+  font-size: 0.8rem;
 `;
 
 export const OwnedThemeButton = styled.div`

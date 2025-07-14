@@ -18,10 +18,6 @@ import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import MessageModal from "../MessageModal/MessageModal";
-import {
-  RecievedMessageReplyContainer,
-  RecievedMessageReplyUsername,
-} from "../RecievedMessage/RecievedMessageStyles";
 
 const SentMessage = ({
   message,
@@ -92,7 +88,13 @@ const SentMessage = ({
     setCreatorData(creatorData[0]);
   };
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       <MessageModal
         themeMode={user?.themeMode}
         show={openMessageModal}

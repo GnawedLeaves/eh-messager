@@ -31,27 +31,20 @@ import { useEffect } from "react";
 import { IoMdAttach, IoMdSend } from "react-icons/io";
 import { useRef } from "react";
 import {
-  Firestore,
-  Timestamp,
-  addDoc,
   collection,
   doc,
   getDoc,
   getDocs,
   onSnapshot,
-  query,
-  where,
 } from "firebase/firestore";
 
-import { darktheme, LightTheme, theme } from "../../theme";
+import { darktheme, LightTheme } from "../../theme";
 import { sortByFirebaseTimestamp } from "../../functions/sortArray";
 import { db } from "../../database/firebase";
 import { handleFirebaseDate } from "../../database/handleFirebaseDate";
 import { sendMessageToUser } from "../../database/functions/sendMessageToUser";
 import { RxCross2 } from "react-icons/rx";
-import { RecievedMessageMedia } from "../Chatbox/ChatboxStyles";
-import { getAllMessageFromUser } from "../../database/functions/getAllMessageIdsFromUser";
-import { getAll } from "firebase/remote-config";
+
 import { deleteMessageFromUser } from "../../database/functions/deleteMessageFromUser";
 import RecievedMessage from "../RecievedMessage/RecievedMessage";
 import SentMessage from "../SentMessage/SentMessage";
@@ -79,10 +72,8 @@ const Chatbox2 = (props) => {
   const location = useLocation();
   const handleNavigateBack = () => {
     if (location.key !== "default") {
-      // If location key is not 'default', it means there is a history entry
       navigate(-1);
     } else {
-      // Otherwise, navigate to a different page (e.g., home)
       navigate("/home");
     }
   };
@@ -99,7 +90,6 @@ const Chatbox2 = (props) => {
     if (event.key === "Enter" && inputFocused) {
       event.preventDefault();
       sendMessage();
-      // Perform actions when Enter key is pressed
     }
   };
 
@@ -122,7 +112,6 @@ const Chatbox2 = (props) => {
       getEverything();
     });
 
-    // Clean up the listener when the component unmounts
     return () => {
       unsubscribe();
     };
@@ -134,7 +123,7 @@ const Chatbox2 = (props) => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Get the selected file
+    const file = e.target.files[0];
     setMessageFile(file);
     console.log("file", file);
   };
@@ -189,7 +178,6 @@ const Chatbox2 = (props) => {
     });
     setAllRecievedMessages(allRecievedMessages);
   };
-  //TODO: Get all user data
   const getAllUsersData = async () => {
     let allUsers = [];
 
@@ -224,9 +212,9 @@ const Chatbox2 = (props) => {
       const matchingItemA = mapA.get(itemB.id);
 
       if (matchingItemA) {
-        return { ...itemB, ...matchingItemA }; // Combine the objects
+        return { ...itemB, ...matchingItemA };
       }
-      return itemB; // If no match is found, keep the original item from arrayB
+      return itemB;
     });
 
     setAllCombinedMessages(mergedArray);
@@ -274,7 +262,7 @@ const Chatbox2 = (props) => {
     combineMessages();
   }, [allRecievedMessages, allMessages]);
 
-  // Reply functions
+  // reply functions
   const [showMessageOptionsModal, setShowMessageOptionsModal] = useState(true);
   const [messageClickedIndex, setMessageClickedIndex] = useState(-1);
   const [messageIdToReply, setMessageIdToReply] = useState(null);
@@ -303,7 +291,7 @@ const Chatbox2 = (props) => {
     setMessageIdToReply(null);
     setMessageUsernameToReply(null);
   };
-  //Delete message function
+  //delete message function
   const handleDeleteMessage = async (messageId, attachment_url) => {
     console.log(messageId, attachment_url);
     deleteMessageFromUser(messageId, attachment_url);
@@ -321,7 +309,6 @@ const Chatbox2 = (props) => {
   return (
     <ThemeProvider theme={user?.themeMode === "light" ? LightTheme : darktheme}>
       <MessagingContainer>
-        
         <ChatboxHeader>
           <IoArrowBackOutline
             style={{ cursor: "pointer" }}

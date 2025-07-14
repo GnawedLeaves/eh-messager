@@ -55,6 +55,7 @@ export const SentMessageReplyContainer = styled.div`
 `;
 export const SentMessageReplyUsername = styled.div`
   font-weight: bold;
+  font-size: 0.8rem;
 `;
 
 export const SentMessageBodyAndTick = styled.div`

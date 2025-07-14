@@ -26,8 +26,6 @@ const HomePage = (props) => {
   const navigate = useNavigate();
   const [openSideBar, setOpenSideBar] = useState(false);
 
-  //Backend
-
   const handleThemeModeChange = async (newThemeMode) => {
     if (user?.userId) {
       const userRef = doc(db, "users", user?.userId);
@@ -42,7 +40,6 @@ const HomePage = (props) => {
     }
   };
 
-  //Check if there is a user logged in, if not then log them out
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
@@ -50,7 +47,6 @@ const HomePage = (props) => {
       }
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [navigate]);
 
@@ -105,14 +101,13 @@ const HomePage = (props) => {
       allRecievedMessages.map((item) => [item.message_id, item])
     );
 
-    // Merge arrayA into arrayB based on the matching message_id and id
     const mergedArray = allMessages.map((itemB) => {
       const matchingItemA = mapA.get(itemB.id);
 
       if (matchingItemA) {
-        return { ...itemB, ...matchingItemA }; // Combine the objects
+        return { ...itemB, ...matchingItemA };
       }
-      return itemB; // If no match is found, keep the original item from arrayB
+      return itemB;
     });
 
     setAllCombinedMessages(mergedArray);
@@ -166,7 +161,6 @@ const HomePage = (props) => {
         "date_created"
       ).reverse();
 
-      //Getting message count
       const unreadMessages = recievedMessages.filter(
         (message) => message.is_read === false
       );
@@ -175,15 +169,12 @@ const HomePage = (props) => {
 
       let firstMessage = sortedArray[0];
 
-      //If more than 24h, put the date, else put the date
       const handledDate = handleFirebaseDate(firstMessage.date_created);
       let dateStringFinal = "";
       if (checkDateMoreThan24Hours(firstMessage.date_created)) {
         if (checkDateMoreThan1Week(firstMessage.date_created)) {
-          // Split the string by spaces
           const parts = handledDate.split(" ");
 
-          // Extract the desired parts and join them back into a string
           const dayAndMonth = parts.slice(1, 3).join(" ");
           dateStringFinal = dayAndMonth;
         }
@@ -234,38 +225,28 @@ const HomePage = (props) => {
   };
 
   const checkDateMoreThan24Hours = (date) => {
-    // Convert Firebase timestamp to JavaScript Date object
     const dateFromTimestamp = date.toDate();
 
-    // Get the current date and time
     const currentDate = new Date();
 
-    // Calculate the difference in milliseconds
     const differenceInMillis = currentDate - dateFromTimestamp;
 
-    // Calculate the number of milliseconds in 24 hours
     const millisecondsIn24Hours = 24 * 60 * 60 * 1000;
 
-    // Check if the difference is greater than 24 hours
     const isMoreThan24Hours = differenceInMillis > millisecondsIn24Hours;
 
     return isMoreThan24Hours;
   };
 
   const checkDateMoreThan1Week = (date) => {
-    // Convert Firebase timestamp to JavaScript Date object
     const dateFromTimestamp = date.toDate();
 
-    // Get the current date and time
     const currentDate = new Date();
 
-    // Calculate the difference in milliseconds
     const differenceInMillis = currentDate - dateFromTimestamp;
 
-    // Calculate the number of milliseconds in 1 week (7 days)
     const millisecondsInAWeek = 7 * 24 * 60 * 60 * 1000;
 
-    // Check if the difference is greater than 1 week
     const isMoreThanAWeek = differenceInMillis > millisecondsInAWeek;
 
     return isMoreThanAWeek;
@@ -289,19 +270,28 @@ const HomePage = (props) => {
   }, [allCombinedMessages]);
 
   return (
-    <ThemeProvider theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }>
-
+    <ThemeProvider
+      theme={
+        user?.themeMode === "light"
+          ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+          : user?.selectedThemeData?.selectedThemeDark || darktheme
+      }
+    >
       {allUsers.length > 0 && user !== null ? (
         <></>
       ) : (
         <LoadingScreen
-        theme={user?.themeMode === "light" ? user?.selectedThemeData?.selectedThemeLight || LightTheme : user?.selectedThemeData?.selectedThemeDark || darktheme }
+          theme={
+            user?.themeMode === "light"
+              ? user?.selectedThemeData?.selectedThemeLight || LightTheme
+              : user?.selectedThemeData?.selectedThemeDark || darktheme
+          }
           text="Loading Chats"
         />
       )}
 
       <HomePageContainer>
-      <Sidebar
+        <Sidebar
           showSidebar={openSideBar}
           username={user?.username}
           userId={user?.userId}

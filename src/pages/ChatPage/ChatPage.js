@@ -1,5 +1,4 @@
 import { ThemeProvider } from "styled-components";
-import Chatbox from "../../components/Chatbox1/Chatbox";
 import { HomePageContainer } from "./ChatPageStyles";
 import { theme } from "../../theme";
 import { useContext } from "react";
@@ -8,7 +7,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Chatbox2 from "../../components/Chatbox2/Chatbox2";
-import { IoArrowBackOutline } from "react-icons/io5";
 const ChatPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,18 +14,6 @@ const ChatPage = () => {
   const auth = getAuth();
   const params = useParams();
 
-  const handleSignOut = async () => {
-    signOut(auth)
-      .then(() => {
-        navigate("/login");
-        console.log("Sign out successful");
-      })
-      .catch((error) => {
-        console.log("Error when signing out: ", error);
-      });
-  };
-
-  //Check if there is a user logged in, if not then log them out
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
@@ -35,7 +21,6 @@ const ChatPage = () => {
       }
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [navigate]);
 
@@ -52,10 +37,8 @@ const ChatPage = () => {
 
   const handleNavigateBack = () => {
     if (location.key !== "default") {
-      // If location key is not 'default', it means there is a history entry
       navigate(-1);
     } else {
-      // Otherwise, navigate to a different page (e.g., home)
       navigate("/home");
     }
   };
