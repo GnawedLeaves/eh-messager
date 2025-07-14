@@ -23,6 +23,8 @@ export const SentMessageBubble = styled.div`
     props.themePageColor ? props.themePageColor : props.theme.sentTextColor};
   box-sizing: border-box;
   transition: 0.3s;
+  word-break: break-word;
+  hyphens: auto;
 `;
 
 export const SentMessageTickContainer = styled.div`
@@ -46,12 +48,18 @@ export const SentMessageMedia = styled.video`
 `;
 
 export const SentMessageReplyContainer = styled.div`
-  background: ${(props) => props.theme.primary};
+  background: ${(props) =>
+    props.themePageBackground
+      ? props.themePageBackground
+      : props.theme.sentBubbleColor};
+  color: ${(props) =>
+    props.themePageColor ? props.themePageColor : props.theme.sentTextColor};
   padding: 8px 8px;
   border-radius: 8px;
   margin: 4px 0;
   width: 100%;
-  border-left: 2px solid ${(props) => props.theme.white};
+  // border: 2px solid ${(props) => props.theme.sentTextColor};
+  border-left: 3px solid ${(props) => props.theme.sentTextColor};
 `;
 export const SentMessageReplyUsername = styled.div`
   font-weight: bold;

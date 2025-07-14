@@ -85,19 +85,31 @@ const RecievedMessage = ({
   }, []);
 
   const getParentMessage = () => {
-    //get the name of parent message
-
+    // Get the parent message
     const parentMessage = conversationData.filter((message) => {
       return message.id === parent_message_id;
     });
 
+    // Check if the parent message is empty or undefined
+    if (!parentMessage || parentMessage.length === 0) {
+      setParentMessageContent({
+        message: { message_body: "Message deleted" }, // Fallback for deleted message
+        creatorData: { username: "Unknown" }, // Fallback for unknown user
+      });
+      return;
+    }
+
+    // Filter to get the username of the parent message creator
     const parentMessageCreatorUsername = allUserData.filter((user) => {
       return user.userId === parentMessage[0].creator_id;
     });
 
+    // Set the content of the parent message
     setParentMessageContent({
-      message: parentMessage[0],
-      creatorData: parentMessageCreatorUsername[0],
+      message: parentMessage[0]?.message_body
+        ? parentMessage[0]
+        : { message_body: "Message deleted" }, // Fallback for empty message body
+      creatorData: parentMessageCreatorUsername[0] || { username: "Unknown" }, // Fallback for unknown user
     });
   };
 
@@ -175,7 +187,9 @@ const RecievedMessage = ({
               <RecievedMessageReplyUsername>
                 {parentMessageContent?.creatorData.username}
               </RecievedMessageReplyUsername>
-              {parentMessageContent?.message.message_body}
+              {parentMessageContent?.message.message_body.length > 30
+                ? parentMessageContent.message.message_body.slice(0, 80) + "..."
+                : parentMessageContent?.message.message_body}
             </RecievedMessageReplyContainer>
           ) : (
             <></>

@@ -68,15 +68,30 @@ const SentMessage = ({
     const parentMessage = conversationData.filter((message) => {
       return message.id === parent_message_id;
     });
+
+    if (!parentMessage || parentMessage.length === 0) {
+      setParentMessageContent({
+        message: { message_body: "Message deleted" }, // Fallback message
+        creatorData: { username: "" }, // Fallback username
+      });
+      setParentMessageUsername("");
+      return;
+    }
+
     const parentMessageCreatorUsername = allUserData.filter((user) => {
       return user.userId === parentMessage[0].creator_id;
     });
 
     setParentMessageContent({
-      message: parentMessage[0],
-      creatorData: parentMessageCreatorUsername[0],
+      message: parentMessage[0]?.message_body
+        ? parentMessage[0]
+        : { message_body: "Message deleted" },
+      creatorData: parentMessageCreatorUsername[0] || { username: "Unknown" },
     });
-    setParentMessageUsername(parentMessageCreatorUsername[0].username);
+
+    setParentMessageUsername(
+      parentMessageCreatorUsername[0]?.username || "Unknown"
+    );
   };
 
   const getCreatorData = () => {
@@ -128,7 +143,9 @@ const SentMessage = ({
               <SentMessageReplyUsername>
                 {parentMessageContent?.creatorData.username}
               </SentMessageReplyUsername>
-              {parentMessageContent?.message.message_body}
+              {parentMessageContent?.message.message_body.length > 30
+                ? parentMessageContent.message.message_body.slice(0, 80) + "..."
+                : parentMessageContent?.message.message_body}
             </SentMessageReplyContainer>
           ) : (
             <></>
@@ -152,10 +169,25 @@ const SentMessage = ({
               {is_read ? (
                 <IoCheckmarkDoneOutline
                   size={"16px"}
-                  color={LightTheme().white}
+                  color={
+                    user?.themeMode === "light"
+                      ? user?.selectedThemeData?.selectedThemeLight
+                          .sentTextColor || LightTheme
+                      : user?.selectedThemeData?.selectedThemeDark
+                          .sentTextColor || darktheme
+                  }
                 />
               ) : (
-                <IoCheckmark size={"16px"} color={LightTheme().white} />
+                <IoCheckmark
+                  size={"16px"}
+                  color={
+                    user?.themeMode === "light"
+                      ? user?.selectedThemeData?.selectedThemeLight
+                          .sentTextColor || LightTheme
+                      : user?.selectedThemeData?.selectedThemeDark
+                          .sentTextColor || darktheme
+                  }
+                />
               )}
             </SentMessageTickContainer>
           </SentMessageBodyAndTick>
